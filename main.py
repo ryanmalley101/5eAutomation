@@ -3,7 +3,8 @@ from enum import Enum
 import math
 import re
 from dataclasses import dataclass, field
-from typing import List
+import time
+import json
 
 class Size(Enum):
     TINY = "Tiny"
@@ -92,6 +93,18 @@ class Alignment(Enum):
             case _:
                 return Alignment.CHANGEME
 
+class AbilityScores(Enum):
+    STRENGTH = "strength"
+    DEXTERITY = "dexterity"
+    CONSTITUTION = "constitution"
+    INTELLIGENCE = "intelligence"
+    WISDOM = "wisdom"
+    CHARISMA = "charisma"
+
+
+    def menu(cls):
+        for i, value in enumerate(cls):
+            print(f"({i}) value ")
 
 SKILL_LIST = [
     "Acrobatics",
@@ -120,6 +133,7 @@ class MonsterBlock:
     alignment: Alignment = Alignment.CHANGEME
     acdesc: str = ""
     acbonus: int = 10
+    ability_scores:dict = field(default_factory=dict)
     strength: int = 10
     dexterity: int = 10
     constitution: int = 10
@@ -170,42 +184,59 @@ class BaseAttack:
         UNKNOWN = 'un'
 
     name: str = "PLACEHOLDER ATTACK"
-    tohit: int = 0
-    description = ""
+    attack_mod: str = ""
+    attack_bonus: int = 0
+    description:str = ""
     targets: str = "one target."
-    damagedice:list = field(default_factory=list)
-    type = AttackType.UNKNOWN
+    damage_dice: list = field(default_factory=list)
+    type: AttackType = AttackType.UNKNOWN
 
 
 @dataclass
 class MeleeWeaponAttack(BaseAttack):
     type = BaseAttack.AttackType.MELEEWEAPON
-    reach: int = 10
+    reach: int = 5
 
 
 @dataclass
 class RangedWeaponAttack(BaseAttack):
     type = BaseAttack.AttackType.RANGEDWEAPON
-    short_range: int = 0
-    long_range: int = 0
+    short_range: int = 20
+    long_range: int = 60
 
 
 @dataclass
 class MeleeSpellAttack(BaseAttack):
     type = BaseAttack.AttackType.MELEESPELL
-    reach: int = 0
+    reach: int = 5
 
 
 @dataclass
 class RangedSpellAttack(BaseAttack):
     type = BaseAttack.AttackType.RANGEDSPELL
-    range: int = 0
+    range: int = 30
 
 
-# Regex for valid dice roll strings (like 1d6+4)
-DICESTRINGPATTERN = '^(?:(\d+)d(\d+))(?:([+-])(\d+))?$'
+# Regex for valid dice roll strings (like 1d6+4). M is used to inherit the
+# ability modifier
+# Valid Strings:
+# 1d8
+# 10d2+10
+# 2d4+M
+# 1d6-10
+# 6d2-M
+# 1d6+2d8+10d4+7
+# 2d4+4d6+6d8+M
+# Invalid Strings:
+# 1d8+3M2
+# 1d8-1d6+1d8+N
+
+DICESTRINGPATTERN = r"^\d+d\d+(?:[+-]\d+|M)?(?:\+\d+d\d+(?:[+-]\d+|M)?)*$"
+
+
+
 def calculateAverageDamage(dicestring, bonusdamage):
-    match = re.match(r'^(\d+)d(\d+)([+-]\d+)?$', dicestring)
+    match = re.match(DICESTRINGPATTERN, dicestring)
     if match:
         num_dice = int(match.group(1))
         num_sides = int(match.group(2))
@@ -218,11 +249,11 @@ def calculateAverageDamage(dicestring, bonusdamage):
 
 def printSkillChoices(monster = None):
     if monster == None:
-        for i, x in enumerate(skill_list):
+        for i, x in enumerate(SKILL_LIST):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
-        for i, x in enumerate(skill_list):
+        for i, x in enumerate(SKILL_LIST):
             isprof = "*" if monster.skills[x] else ""
             print(f"| {str(i)} - + {x} + {isprof}|")
         print('| (e)xit |')
@@ -245,13 +276,14 @@ damage_list = [
     "thunder",
 ]
 
+
 def printDamageTypes(monster = None):
     if monster == None:
         for i, x in enumerate(damage_list):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
-        for i, x in enumerate(skill_list):
+        for i, x in enumerate(damage_list):
             isprof = ""
             if monster.damageimmunities[x]:
                 isprof = "i"
@@ -352,7 +384,7 @@ def saveProfWizard(monster):
 
 
 def toggleskill(monster, skillindex):
-    monster.skills[skill_list[skillindex]] = not monster.skills[skill_list[skillindex]]
+    monster.skills[SKILL_LIST[skillindex]] = not monster.skills[SKILL_LIST[skillindex]]
 
 
 def toggledamage(monster, damage, damagemodifier=None):
@@ -414,7 +446,6 @@ def damageTypeWizard(monster, mode=None):
                 toggledamage(monster, damage_list[damage_choice], mode)
             else:
                 print(f'Invalid index. Expected integer between 0 and {len(damage_list)}')
-                continue
         else:
             print(f'Invalid input. Expected integer between 0 and {len(damage_list)}')
     return monster
@@ -436,17 +467,256 @@ def abilityWizard():
 
     return ability_list
 
+
 def attackWizard():
-    attack_wizard = []
-    attack_prompt = ''
+
+    action_list = []
+    action_prompt = ''
     while action_prompt is not 'e' and action_prompt is not 'exit':
-        print("Add attacks or actions for the creature. ny input other than (e)xit will be "
+        print("Add attacks or actions for the creature. Any input other than (e)xit will be "
               "treated as the name of the ability, after which you will be able"
               "to add a additional information about it, like damage or range")
         action_prompt = input()
         if action_prompt is not 'e' and action_prompt is not 'exit':
             action_name = action_prompt
 
+            print(f"What type of action is {action_name}\n"
+                  f"(1) Melee Weapon | (2) Ranged Weapons\n"
+                  f"(3) Melee Spell  | (4) Ranged Spell\n"
+                  f"(5) Non-Attack (eg. Breath Weapon)\n"
+                  f"Default is Melee Weapon\n")
+
+            actiontype_prompt = input()
+
+            if actiontype_prompt == '5':
+                description = input("Description for the action.")
+                action_list.append(
+                    AbilityDescription(name = action_name,
+                                       description = description))
+                continue
+
+
+            attack_mod, attack_bonus = getAttackBonus()
+            damage_dice = getDamageDice()
+            description = input("Input a description for the attack. Most "
+                                "attacks do not have a description, this is "
+                                "only used for attacks that have additional "
+                                "effects like a Marilith's trail grapple.")
+
+            if actiontype_prompt == '2':
+                action_list.append(
+                    rangedWeaponAttackWizard(name = action_name,
+                                             attack_mod = attack_mod,
+                                             attack_bonus = attack_bonus,
+                                             damage_dice = damage_dice,
+                                             description = description))
+            elif actiontype_prompt == '3':
+                action_list.append(
+                    meleeSpellAttackWizard(name = action_name,
+                                           attack_mod = attack_mod,
+                                           attack_bonus = attack_bonus,
+                                           damage_dice = damage_dice,
+                                           description = description))
+            elif actiontype_prompt == '4':
+                action_list.append(
+                    rangedSpellAttackWizard(name=action_name,
+                                            attack_mod=attack_mod,
+                                            attack_bonus=attack_bonus,
+                                            damage_dice=damage_dice,
+                                            description=description))
+            else:
+                action_list.append(
+                    meleeWeaponAttackWizard(name=action_name,
+                                            attack_mod=attack_mod,
+                                            attack_bonus=attack_bonus,
+                                            damage_dice=damage_dice,
+                                            description=description))
+    print("Exiting attack setup")
+    return action_list
+
+
+def getAttackBonus():
+    attackmod = None
+    while attackmod is None:
+        print("What ability is the attack made with?")
+        AbilityScores.menu()
+        modPrompt = input()
+        if modPrompt.isdigit() and 0 >= int(modPrompt) < len(
+                AbilityScores):
+            attackmod = int(modPrompt)
+            continue
+        else:
+            print(f"Invalid input. Expected an integer between 0 "
+                  f"and {len(AbilityScores)}")
+
+    attackbonus = None
+    while attackbonus is None:
+        bonusPrompt = input("What is the attack's to hit bonus. Do not add a + "
+                            "next to the integer bonus. Negative bonuses are "
+                            "accepted. Default value is 0\n Note: The base "
+                            "attack bonus of the attack is the proficiency "
+                            "bonus of the creature plus the ability mod for "
+                            "the attack. This bonus shpuld only be used for "
+                            "other modifiers like a +1 weapon.")
+        if bonusPrompt.isdigit():
+            attackbonus = int(bonusPrompt)
+        elif bonusPrompt == "":
+            attackbonus = 0
+        else:
+            print("Invalid input. Expected an integer")
+
+    return attackmod, attackbonus
+
+
+def getDamageDice():
+    damagedice = []
+    damage_prompt = ''
+    while damage_prompt != 'e' or damage_prompt != 'exit':
+        print("Add the damage the attack deals. Input the damage dice for"
+              "the attack in the form 'XdY+Z. More than one set of dice can"
+              "be input in this section, you'll input one at a time. \n"
+              "Note: The damage bonus is not automatically inherited from the "
+              "attack's ability modifier set earlier. If you enter an "
+              "integer for Z, that value will be used. Instead, you can enter"
+              "'M', which will use the attack's ability score automatically")
+        damage_prompt = input()
+        if re.match(DICESTRINGPATTERN, damage_prompt):
+            damagepair = {"dicestring":damage_prompt}
+            print("What is the damage type?")
+            printDamageTypes()
+            damageprompt = input()
+            if damageprompt.isdigit():
+                damage_choice = int(damage_choice)
+                if 0 <= damage_choice < len(damage_list):
+                    damagepair['damagetype'] = damage_list[damage_choice]
+                    damagedice.append(damagepair)
+            else:
+                print(f'Invalid index. Expected integer between 0 and '
+                      f'{len(damage_list)}')
+
+    return damagedice
+
+
+def meleeWeaponAttackWizard(name, attack_mod, attack_bonus,
+                            damage_dice, description):
+    attack = MeleeWeaponAttack(name=name,
+                               attack_mod=attack_mod,
+                               attack_bonus=attack_bonus,
+                               damage_dice=damage_dice,
+                               description=description)
+
+    reach_input = int(input("What is the reach for the melee attack. "
+                            "Must be an integer multiple of 5. Default 5"))
+
+    attack.reach = int(reach_input) if reach_input % 5 == 0 else 5
+    return attack
+
+
+def rangedWeaponAttackWizard(name, attack_mod, attack_bonus,
+                             damage_dice, description):
+    attack = RangedWeaponAttack(name=name,
+                               attack_mod=attack_mod,
+                               attack_bonus=attack_bonus,
+                               damage_dice=damage_dice,
+                               description=description)
+    short_input = int(input("What is the short range for the ranged attack. "
+                        "Must be an integer multiple of 5. Default 20"))
+    attack.short_range = int(short_input) if short_input % 5 == 0 else 20
+
+    long_input = int(input("What is the long range for the ranged attack. "
+                        "Must be an integer multiple of 5. Default 60"))
+    attack.long_range = int(long_input) if long_input % 5 == 0 else 20
+
+    return attack
+
+
+def meleeSpellAttackWizard(name, attack_mod, attack_bonus,
+                           damage_dice, description):
+
+    attack = MeleeSpellAttack(name=name,
+                              attack_mod=attack_mod,
+                              attack_bonus=attack_bonus,
+                              damage_dice=damage_dice,
+                              description=description)
+
+    reach_input = int(input("What is the reach for the melee attack. "
+                            "Must be an integer multiple of 5. Default 5"))
+
+    attack.reach = int(reach_input) if reach_input % 5 == 0 else 5
+    return attack
+
+
+def rangedSpellAttackWizard(name, attack_mod, attack_bonus,
+                            damage_dice, description):
+    attack = RangedSpellAttack(name=name,
+                               attack_mod=attack_mod,
+                               attack_bonus=attack_bonus,
+                               damage_dice=damage_dice,
+                               description=description)
+
+    range_input = int(input("What is the range for the ranged attack. "
+                        "Must be an integer multiple of 5. Default 30"))
+    attack.range = int(range_input) if range_input % 5 == 0 else 30
+
+    return attack
+
+
+def reactionWizard():
+    reaction_list = []
+    reaction_prompt = ''
+    while reaction_prompt is not 'e' and reaction_prompt is not 'exit':
+        print("Add reactions for the creature. Any input other than (e)xit "
+              "will be treated as the name of the reaction")
+        reaction_prompt = input()
+        if reaction_prompt is not 'e' and reaction_prompt is not 'exit':
+            description = input("Description for the action.")
+            reaction_list.append(
+                AbilityDescription(name=reaction_prompt,
+                                   description=description))
+    return reaction_list
+
+
+def legendaryActionWizard():
+    legendary_action_list = []
+    legendary_toggle = input("Does the creature have legendary actions?"
+                             "(y)es or (n)o")
+    if legendary_toggle == 'y' or legendary_toggle == 'yes':
+        legendary_prompt = ''
+        while legendary_prompt is not 'e' and legendary_prompt is not 'exit':
+            print("Add legendary actions to the creature. Any input other "
+                  "than (e)xit will be treated as the name of the action, "
+                  "after which you will be able to add a description to it.")
+            legendary_prompt = input()
+            if legendary_prompt is not 'e' and legendary_prompt is not 'exit':
+                legendaryaction = AbilityDescription(name = legendary_prompt)
+                description = input(f"Enter description for {legendaryaction}")
+                legendaryaction.description = description
+                legendary_action_list.append(legendaryaction)
+
+    return legendary_action_list
+
+
+def mythicActionWizard():
+    mythic_action_list = []
+    mythic_description = ""
+    mythic_toggle = input("Does the creature have "
+                          "mythicactions? (y)es or (n)o")
+    if mythic_toggle == 'y' or mythic_toggle == 'yes':
+        mythic_description = input("What is the description for the "
+                                   "creature's Mythic Action trait?")
+        mythic_prompt = ''
+        while mythic_prompt is not 'e' and mythic_prompt is not 'exit':
+            print("Add legendary actions to the creature. Any input other "
+                  "than (e)xit will be treated as the name of the action, "
+                  "after which you will be able to add a description to it.")
+            mythic_prompt = input()
+            if mythic_prompt is not 'e' and mythic_prompt is not 'exit':
+                mythicaction = AbilityDescription(name = mythic_prompt)
+                description = input(f"Enter description for {mythicaction}")
+                mythicaction.description = description
+                mythic_action_list.append(mythicaction)
+
+    return mythic_description, mythic_action_list
 
 def interactiveMonsterGen():
     monster = MonsterBlock()
@@ -502,12 +772,12 @@ def interactiveMonsterGen():
     monster.acdesc = input("AC Bonus description (eg. plate, natural armor, mage armor, etc.")
 
     # Get Ability Scores
-    monster.strength = getAbilityScore("Strength")
-    monster.dexterity = getAbilityScore("Dexterity")
-    monster.constitution = getAbilityScore("Constitution")
-    monster.intelligence = getAbilityScore("Intelligence")
-    monster.wisdom = getAbilityScore("Wisdom")
-    monster.charisma = getAbilityScore("Charisma")
+    monster.ability_scores[AbilityScores.STRENGTH] = getAbilityScore("Strength")
+    monster.ability_scores[AbilityScores.DEXTERITY]  = getAbilityScore("Dexterity")
+    monster.ability_scores[AbilityScores.CONSTITUTION] = getAbilityScore("Constitution")
+    monster.ability_scores[AbilityScores.INTELLIGENCE] = getAbilityScore("Intelligence")
+    monster.ability_scores[AbilityScores.WISDOM]  = getAbilityScore("Wisdom")
+    monster.ability_scores[AbilityScores.CHARISMA]  = getAbilityScore("Charisma")
 
     # Get hit dice through the hp wizard
     monster.hitdice = getHitDice(hitdie=Size.hitdice(monster.size),
@@ -559,13 +829,18 @@ def interactiveMonsterGen():
 
     monster.abilities = abilityWizard()
     monster.attacks = attackWizard()
-
+    monster.reactions = reactionWizard()
+    monster.legendaryactions = legendaryActionWizard()
+    monster.mythicdescription, monster.mythicactions = mythicActionWizard()
 
     return monster
 
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    printSkillChoices()
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    monster_json = open('monster' + timestr, "w")
+    n = monster_json.write(json.dumps(interactiveMonsterGen()))
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
