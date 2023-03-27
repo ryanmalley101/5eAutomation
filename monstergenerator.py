@@ -3,22 +3,7 @@
 from statblockdatastructs import *
 import math
 import re
-
-# Regex for valid dice roll strings (like 1d6+4). M is used to inherit the
-# ability modifier
-# Valid Strings:
-# 1d8
-# 10d2+10
-# 2d4+M
-# 1d6-10
-# 6d2-M
-# 1d6+2d8+10d4+7
-# 2d4+4d6+6d8+M
-# Invalid Strings:
-# 1d8+3M2
-# 1d8-1d6+1d8+N
-DICESTRINGPATTERN = r"^\d+d\d+(?:[+-]\d+|M)?(?:\+\d+d\d+(?:[+-]\d+|M)?)*$"
-
+from patterns import DICESTRINGPATTERN
 
 def size_wizard():
     sizeinput = ""
@@ -45,18 +30,6 @@ def alignment_wizard():
             Alignment.help()
         else:
             print("Invalid Alignment parameter. Type 'help' for a full list")
-
-
-def calculate_average_damage(dicestring):
-    match = re.match(DICESTRINGPATTERN, dicestring)
-    if match:
-        num_dice = int(match.group(1))
-        num_sides = int(match.group(2))
-        modifier = int(match.group(3)) if match.group(3) else 0
-        avg_roll = num_dice * ((num_sides + 1) / 2) + modifier
-        return avg_roll
-    else:
-        raise ValueError('Invalid dice roll format')
 
 
 def print_skill_choices(monster=None):
@@ -99,13 +72,6 @@ def print_condition_immunities(monster=None):
             isprof = "*" if monster.conditionimmunities[x] else ""
             print(f"| {str(i)} - {x}{isprof}|")
         print('| (e)xit |')
-
-
-def score_to_mod(score):
-    if score < 0:
-        raise Exception("Ability Score is less than 0")
-
-    return int((score-10)/2)
 
 
 def get_hit_dice(hitdie, con):
@@ -335,6 +301,18 @@ def condition_immunity_wizard(monster, initialize=True):
                 f'Invalid input. Expected integer '
                 f'between 0 and {len(CONDITION_LIST)}')
     return monster
+
+def get_challenge_rating():
+    crinput = ""
+    while not crinput.isdigit():
+        crinput = input(f"Monster Challenge Rating (Default 0)\n")
+        if crinput.isdigit() and int(crinput) >= 0:
+            return int(crinput)
+        elif crinput == "":
+            return 0
+        else:
+            print("Invalid Challenge Rating. Must be an integer greater "
+                                             "than or equal to 0")
 
 
 def ability_wizard():
@@ -742,14 +720,14 @@ def interactive_monster_gen():
         monster = condition_immunity_wizard(monster)
 
     # Get senses
-    senseinput = input("Monster Senses (eg. darkvision "
+    monster.senses = input("Monster Senses (eg. darkvision "
                        "60 ft., blindsight 10 ft.\n")
-    monster.senses = senseinput
 
     # Get languages
-    languageinput = input("Monster languages (eg. Common, "
+    monster.languages = input("Monster languages (eg. Common, "
                           "Draconic, understands Gnomish\n")
-    monster.senses = languageinput
+
+    monster.challengerating = get_challenge_rating()
 
     monster.abilities = ability_wizard()
     monster.actions = action_wizard()

@@ -3,7 +3,9 @@ from enum import Enum
 from dataclasses import dataclass, field
 import time
 import json
-
+import math
+from patterns import DICESTRINGPATTERN
+import re
 
 class Size(Enum):
     TINY = 0
@@ -128,6 +130,7 @@ SKILL_LIST = [
     "Stealth",
     "Survival"
 ]
+
 DAMAGE_LIST = (
     "acid",
     "bludgeoning",
@@ -196,6 +199,7 @@ class MonsterBlock:
     conditionimmunities: dict = field(default_factory=dict)
     senses: str = ""
     languages: str = ""
+    challengerating: int = 0
     abilities: list = field(default_factory=list)
     actions: list = field(default_factory=list)
     reactions: list = field(default_factory=list)
@@ -231,6 +235,31 @@ class MonsterBlock:
         print(n)
         monster_json.close()
 
+    def get_total_ac(self):
+        return score_to_mod(self.ability_scores['Dexterity'] + self.acbonus)
+
+    def get_attack_bonus(self, attack):
+        return get_prof_bonus(self.challengerating) + \
+               self.ability_scores[attack.attack_mod] + \
+               attack.attack_bonus
+
+    def initialize_ability_scores(self):
+        self.ability_scores[AbilityScores.STRENGTH] = 10
+        self.ability_scores[AbilityScores.DEXTERITY] = 10
+        self.ability_scores[AbilityScores.CONSTITUTION] = 10
+        self.ability_scores[AbilityScores.INTELLIGENCE] = 10
+        self.ability_scores[AbilityScores.WISDOM] = 10
+        self.ability_scores[AbilityScores.CHARISMA] = 10
+
+    def prof_bonus(self):
+        return get_prof_bonus(self.challengerating)
+
+    def save_bonus(self, save):
+        return self.prof_bonus() + score_to_mod(self.ability_scores[save])
+
+    def skill_bonus(self, skill):
+        return self.prof_bonus() + score_to_mod(
+            self.ability_scores[SKILL_TO_ABILITY[skill]])
 
 @dataclass
 class AbilityDescription:
@@ -257,6 +286,24 @@ class BaseAttack:
     targets: str = "one target."
     damage_dice: list = field(default_factory=list)
     type: AttackType = AttackType.UNKNOWN
+
+    @classmethod
+    def calculate_dicestring_damage(cls, dicestring, ability_mod=0):
+        match = re.match(DICESTRINGPATTERN, dicestring)
+        if match:
+            num_dice = int(match.group(1))
+            num_sides = int(match.group(2))
+            modifier = match.group(3) if match.group(3) else 0
+            if modifier.isdigit():
+                modifier = int(modifier)
+            elif modifier == 'M':
+                modifier = ability_mod
+            else:
+                raise ValueError("Invalid die modifier")
+            avg_roll = num_dice * ((num_sides + 1) / 2) + modifier
+            return avg_roll
+        else:
+            raise ValueError('Invalid dice roll format')
 
     def to_dict(self):
         attackdict = dataclasses.asdict(self)
@@ -313,3 +360,69 @@ class RangedSpellAttack(BaseAttack):
         attackdict['range'] = self.range
         return attackdict
 
+CR_TO_XP_TABLE = {
+    0: 0,
+    .125: 25,
+    .25: 50,
+    .5: 100,
+    1: 200,
+    2: 450,
+    3: 700,
+    4: 1100,
+    5: 1800,
+    6: 2300,
+    7: 2900,
+    8: 3900,
+    9: 5000,
+    10: 5900,
+    11: 7200,
+    12: 8400,
+    13: 10000,
+    14: 11500,
+    15: 13000,
+    16: 15000,
+    17: 18000,
+    18: 20000,
+    19: 22000,
+    20: 25000,
+    21: 33000,
+    22: 41000,
+    23: 50000,
+    24: 62000,
+    25: 76000,
+    26: 90000,
+    27: 105000,
+    28: 120000,
+    29: 137000,
+    30: 155000
+}
+
+SKILL_TO_ABILITY = {
+    "Athletics": AbilityScores.STRENGTH,
+    "Acrobatics": AbilityScores.DEXTERITY,
+    "Sleight of Hand": AbilityScores.DEXTERITY,
+    "Stealth": AbilityScores.DEXTERITY,
+    "Arcana": AbilityScores.INTELLIGENCE,
+    "History": AbilityScores.INTELLIGENCE,
+    "Investigation": AbilityScores.INTELLIGENCE,
+    "Nature": AbilityScores.INTELLIGENCE,
+    "Religion": AbilityScores.INTELLIGENCE,
+    "Animal Handling": AbilityScores.WISDOM,
+    "Insight": AbilityScores.WISDOM,
+    "Medicine": AbilityScores.WISDOM,
+    "Perception": AbilityScores.WISDOM,
+    "Survival": AbilityScores.WISDOM,
+    "Deception": AbilityScores.CHARISMA,
+    "Intimidation": AbilityScores.CHARISMA,
+    "Performance": AbilityScores.CHARISMA,
+    "Persuasion": AbilityScores.CHARISMA
+}
+
+def score_to_mod(score):
+    if score < 0:
+        raise Exception("Ability Score is less than 0")
+
+    return int((score-10)/2)
+
+def get_prof_bonus(cr):
+    return max(math.floor((cr - 1) / 4), 0) + 2
