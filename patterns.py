@@ -11,4 +11,4 @@
 # Invalid Strings:
 # 1d8+3M2
 # 1d8-1d6+1d8+N
-DICESTRINGPATTERN = r"^\d+d\d+(?:[+-]\d+|M)?(?:\+\d+d\d+(?:[+-]\d+|M)?)*$"
+DICESTRINGPATTERN = r'(\d+)d(\d+)|(?=(\d+|M))'

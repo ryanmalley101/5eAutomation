@@ -1,12 +1,12 @@
 from statblockdatastructs import *
 
 def print_monster_ability_scores(monster: MonsterBlock):
-    strscore = monster.ability_scores['Strength']
-    dexscore = monster.ability_scores['Dexterity']
-    conscore = monster.ability_scores['Constitution']
-    intscore = monster.ability_scores['Intelligence']
-    wisscore = monster.ability_scores['Wisdom']
-    chascore = monster.ability_scores['Charisma']
+    strscore = monster.ability_scores[AbilityScores.STRENGTH]
+    dexscore = monster.ability_scores[AbilityScores.DEXTERITY]
+    conscore = monster.ability_scores[AbilityScores.CONSTITUTION]
+    intscore = monster.ability_scores[AbilityScores.INTELLIGENCE]
+    wisscore = monster.ability_scores[AbilityScores.WISDOM]
+    chascore = monster.ability_scores[AbilityScores.CHARISMA]
 
     abilitystring = f"|{strscore} ({score_to_mod(strscore)})"
     abilitystring += f"|{dexscore} ({score_to_mod(dexscore)})"
@@ -18,8 +18,9 @@ def print_monster_ability_scores(monster: MonsterBlock):
 
 
 def print_monster_ability(ability: AbilityDescription):
-    ability_string =  f"> ***{ability.name}*** {ability.description}\n"
+    ability_string = f"> ***{ability.name}*** {ability.description}\n"
     ability_string += f"> \n"
+    return ability_string
 
 
 def print_monster_actions(monster):
@@ -39,7 +40,7 @@ def print_monster_actions(monster):
                 # We need this to add a 'plus' at the end of the intermediate damage
                 dicecounter = len(action.damage_dice) - 1
                 for damagepair in action.damage_dice:
-                    action_string += f"{BaseAttack.calculate_dicestring_damage(damagepair['dicestring'], attack_ability_mod)} ({damagepair['dicestring'].replace('M', attack_ability_mod)}) {damagepair['damagetype']} damage"
+                    action_string += f"{BaseAttack.calculate_dicestring_damage(damagepair['dicestring'], attack_ability_mod)} ({damagepair['dicestring'].replace('M', str(attack_ability_mod))}) {damagepair['damagetype']} damage"
                     if dicecounter > 0:
                         dicecounter -= 1
                         action_string += ' plus '
@@ -59,17 +60,17 @@ def print_monster_saves(monster):
         or monster.intsave or monster.wissave or monster.chasave:
         save_string = "> - **Saving Throws** "
         if monster.strsave:
-            save_string += f"STR +{monster.calc_save('Strength')}"
+            save_string += f"STR +{monster.save_bonus(AbilityScores.STRENGTH)}, "
         if monster.dexsave:
-            save_string += f"DEX +{monster.calc_save('Dexterity')}"
+            save_string += f"DEX +{monster.save_bonus(AbilityScores.DEXTERITY)}, "
         if monster.strsave:
-            save_string += f"CON +{monster.calc_save('Constitution')}"
+            save_string += f"CON +{monster.save_bonus(AbilityScores.CONSTITUTION)}, "
         if monster.strsave:
-            save_string += f"INT +{monster.calc_save('Intelligence')}"
+            save_string += f"INT +{monster.save_bonus(AbilityScores.INTELLIGENCE)}, "
         if monster.strsave:
-            save_string += f"WIS +{monster.calc_save('Wisdom')}"
+            save_string += f"WIS +{monster.save_bonus(AbilityScores.WISDOM)}, "
         if monster.strsave:
-            save_string += f"CHA +{monster.calc_save('Charisma')}"
+            save_string += f"CHA +{monster.save_bonus(AbilityScores.CHARISMA)} "
         save_string += '\n'
     return save_string
 
@@ -114,12 +115,12 @@ def print_monster_vulnerabilities(monster):
 def print_monster_resistances(monster):
     resistance_string = ""
     if any(monster.damageresistances) is True:
-        resistance_string = "> - **Damage Vulnerabilities** "
+        resistance_string = "> - **Damage Resistances** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
         counter = len(monster.damageresistances) - 1
         for resistance in monster.damageresistances:
-            if monster.damagevulnerabilities[resistance]:
+            if monster.damageresistances[resistance]:
                 resistance_string += f'{resistance}'
             if counter > 0:
                 counter -= 1
@@ -132,7 +133,7 @@ def print_monster_resistances(monster):
 def print_monster_immunities(monster):
     immunity_string = ""
     if any(monster.damageimmunities) is True:
-        immunity_string = "> - **Damage Vulnerabilities** "
+        immunity_string = "> - **Damage Immunities** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
         counter = len(monster.damageimmunities) - 1
@@ -149,7 +150,7 @@ def print_monster_immunities(monster):
 def print_monster_condition_immunities(monster):
     condition_string = ""
     if any(monster.conditionimmunities) is True:
-        condition_string = "> - **Damage Vulnerabilities** "
+        condition_string = "> - **Condition Immunities** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
         counter = len(monster.conditionimmunities) - 1
@@ -165,9 +166,9 @@ def print_monster_condition_immunities(monster):
 
 
 def print_monster_senses(monster):
-    senses_string = f"> - "
+    senses_string = f"> - **Senses** "
     if monster.senses != "":
-        senses_string += {monster.senses} + ', '
+        senses_string += f"{monster.senses}, "
 
     senses_string += f'Passive Perception {monster.passive_perception()}\n'
     return senses_string
@@ -176,7 +177,7 @@ def print_monster_senses(monster):
 def convert_monster(monster: MonsterBlock):
     monster_markup  =  "# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
-    monster_markup += f"# >*{monster.size}, {monster.alignment}\n"
+    monster_markup += f"# >* {monster.size.value}, {monster.alignment.value}\n"
     monster_markup += f"> ___\n"
     monster_markup += f"> - **Armor Class** {monster.get_total_ac()} ({monster.acdesc})\n"
     monster_markup += f"> - **Hit Points** {monster.hitpoints} ({monster.hitdice})\n"
@@ -212,7 +213,7 @@ def convert_monster(monster: MonsterBlock):
             monster_markup += print_monster_ability(legendaryaction)
     if len(monster.mythicactions) > 0:
         monster_markup += f"> ### Mythic Actions\n"
-        monster_markup += f"> {monster.mythicdescription}"
+        monster_markup += f"> {monster.mythicdescription}\n"
         for mythicaction in monster.mythicactions:
             monster_markup += print_monster_ability(mythicaction)
 

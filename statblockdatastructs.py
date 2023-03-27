@@ -177,12 +177,12 @@ class MonsterBlock:
     acdesc: str = ""
     acbonus: int = 10
     ability_scores: dict = field(default_factory=dict)
-    strength: int = 10
-    dexterity: int = 10
-    constitution: int = 10
-    intelligence: int = 10
-    wisdom: int = 10
-    charisma: int = 10
+    # strength: int = 10
+    # dexterity: int = 10
+    # constitution: int = 10
+    # intelligence: int = 10
+    # wisdom: int = 10
+    # charisma: int = 10
     hitdice: str = '0d0'
     hitpoints: int = 0
     speed: str = '30 ft.'
@@ -236,7 +236,7 @@ class MonsterBlock:
         monster_json.close()
 
     def get_total_ac(self):
-        return score_to_mod(self.ability_scores['Dexterity'] + self.acbonus)
+        return 10 + score_to_mod(self.ability_scores[AbilityScores.DEXTERITY]) + self.acbonus
 
     def get_attack_bonus(self, attack):
         return get_prof_bonus(self.challengerating) + \
@@ -295,19 +295,30 @@ class BaseAttack:
 
     @classmethod
     def calculate_dicestring_damage(cls, dicestring, ability_mod=0):
-        match = re.match(DICESTRINGPATTERN, dicestring)
-        if match:
-            num_dice = int(match.group(1))
-            num_sides = int(match.group(2))
-            modifier = match.group(3) if match.group(3) else 0
+        def len_no_empty(lst):
+            return len(list(filter(lambda x: x != "", lst)))
+
+        matches = re.findall(DICESTRINGPATTERN, dicestring)
+        avg_roll = 0
+        modifier = None
+        if matches:
+            for match in matches:
+                if len_no_empty(match) == 1:
+                    modifier = match[2]
+                elif len_no_empty(match) == 2:
+                    num_dice = int(match[0])
+                    num_sides = int(match[1])
+                    avg_roll += num_dice * ((num_sides + 1) / 2)
+
+            modifier = modifier if modifier is not None else "0"
             if modifier.isdigit():
                 modifier = int(modifier)
             elif modifier == 'M':
                 modifier = ability_mod
             else:
                 raise ValueError("Invalid die modifier")
-            avg_roll = num_dice * ((num_sides + 1) / 2) + modifier
-            return avg_roll
+            avg_roll += modifier
+            return int(avg_roll)
         else:
             raise ValueError('Invalid dice roll format')
 

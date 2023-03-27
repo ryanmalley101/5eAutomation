@@ -737,12 +737,6 @@ def interactive_monster_gen():
 
     return monster
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    generated_monster = interactive_monster_gen()
-    generated_monster.save_json()
-
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 # ___
