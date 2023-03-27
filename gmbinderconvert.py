@@ -1,37 +1,4 @@
 from statblockdatastructs import *
-from patterns import DICESTRINGPATTERN
-import re
-
-# ___
-# > ## Monster Name
-# >*Size, Alignment*
-# > ___
-# > - **Armor Class** AC
-# > - **Hit Points** Hitpoints
-# > - **Speed** Speed
-# >___
-# >|STR|DEX|CON|INT|WIS|CHA|
-# >|:---:|:---:|:---:|:---:|:---:|:---:|
-# >|Str (Mod)|Dex (Mod)|Con (Mod)|Int (Mod)|Wis (Mod)|Cha (Mod)|
-# >___
-# > - **Saving Throws** saving_throws
-# > - **Skills** skills
-# > - **Damage Vulnerabilities** damage_vulnerabilities
-# > - **Damage Resistances** Resi stances
-# > - **Damage Immunities** Damage_Immunities
-# > - **Condition Immunities** condition_Immunities
-# > - **Senses** Senses
-# > - **Languages** Languages
-# > - **Challenge** Challenge and Xp
-# > ___
-# >
-# > ### Actions
-# > ***Multiattack.*** The Creature Name makes Number and type of attacks
-# >
-# > ***Ability Description.*** *Attack Style:* Attack Bonus to hit, Reach/Range, one target. *Hit:* Damage Damage Type damage
-# >
-# > ***General Ability Description.*** General Attack Description
-
 
 def print_monster_ability_scores(monster: MonsterBlock):
     strscore = monster.ability_scores['Strength']
@@ -108,48 +75,111 @@ def print_monster_saves(monster):
 
 
 def print_monster_skills(monster):
-    save_string = ""
+    skill_string = ""
     if any(monster.skills) is True:
-        save_string = "> - **Skills** "
+        skill_string = "> - **Skills** "
 
         # Counter for the number of skills so a comma can be added between
         # intermediate values
         counter = len(monster.skills) - 1
         for skill in monster.skills:
             if monster.skills[skill]:
-                save_string += f'{skill} +{monster.skill_bonus(skill)}'
+                skill_string += f'{skill} +{monster.skill_bonus(skill)}'
             if counter > 0:
                 counter -= 1
-                save_string += ', '
-        save_string += "\n"
+                skill_string += ', '
+        skill_string += "\n"
 
-    return save_string
+    return skill_string
+
 
 def print_monster_vulnerabilities(monster):
-    save_string = ""
-    if any(monster.skills) is True:
-        save_string = "> - **Skills** "
-
-        # Counter for the number of skills so a comma can be added between
+    vulnerability_string = ""
+    if any(monster.damagevulnerabilities) is True:
+        vulnerability_string = "> - **Damage Vulnerabilities** "
+        # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
-        counter = len(monster.skills) - 1
-        for skill in monster.skills:
-            if monster.skills[skill]:
-                save_string += f'{skill} +{monster.skill_bonus(skill)}'
+        counter = len(monster.damagevulnerabilities) - 1
+        for vulnerability in monster.damagevulnerabilities:
+            if monster.damagevulnerabilities[vulnerability]:
+                vulnerability_string += f'{vulnerability}'
             if counter > 0:
                 counter -= 1
-                save_string += ', '
-        save_string += "\n"
+                vulnerability_string += ', '
+        vulnerability_string += "\n"
 
-    return save_string
+    return vulnerability_string
+
+
+def print_monster_resistances(monster):
+    resistance_string = ""
+    if any(monster.damageresistances) is True:
+        resistance_string = "> - **Damage Vulnerabilities** "
+        # Counter for the number of vulnerabilities so a comma can be added between
+        # intermediate values
+        counter = len(monster.damageresistances) - 1
+        for resistance in monster.damageresistances:
+            if monster.damagevulnerabilities[resistance]:
+                resistance_string += f'{resistance}'
+            if counter > 0:
+                counter -= 1
+                resistance_string += ', '
+        resistance_string += "\n"
+
+    return resistance_string
+
+
+def print_monster_immunities(monster):
+    immunity_string = ""
+    if any(monster.damageimmunities) is True:
+        immunity_string = "> - **Damage Vulnerabilities** "
+        # Counter for the number of vulnerabilities so a comma can be added between
+        # intermediate values
+        counter = len(monster.damageimmunities) - 1
+        for immunity in monster.damageimmunities:
+            if monster.damageimmunities[immunity]:
+                immunity_string += f'{immunity}'
+            if counter > 0:
+                counter -= 1
+                immunity_string += ', '
+        immunity_string += "\n"
+
+    return immunity_string
+
+def print_monster_condition_immunities(monster):
+    condition_string = ""
+    if any(monster.conditionimmunities) is True:
+        condition_string = "> - **Damage Vulnerabilities** "
+        # Counter for the number of vulnerabilities so a comma can be added between
+        # intermediate values
+        counter = len(monster.conditionimmunities) - 1
+        for condition in monster.conditionimmunities:
+            if monster.conditionimmunities[condition]:
+                condition_string += f'{condition}'
+            if counter > 0:
+                counter -= 1
+                condition_string += ', '
+        condition_string += "\n"
+
+    return condition_string
+
+
+def print_monster_senses(monster):
+    senses_string = f"> - "
+    if monster.senses != "":
+        senses_string += {monster.senses} + ', '
+
+    senses_string += f'Passive Perception {monster.passive_perception()}\n'
+    return senses_string
+
 
 def convert_monster(monster: MonsterBlock):
     monster_markup  =  "# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
     monster_markup += f"# >*{monster.size}, {monster.alignment}\n"
     monster_markup += f"> ___\n"
-    monster_markup += f"> - **Armor Class** {monster.get_total_ac()}\n"
-    monster_markup += f"> - **Hit Points** {monster.hitpoints}\n"
+    monster_markup += f"> - **Armor Class** {monster.get_total_ac()} ({monster.acdesc})\n"
+    monster_markup += f"> - **Hit Points** {monster.hitpoints} ({monster.hitdice})\n"
     monster_markup += f"> - **Speed** {monster.speed}\n"
     monster_markup += f">___\n"
     monster_markup += f">|STR|DEX|CON|INT|WIS|CHA|\n"
@@ -187,45 +217,4 @@ def convert_monster(monster: MonsterBlock):
             monster_markup += print_monster_ability(mythicaction)
 
     return monster_markup
-#
-# class MonsterBlock:
-#     name: str = "PLACEHOLDER"
-#     size: Size = Size.CHANGEME
-#     alignment: Alignment = Alignment.CHANGEME
-#     acdesc: str = ""
-#     acbonus: int = 10
-#     ability_scores: dict = field(default_factory=dict)
-#     strength: int = 10
-#     dexterity: int = 10
-#     constitution: int = 10
-#     intelligence: int = 10
-#     wisdom: int = 10
-#     charisma: int = 10
-#     hitdice: str = '0d0'
-#     hitpoints: int = 0
-#     speed: str = '30 ft.'
-#     strsave: bool = False
-#     dexsave: bool = False
-#     consave: bool = False
-#     intsave: bool = False
-#     wissave: bool = False
-#     chasave: bool = False
-#     skills: dict = field(default_factory=dict)
-#     damageimmunities: dict = field(default_factory=dict)
-#     damageresistances: dict = field(default_factory=dict)
-#     damagevulnerabilities: dict = field(default_factory=dict)
-#     conditionimmunities: dict = field(default_factory=dict)
-#     senses: str = ""
-#     languages: str = ""
-#     abilities: list = field(default_factory=list)
-#     actions: list = field(default_factory=list)
-#     reactions: list = field(default_factory=list)
-#     legendaryactions: list = field(default_factory=list)
-#     mythicdescription: str = None
-#     mythicactions: list = field(default_factory=list)
-#
-#     VULNERABILITY = "VULNERABILITY"
-#     IMMUNITY = "IMMUNITY"
-#     RESISTANCE = "RESISTANCE"
-#
 

@@ -261,6 +261,12 @@ class MonsterBlock:
         return self.prof_bonus() + score_to_mod(
             self.ability_scores[SKILL_TO_ABILITY[skill]])
 
+    def passive_perception(self):
+        if self.skills['Perception']:
+            return 10 + self.skill_bonus('Perception')
+        else:
+            return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
+
 @dataclass
 class AbilityDescription:
     name: str = "PLACEHOLDER ABILITY"
