@@ -202,6 +202,7 @@ class MonsterBlock:
     challengerating: int = 0
     abilities: list = field(default_factory=list)
     actions: list = field(default_factory=list)
+    bonusactions: list = field(default_factory=list)
     reactions: list = field(default_factory=list)
     legendaryactions: list = field(default_factory=list)
     mythicdescription: str = None
@@ -220,6 +221,8 @@ class MonsterBlock:
         monster_dict['abilities'] = [dataclasses.asdict(abil)
                                      for abil in self.abilities]
         monster_dict['actions'] = [c.to_dict() for c in self.actions]
+        monster_dict['bonusactions'] = [dataclasses.asdict(ba)
+                                        for ba in self.bonusactions]
         monster_dict['reaction'] = [dataclasses.asdict(react)
                                     for react in self.reactions]
         monster_dict['legendaryactions'] = [dataclasses.asdict(la)

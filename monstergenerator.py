@@ -553,6 +553,21 @@ def ranged_spell_attack_wizard(name, attack_mod, attack_bonus,
     return attack
 
 
+def bonus_action_wizard():
+    reaction_list = []
+    reaction_prompt = ''
+    while reaction_prompt != 'e' and reaction_prompt != 'exit':
+        reaction_prompt = input("Add bonus actions for the creature. "
+                                "Any input other than (e)xit "
+                                "will be treated as the name of "
+                                "the reaction\n")
+        if reaction_prompt != 'e' and reaction_prompt != 'exit':
+            description = input("Description for the action.\n")
+            reaction_list.append(
+                AbilityDescription(name=reaction_prompt,
+                                   description=description))
+    return reaction_list
+
 def reaction_wizard():
     reaction_list = []
     reaction_prompt = ''
@@ -731,6 +746,7 @@ def interactive_monster_gen():
 
     monster.abilities = ability_wizard()
     monster.actions = action_wizard()
+    monster.bonusactions = bonus_action_wizard()
     monster.reactions = reaction_wizard()
     monster.legendaryactions = legendary_action_wizard()
     monster.mythicdescription, monster.mythicactions = mythic_action_wizard()

@@ -202,6 +202,10 @@ def convert_monster(monster: MonsterBlock):
     monster_markup += f"> ### Actions\n"
     monster_markup += f"> \n"
     monster_markup += print_monster_actions(monster)
+    if len(monster.bonusactions) > 0:
+        monster_markup += f"> ### Bonus Actions\n"
+        for bonus_action in monster.reactions:
+            monster_markup += print_monster_ability(bonus_action)
     if len(monster.reactions) > 0:
         monster_markup += f"> ### Reactions\n"
         for reaction in monster.reactions:
