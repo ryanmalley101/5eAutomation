@@ -123,12 +123,6 @@ class MonsterBlock:
     acdesc: str = ""
     acbonus: int = 10
     ability_scores: dict = field(default_factory=dict)
-    # strength: int = 10
-    # dexterity: int = 10
-    # constitution: int = 10
-    # intelligence: int = 10
-    # wisdom: int = 10
-    # charisma: int = 10
     hitdice: str = '0d0'
     hitpoints: int = 0
     speed: str = '30 ft.'
@@ -219,43 +213,45 @@ class MonsterBlock:
 
     def load_json(self, monster_json):
         def convert_json_attack(json_attack):
-            if json_attack['type'] == BaseAttack.AttackType.MELEESPELL:
+            if json_attack['type'] == BaseAttack.AttackType.MELEESPELL.value:
                 return MeleeSpellAttack(name=json_attack['name'],
-                                        attack_mod=json_attack['attack_mod'],
+                                        attack_mod=AbilityScores(json_attack['attack_mod']),
                                         attack_bonus=int(json_attack['attack_bonus']),
                                         description=json_attack['description'],
                                         targets=json_attack['targets'],
                                         damage_dice=json_attack['damage_dice'],
-                                        type=json_attack['type'],
+                                        type=BaseAttack.AttackType(json_attack['type']),
                                         reach=json_attack['reach'])
-            elif json_attack['type'] == BaseAttack.AttackType.MELEEWEAPON:
+            elif json_attack['type'] == BaseAttack.AttackType.MELEEWEAPON.value:
                 return MeleeWeaponAttack(name=json_attack['name'],
-                                        attack_mod=json_attack['attack_mod'],
+                                        attack_mod=AbilityScores(json_attack['attack_mod']),
                                         attack_bonus=int(json_attack['attack_bonus']),
                                         description=json_attack['description'],
                                         targets=json_attack['targets'],
                                         damage_dice=json_attack['damage_dice'],
-                                        type=json_attack['type'],
+                                        type=BaseAttack.AttackType(json_attack['type']),
                                         reach=json_attack['reach'])
-            elif json_attack['type'] == BaseAttack.AttackType.RANGEDWEAPON:
+            elif json_attack['type'] == BaseAttack.AttackType.RANGEDWEAPON.value:
                 return RangedWeaponAttack(name=json_attack['name'],
-                                        attack_mod=json_attack['attack_mod'],
+                                        attack_mod=AbilityScores(json_attack['attack_mod']),
                                         attack_bonus=int(json_attack['attack_bonus']),
                                         description=json_attack['description'],
                                         targets=json_attack['targets'],
                                         damage_dice=json_attack['damage_dice'],
-                                        type=json_attack['type'],
+                                        type=BaseAttack.AttackType(json_attack['type']),
                                         short_range=json_attack['short_range'],
                                         long_range=json_attack['long_range'])
-            elif json_attack['type'] == BaseAttack.AttackType.RANGEDSPELL:
+            elif json_attack['type'] == BaseAttack.AttackType.RANGEDSPELL.value:
                 return RangedSpellAttack(name=json_attack['name'],
-                                        attack_mod=json_attack['attack_mod'],
+                                        attack_mod=AbilityScores(json_attack['attack_mod']),
                                         attack_bonus=int(json_attack['attack_bonus']),
                                         description=json_attack['description'],
                                         targets=json_attack['targets'],
                                         damage_dice=json_attack['damage_dice'],
-                                        type=json_attack['type'],
+                                        type=BaseAttack.AttackType(json_attack['type']),
                                         range=json_attack['range'])
+            else:
+                raise ValueError('Invalid attack type')
 
         print(monster_json)
         monster_statblock = MonsterBlock()
@@ -278,25 +274,15 @@ class MonsterBlock:
         monster_statblock.wissave = bool(monster_json['wissave'])
         monster_statblock.chasave = bool(monster_json['chasave'])
         for skill in monster_json['skills']:
-            for key in skill:
-                print(key)
-                monster_statblock.skills[key] = bool(skill[key])
+            monster_statblock.skills[skill] = bool(monster_json['skills'][skill])
         for immunity in monster_json['damageimmunities']:
-            for key in immunity:
-                print(key)
-                monster_statblock.damageimmunities[key] = bool(immunity[key])
-        for resistances in monster_json['damageresistances']:
-            for key in resistances:
-                print(key)
-                monster_statblock.damageimmunities[key] = bool(resistances[key])
+            monster_statblock.damageimmunities[immunity] = bool(monster_json['damageimmunities'][immunity])
+        for resistance in monster_json['damageresistances']:
+            monster_statblock.damageresistances[resistance] = bool(monster_json['damageresistances'][resistance])
         for vulnerability in monster_json['damagevulnerabilities']:
-            for key in vulnerability:
-                print(key)
-                monster_statblock.damageimmunities[key] = bool(vulnerability[key])
+            monster_statblock.damagevulnerabilities[vulnerability] = bool(monster_json['damagevulnerabilities'][vulnerability])
         for condition in monster_json['conditionimmunities']:
-            for key in condition:
-                print(key)
-                monster_statblock.damageimmunities[key] = bool(condition[key])
+            monster_statblock.conditionimmunities[condition] = bool(monster_json['conditionimmunities'][condition])
         monster_statblock.senses = monster_json['senses']
         monster_statblock.languages = monster_json['languages']
         monster_statblock.challengerating = int(monster_json['challengerating'])
@@ -304,24 +290,27 @@ class MonsterBlock:
             monster_statblock.abilities.append(AbilityDescription(name=ability['name'],
                                                                   description=ability['description']))
         for action in monster_json['actions']:
-            if action.has_key('attack_mod'):
+            if 'attack_mod' in action:
                 monster_statblock.actions.append(convert_json_attack(action))
+            else:
+                monster_statblock.actions.append(AbilityDescription(name=action['name'],
+                                                                    description=action['description']))
 
         for bonus_action in monster_json['bonusactions']:
-            monster_statblock.abilities.append(AbilityDescription(name=bonus_action['name'],
+            monster_statblock.bonusactions.append(AbilityDescription(name=bonus_action['name'],
                                                                   description=bonus_action['description']))
 
         for reaction in monster_json['reactions']:
-            monster_statblock.abilities.append(AbilityDescription(name=reaction['name'],
+            monster_statblock.reactions.append(AbilityDescription(name=reaction['name'],
                                                                   description=reaction['description']))
 
         for legendary_action in monster_json['legendaryactions']:
-            monster_statblock.abilities.append(AbilityDescription(name=legendary_action['name'],
+            monster_statblock.legendaryactions.append(AbilityDescription(name=legendary_action['name'],
                                                                   description=legendary_action['description']))
 
         monster_statblock.mythicdescription = monster_json['mythicdescription']
         for mythic_action in monster_json['mythicactions']:
-            monster_statblock.abilities.append(AbilityDescription(name=mythic_action['name'],
+            monster_statblock.mythicactions.append(AbilityDescription(name=mythic_action['name'],
                                                                   description=mythic_action['description']))
 
         return monster_statblock
@@ -345,7 +334,7 @@ class BaseAttack:
         UNKNOWN = 'un'
 
     name: str = "PLACEHOLDER ATTACK"
-    attack_mod: str = ""
+    attack_mod: AttackType = AttackType.UNKNOWN
     attack_bonus: int = 0
     description: str = ""
     targets: str = "one target."
@@ -393,9 +382,12 @@ class MeleeWeaponAttack(BaseAttack):
     type = BaseAttack.AttackType.MELEEWEAPON
     reach: int = 5
 
+    def __post_init__(self):
+        self.type = BaseAttack.AttackType.MELEEWEAPON
+
     def to_dict(self):
         attackdict = dataclasses.asdict(self)
-        attackdict['type'] = self.type.value
+        attackdict['type'] = BaseAttack.AttackType.MELEEWEAPON.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['reach'] = self.reach
         return attackdict
@@ -407,9 +399,12 @@ class RangedWeaponAttack(BaseAttack):
     short_range: int = 20
     long_range: int = 60
 
+    def __post_init__(self):
+        self.type = BaseAttack.AttackType.RANGEDWEAPON
+
     def to_dict(self):
         attackdict = dataclasses.asdict(self)
-        attackdict['type'] = self.type.value
+        attackdict['type'] = BaseAttack.AttackType.RANGEDWEAPON.value
         attackdict['short_range'] = self.short_range
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['long_range'] = self.long_range
@@ -421,9 +416,12 @@ class MeleeSpellAttack(BaseAttack):
     type = BaseAttack.AttackType.MELEESPELL
     reach: int = 5
 
+    def __post_init__(self):
+        self.type = BaseAttack.AttackType.MELEESPELL
+
     def to_dict(self):
         attackdict = dataclasses.asdict(self)
-        attackdict['type'] = self.type.value
+        attackdict['type'] = BaseAttack.AttackType.MELEESPELL.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['reach'] = self.reach
         return attackdict
@@ -434,9 +432,12 @@ class RangedSpellAttack(BaseAttack):
     type = BaseAttack.AttackType.RANGEDSPELL
     range: int = 30
 
+    def __post_init__(self):
+        self.type = BaseAttack.AttackType.RANGEDSPELL
+
     def to_dict(self):
         attackdict = dataclasses.asdict(self)
-        attackdict['type'] = self.type.value
+        attackdict['type'] = BaseAttack.AttackType.RANGEDSPELL.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['range'] = self.range
         return attackdict

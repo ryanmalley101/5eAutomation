@@ -56,5 +56,13 @@ if __name__ == '__main__':
                                           description="This is another test mythic action")]
     )
     monster_json = generated_monster.to_json()
-    assert generated_monster == MonsterBlock().load_json(json.loads(monster_json))
+    post_json_monster = MonsterBlock().load_json(json.loads(monster_json))
+    for attr, value in generated_monster.__dict__.items():
+        oldvalue = value
+        newvalue = post_json_monster.__dict__[attr]
+        if oldvalue != newvalue:
+            print(f"Old Object: {attr}, {oldvalue}\n"
+                  f"New Object: {attr}, {newvalue}")
+
+    assert generated_monster == post_json_monster
     # print(convert_monster(generated_monster))
