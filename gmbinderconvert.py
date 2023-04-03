@@ -1,5 +1,6 @@
 from statblockdatastructs import *
 
+
 def print_monster_ability_scores(monster: MonsterBlock):
     strscore = monster.ability_scores[AbilityScores.STRENGTH]
     dexscore = monster.ability_scores[AbilityScores.DEXTERITY]
@@ -34,7 +35,8 @@ def print_monster_actions(monster):
                 monster.ability_scores[action.attack_mod])
             action_string = ""
             if isinstance(action, MeleeWeaponAttack):
-                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +{monster.get_attack_bonus(action)} to hit, reach {action.reach} ft., {action.targets}. Hit: "
+                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +{monster.get_attack_bonus(action)}" \
+                                 f" to hit, reach {action.reach} ft., {action.targets}. Hit: "
 
                 # The dice counter variable keeps track of the number of damage dice
                 # We need this to add a 'plus' at the end of the intermediate damage
