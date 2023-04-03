@@ -179,7 +179,7 @@ def print_monster_senses(monster):
 def convert_monster(monster: MonsterBlock):
     monster_markup  =  "# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
-    monster_markup += f"# >* {monster.size.value}, {monster.alignment.value}\n"
+    monster_markup += f"# >* {monster.size.value}, {monster.alignment}\n"
     monster_markup += f"> ___\n"
     monster_markup += f"> - **Armor Class** {monster.get_total_ac()} ({monster.acdesc})\n"
     monster_markup += f"> - **Hit Points** {monster.hitpoints} ({monster.hitdice})\n"

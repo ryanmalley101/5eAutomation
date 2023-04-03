@@ -6,7 +6,7 @@ if __name__ == '__main__':
     generated_monster = MonsterBlock(
         name="TEST MONSTER",
         size=Size.MEDIUM,
-        alignment=Alignment.CE,
+        alignment='chaotic evil',
         acdesc="natural armor",
         acbonus=2,
         ability_scores={
@@ -55,5 +55,6 @@ if __name__ == '__main__':
                        AbilityDescription(name="Mythic Swipe",
                                           description="This is another test mythic action")]
     )
-    # generated_monster.save_json()
-    print(convert_monster(generated_monster))
+    monster_json = generated_monster.to_json()
+    assert generated_monster == MonsterBlock().load_json(json.loads(monster_json))
+    # print(convert_monster(generated_monster))

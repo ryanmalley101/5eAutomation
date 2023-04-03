@@ -20,16 +20,11 @@ def size_wizard():
 def alignment_wizard():
     alignmentinput = ""
     while not Alignment.has_value(alignmentinput):
-        alignmentinput = input("Alignment (eg. cg for Chaotic Good, "
-                               "LN for Lawful Neutral, etc.) case "
-                               "insensitive\n").strip().upper()
-        alignmentinput = Alignment.convert(alignmentinput)
-        if alignmentinput != Alignment.CHANGEME:
+        alignmentinput = input("Alignment (eg. Chaotic Good, Lawful Neutral, etc.)\n").strip().upper()
+        if alignmentinput:
             return alignmentinput
-        elif alignmentinput == 'Help':
-            Alignment.help()
         else:
-            print("Invalid Alignment parameter. Type 'help' for a full list")
+            return 'unaligned'
 
 
 def print_skill_choices(monster=None):
