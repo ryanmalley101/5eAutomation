@@ -77,5 +77,25 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>load_monster_button</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>file_dialog_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>file_dialog_clicked()</slot>
+ </slots>
 </ui>
