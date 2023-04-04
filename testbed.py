@@ -65,4 +65,5 @@ if __name__ == '__main__':
                   f"New Object: {attr}, {newvalue}")
 
     assert generated_monster == post_json_monster
+    generated_monster.save_json()
     # print(convert_monster(generated_monster))

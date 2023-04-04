@@ -47,7 +47,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-79</y>
+         <y>0</y>
          <width>957</width>
          <height>1317</height>
         </rect>
@@ -81,7 +81,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="size_combobox"/>
+               <widget class="QComboBox" name="size_combobox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -95,7 +102,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="type_combobox"/>
+               <widget class="QLineEdit" name="type_edit"/>
               </item>
              </layout>
             </item>
