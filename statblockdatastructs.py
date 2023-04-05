@@ -333,7 +333,7 @@ class BaseAttack:
         UNKNOWN = 'un'
 
     name: str = "PLACEHOLDER ATTACK"
-    attack_mod: AttackType = AttackType.UNKNOWN
+    attack_mod: AbilityScores = AbilityScores.STRENGTH
     attack_bonus: int = 0
     description: str = ""
     targets: str = "one target."
