@@ -6,830 +6,148 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1172</width>
-    <height>1152</height>
+    <width>1004</width>
+    <height>1053</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QFrame" name="topframe">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1171</width>
-     <height>1791</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QScrollArea" name="scrollArea">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>1143</width>
-         <height>1763</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_30">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
+    <widget class="QFrame" name="topframe">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>952</width>
+           <height>1636</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_30">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_5">
+             <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
-               <widget class="QLabel" name="name_label">
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string>Name:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="name_edit">
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QLabel" name="size_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Size:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="size_combobox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QLabel" name="type_label">
-                <property name="text">
-                 <string>Type:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="type_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QLabel" name="tag_label">
-                <property name="text">
-                 <string>Tag:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="tag_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <item>
-               <widget class="QLabel" name="alignment_label">
-                <property name="text">
-                 <string>Alignment</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="alignment_edit"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_22">
-              <item>
-               <widget class="QLabel" name="challenge_rating_label">
-                <property name="text">
-                 <string>Challenge Rating</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="challenge_rating_combobox"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_23">
-              <item>
-               <widget class="QLabel" name="proficiency_bonus_label">
-                <property name="text">
-                 <string>PB</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="proficiency_bonus_calculation_label">
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string>+0</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <item>
-               <widget class="QLabel" name="hit_points_label">
-                <property name="styleSheet">
-                 <string notr="true">QLabel {
-    background-image: none;
-    background-color: rgb(255, 255, 255);
-}</string>
-                </property>
-                <property name="text">
-                 <string>Hit Points</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="hit_points_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <item>
-               <widget class="QLabel" name="max_hit_dice_label">
-                <property name="text">
-                 <string>Max Hit Dice</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="max_hit_dice_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_31">
-              <item>
-               <widget class="QLabel" name="hit_die_label">
-                <property name="text">
-                 <string>Hit Die</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="hit_die_calculation_label">
-                <property name="styleSheet">
-                 <string notr="true"/>
-                </property>
-                <property name="text">
-                 <string>d0</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_8">
-              <item>
-               <widget class="QLabel" name="ac_bonus_label">
-                <property name="text">
-                 <string>AC Bonus</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="ac_bonus_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_9">
-              <item>
-               <widget class="QLabel" name="armor_type_label">
-                <property name="text">
-                 <string>Armor Type:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="armor_type_edit"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_13">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_32">
-              <item>
-               <widget class="QLabel" name="senses_label">
-                <property name="text">
-                 <string>Senses</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="senses_edit"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_10">
-              <item>
-               <widget class="QLabel" name="speeds_label">
-                <property name="text">
-                 <string>Speeds</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="speeds_edit"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_10">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_11">
-              <item>
-               <widget class="QLabel" name="str_label">
-                <property name="text">
-                 <string>Strength Score</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
-                 <widget class="QLineEdit" name="str_edit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="str_mod_label">
+                 <widget class="QLabel" name="name_label">
                   <property name="styleSheet">
                    <string notr="true"/>
                   </property>
                   <property name="text">
-                   <string>NA</string>
+                   <string>Name:</string>
                   </property>
                  </widget>
                 </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_12">
-              <item>
-               <widget class="QLabel" name="dex_label">
-                <property name="text">
-                 <string>Dexterity Score:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="QLineEdit" name="dex_edit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="dex_mod_label">
+                 <widget class="QLineEdit" name="name_edit">
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true"/>
                   </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <widget class="QLabel" name="size_label">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
-                   <string>NA</string>
+                   <string>Size:</string>
                   </property>
                  </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="size_combobox">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QLabel" name="type_label">
+                  <property name="text">
+                   <string>Type:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="type_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_2">
+                <item>
+                 <widget class="QLabel" name="tag_label">
+                  <property name="text">
+                   <string>Tag:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="tag_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="QLabel" name="alignment_label">
+                  <property name="text">
+                   <string>Alignment</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="alignment_edit"/>
                 </item>
                </layout>
               </item>
              </layout>
             </item>
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_13">
-              <item>
-               <widget class="QLabel" name="con_label">
-                <property name="text">
-                 <string>Constitution Score</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_5">
-                <item>
-                 <widget class="QLineEdit" name="con_edit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="con_mod_label">
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>NA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_14">
-              <item>
-               <widget class="QLabel" name="int_label">
-                <property name="text">
-                 <string>Intelligence Score</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_6">
-                <item>
-                 <widget class="QLineEdit" name="int_edit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="int_mod_label">
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>NA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_15">
-              <item>
-               <widget class="QLabel" name="wis_edit">
-                <property name="text">
-                 <string>Wisdom Score</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QLineEdit" name="wis_edit_2"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="wis_mod_label">
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>NA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_16">
-              <item>
-               <widget class="QLabel" name="cha_label">
-                <property name="text">
-                 <string>Charisma Score</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_8">
-                <item>
-                 <widget class="QLineEdit" name="cha_edit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="cha_mod_label">
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
-                  <property name="text">
-                   <string>NA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_12">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_10">
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_17">
-                <item>
-                 <widget class="QLabel" name="saving_throws_label">
-                  <property name="text">
-                   <string>Saving Throws</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="saving_throws_combobox"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="save_button">
-                  <property name="text">
-                   <string>Proficient</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QListView" name="save_listview"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_18">
-                <item>
-                 <widget class="QLabel" name="skills_label">
-                  <property name="text">
-                   <string>Skills</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="skills_combobox"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="skills_button">
-                  <property name="text">
-                   <string>Proficient</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QListView" name="skills_listview"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_19">
-                <item>
-                 <widget class="QLabel" name="conditions_label">
-                  <property name="text">
-                   <string>Condition Immunities</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="conditions_combobox"/>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="condition_button">
-                  <property name="text">
-                   <string>Immune</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QListView" name="condition_listview"/>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_20">
-              <item>
-               <widget class="QLabel" name="damage_label">
-                <property name="text">
-                 <string>Damge Types</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="damage_combobox"/>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QPushButton" name="damage_vulnerable_button">
-                  <property name="text">
-                   <string>Vulnerable</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="damage_resistant_button">
-                  <property name="text">
-                   <string>Resistant</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="damage_immune_button">
-                  <property name="text">
-                   <string>Immune</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QListView" name="damage_listview"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_25">
-            <item>
-             <widget class="QLabel" name="abilities_label">
-              <property name="text">
-               <string>Abilities</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="abilities_container" native="true">
-            <layout class="QGridLayout" name="gridLayout_3">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
-               <item>
-                <widget class="QListWidget" name="abilities_listview"/>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_24">
-                 <item>
-                  <widget class="QPushButton" name="add_ability_button">
-                   <property name="text">
-                    <string>+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="add_ability_button_2">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_26">
-            <item>
-             <widget class="QLabel" name="actions_label">
-              <property name="text">
-               <string>Actions</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="actions_container" native="true">
-              <layout class="QGridLayout" name="gridLayout_4">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item row="0" column="0">
-                <layout class="QHBoxLayout" name="horizontalLayout_16">
-                 <item>
-                  <widget class="QListWidget" name="actions_listview"/>
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_27">
-                   <item>
-                    <widget class="QPushButton" name="add_action_button">
-                     <property name="text">
-                      <string>+</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="remove_action_button">
-                     <property name="text">
-                      <string>-</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <spacer name="verticalSpacer_6">
+             <spacer name="verticalSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -844,125 +162,702 @@
               </property>
              </spacer>
             </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_37">
             <item>
-             <widget class="QLabel" name="reactions_label">
-              <property name="text">
-               <string>Reactions</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_22">
+                <item>
+                 <widget class="QLabel" name="challenge_rating_label">
+                  <property name="text">
+                   <string>Challenge Rating</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="challenge_rating_combobox"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_23">
+                <item>
+                 <widget class="QLabel" name="proficiency_bonus_label">
+                  <property name="text">
+                   <string>PB</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="proficiency_bonus_calculation_label">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>+0</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <item>
+                 <widget class="QLabel" name="hit_points_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel {
+    background-image: none;
+    background-color: rgb(255, 255, 255);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Hit Points</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="hit_points_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_6">
+                <item>
+                 <widget class="QLabel" name="max_hit_dice_label">
+                  <property name="text">
+                   <string>Max Hit Dice</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="max_hit_dice_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_31">
+                <item>
+                 <widget class="QLabel" name="hit_die_label">
+                  <property name="text">
+                   <string>Hit Die</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="hit_die_calculation_label">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="text">
+                   <string>d0</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_8">
+                <item>
+                 <widget class="QLabel" name="ac_bonus_label">
+                  <property name="text">
+                   <string>AC Bonus</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="ac_bonus_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_9">
+                <item>
+                 <widget class="QLabel" name="armor_type_label">
+                  <property name="text">
+                   <string>Armor Type:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="armor_type_edit"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </item>
             <item>
-             <widget class="QCheckBox" name="reactions_enable_checkbox">
-              <property name="text">
-               <string>Enabled</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>20</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="reactions_container" native="true">
-            <layout class="QGridLayout" name="gridLayout_5">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_38">
-               <item>
-                <widget class="QListWidget" name="reactions_listview">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>89</height>
-                  </size>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_32">
+                <item>
+                 <widget class="QLabel" name="senses_label">
+                  <property name="text">
+                   <string>Senses</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="senses_edit"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <widget class="QLabel" name="speeds_label">
+                  <property name="text">
+                   <string>Speeds</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="speeds_edit"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_11">
+                <item>
+                 <widget class="QLabel" name="str_label">
+                  <property name="text">
+                   <string>Strength Score</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <item>
+                   <widget class="QLineEdit" name="str_edit"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="str_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QLabel" name="dex_label">
+                  <property name="text">
+                   <string>Dexterity Score:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QLineEdit" name="dex_edit"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="dex_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <item>
+                 <widget class="QLabel" name="con_label">
+                  <property name="text">
+                   <string>Constitution Score</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_5">
+                  <item>
+                   <widget class="QLineEdit" name="con_edit"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="con_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_14">
+                <item>
+                 <widget class="QLabel" name="int_label">
+                  <property name="text">
+                   <string>Intelligence Score</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                  <item>
+                   <widget class="QLineEdit" name="int_edit"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="int_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_15">
+                <item>
+                 <widget class="QLabel" name="wis_edit">
+                  <property name="text">
+                   <string>Wisdom Score</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_7">
+                  <item>
+                   <widget class="QLineEdit" name="wis_edit_2"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="wis_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_16">
+                <item>
+                 <widget class="QLabel" name="cha_label">
+                  <property name="text">
+                   <string>Charisma Score</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_8">
+                  <item>
+                   <widget class="QLineEdit" name="cha_edit"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="cha_mod_label">
+                    <property name="styleSheet">
+                     <string notr="true"/>
+                    </property>
+                    <property name="text">
+                     <string>NA</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_12">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_17">
+                  <item>
+                   <widget class="QLabel" name="saving_throws_label">
+                    <property name="text">
+                     <string>Saving Throws</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="saving_throws_combobox"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="save_button">
+                    <property name="text">
+                     <string>Proficient</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QListView" name="save_listview"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_18">
+                  <item>
+                   <widget class="QLabel" name="skills_label">
+                    <property name="text">
+                     <string>Skills</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="skills_combobox"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="skills_button">
+                    <property name="text">
+                     <string>Proficient</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QListView" name="skills_listview"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_19">
+                  <item>
+                   <widget class="QLabel" name="conditions_label">
+                    <property name="text">
+                     <string>Condition Immunities</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="conditions_combobox"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="condition_button">
+                    <property name="text">
+                     <string>Immune</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QListView" name="condition_listview"/>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_20">
+                <item>
+                 <widget class="QLabel" name="damage_label">
+                  <property name="text">
+                   <string>Damge Types</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="damage_combobox"/>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_11">
+                  <item>
+                   <widget class="QPushButton" name="damage_vulnerable_button">
+                    <property name="text">
+                     <string>Vulnerable</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="damage_resistant_button">
+                    <property name="text">
+                     <string>Resistant</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="damage_immune_button">
+                    <property name="text">
+                     <string>Immune</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="QListView" name="damage_listview"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_25">
+              <item>
+               <widget class="QLabel" name="abilities_label">
+                <property name="text">
+                 <string>Abilities</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QWidget" name="abilities_container" native="true">
+              <layout class="QGridLayout" name="gridLayout_3">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                 <item>
+                  <widget class="QListWidget" name="abilities_listview"/>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_24">
+                   <item>
+                    <widget class="QPushButton" name="add_ability_button">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="add_ability_button_2">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_26">
+              <item>
+               <widget class="QLabel" name="actions_label">
+                <property name="text">
+                 <string>Actions</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="actions_container" native="true">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <property name="leftMargin">
+                  <number>0</number>
                  </property>
-                </widget>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_62">
-                 <item>
-                  <widget class="QPushButton" name="add_reaction_button">
-                   <property name="text">
-                    <string>+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="add_reaction_button_2">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                  </widget>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_16">
+                   <item>
+                    <widget class="QListWidget" name="actions_listview"/>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_27">
+                     <item>
+                      <widget class="QPushButton" name="add_action_button">
+                       <property name="text">
+                        <string>+</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="remove_action_button">
+                       <property name="text">
+                        <string>-</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
                  </item>
                 </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_28">
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Minimum</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_18">
+             <layout class="QHBoxLayout" name="horizontalLayout_37">
               <item>
-               <widget class="QLabel" name="bonus_actions_label">
+               <widget class="QLabel" name="reactions_label">
                 <property name="text">
-                 <string>Bonus Actions</string>
+                 <string>Reactions</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="bonus_actions_enabled_checkbox">
+               <widget class="QCheckBox" name="reactions_enable_checkbox">
                 <property name="text">
-                 <string>Enabled</string>
+                 <string>Disabled</string>
                 </property>
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_2">
+               <spacer name="horizontalSpacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -976,11 +871,300 @@
               </item>
              </layout>
             </item>
+            <item>
+             <widget class="QWidget" name="reactions_container" native="true">
+              <layout class="QGridLayout" name="gridLayout_5">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_38">
+                 <item>
+                  <widget class="QListWidget" name="reactions_listview">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>89</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_62">
+                   <item>
+                    <widget class="QPushButton" name="add_reaction_button">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="add_reaction_button_2">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_7">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_28">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_18">
+                <item>
+                 <widget class="QLabel" name="bonus_actions_label">
+                  <property name="text">
+                   <string>Bonus Actions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="bonus_actions_enabled_checkbox">
+                  <property name="text">
+                   <string>Disabled</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QWidget" name="bonus_actions_container" native="true">
+              <layout class="QGridLayout" name="gridLayout_7">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                 <item>
+                  <widget class="QListWidget" name="bonus_actions_listview"/>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_29">
+                   <item>
+                    <widget class="QPushButton" name="add_bonus_action_button">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="remove_bonus_action_button">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_97">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_59">
+                <item>
+                 <widget class="QLabel" name="legendary_action_label">
+                  <property name="text">
+                   <string>Legendary Actions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="legendary_actions_enabled_checkbox">
+                  <property name="text">
+                   <string>Disabled</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QWidget" name="legendary_actions_container" native="true">
+              <layout class="QGridLayout" name="gridLayout_8">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_60">
+                 <item>
+                  <widget class="QListWidget" name="legendary_actions_listview"/>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_98">
+                   <item>
+                    <widget class="QPushButton" name="add_legendary_action_button">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="remove_legendary_actions_button">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_100">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_61">
+                <item>
+                 <widget class="QLabel" name="mythic_actions_label">
+                  <property name="text">
+                   <string>Mythic Actions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="mythic_actions_enabled_checkbox">
+                  <property name="text">
+                   <string>Disabled</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
            </layout>
           </item>
-          <item>
-           <widget class="QWidget" name="bonus_actions_container" native="true">
-            <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
+           <widget class="QWidget" name="mythic_actions_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_9">
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -994,21 +1178,52 @@
               <number>0</number>
              </property>
              <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_17">
+              <layout class="QVBoxLayout" name="verticalLayout_21">
                <item>
-                <widget class="QListWidget" name="bonus_actions_listview"/>
+                <layout class="QHBoxLayout" name="horizontalLayout_63">
+                 <item>
+                  <widget class="QLabel" name="mythic_description_label">
+                   <property name="text">
+                    <string>Mythic Description</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_7">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_29">
+                <widget class="QTextEdit" name="mythic_description_edit"/>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_62">
+               <item>
+                <widget class="QListWidget" name="mythic_action_listview"/>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_99">
                  <item>
-                  <widget class="QPushButton" name="add_bonus_action_button">
+                  <widget class="QPushButton" name="add_mythic_action_button">
                    <property name="text">
                     <string>+</string>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="remove_bonus_action_button">
+                  <widget class="QPushButton" name="remove_mythic_action_button">
                    <property name="text">
                     <string>-</string>
                    </property>
@@ -1020,234 +1235,15 @@
              </item>
             </layout>
            </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_97">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_59">
-              <item>
-               <widget class="QLabel" name="legendary_action_label">
-                <property name="text">
-                 <string>Legendary Actions</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="legendary_actions_enabled_checkbox">
-                <property name="text">
-                 <string>Enabled</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QWidget" name="legendary_actions_container" native="true">
-            <layout class="QGridLayout" name="gridLayout_8">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_60">
-               <item>
-                <widget class="QListWidget" name="legendary_actions_listview"/>
-               </item>
-               <item>
-                <layout class="QVBoxLayout" name="verticalLayout_98">
-                 <item>
-                  <widget class="QPushButton" name="add_legendary_action_button">
-                   <property name="text">
-                    <string>+</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="remove_legendary_actions_button">
-                   <property name="text">
-                    <string>-</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_100">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_61">
-              <item>
-               <widget class="QLabel" name="mythic_actions_label">
-                <property name="text">
-                 <string>Mythic Actions</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="mythic_actions_enabled_checkbox">
-                <property name="text">
-                 <string>Enabled</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
           </item>
          </layout>
-        </item>
-        <item row="1" column="0">
-         <widget class="QWidget" name="mythic_actions_container" native="true">
-          <layout class="QGridLayout" name="gridLayout_9">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <layout class="QVBoxLayout" name="verticalLayout_21">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_63">
-               <item>
-                <widget class="QLabel" name="mythic_description_label">
-                 <property name="text">
-                  <string>Mythic Description</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_7">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QTextEdit" name="mythic_description_edit"/>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_62">
-             <item>
-              <widget class="QListWidget" name="mythic_action_listview"/>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout_99">
-               <item>
-                <widget class="QPushButton" name="add_mythic_action_button">
-                 <property name="text">
-                  <string>+</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="remove_mythic_action_button">
-                 <property name="text">
-                  <string>-</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="../pyqtui.qrc"/>

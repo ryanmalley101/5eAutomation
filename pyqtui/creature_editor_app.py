@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 import statblockdatastructs
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QMainWindow, QMessageBox, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton
+    QApplication, QDialog, QMainWindow, QMessageBox, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit
 )
 from PyQt6 import QtCore
 
@@ -25,12 +25,12 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.name_edit.setText(monster_block.name)
         self.alignment_edit.setText(monster_block.alignment)
         self.set_stylesheet()
-
+        self.setup_checkbox_signals()
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
         def set_derived_styles():
-            derived_stylesheet = 'background-color: rgb(156,195,238); font: 16pt "Cambria";'
+            derived_stylesheet = 'background-color: rgb(125, 132, 145); font: 16pt "Cambria";'
             self.proficiency_bonus_calculation_label.setStyleSheet(derived_stylesheet)
             self.hit_die_calculation_label.setStyleSheet(derived_stylesheet)
             self.str_mod_label.setStyleSheet(derived_stylesheet)
@@ -41,25 +41,29 @@ class CreatureEditorForm(QDialog, Ui_Form):
             self.cha_mod_label.setStyleSheet(derived_stylesheet)
 
         self.setStyleSheet('QWidget{font: 12pt "Cambria"}')
-        self.topframe.setStyleSheet('#topframe{background-image: url(images:papyrusbackground.jpg)};')
+        self.topframe.setStyleSheet('#topframe{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollArea.setStyleSheet('#scrollArea{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollAreaWidgetContents.setStyleSheet('#scrollAreaWidgetContents{background-image: url(images:papyrusbackground.jpg)}')
-        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton)):
+        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton, QCheckBox, QTextEdit)):
             print(widget)
             if isinstance(widget, QLabel):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(92,43,27); font: 16pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}')
                 widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
-            elif isinstance(widget, QListView):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(241,233,208); font: 12pt "Cambria";}}')
+            elif isinstance(widget, QListView) or isinstance(widget, QTextEdit):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
             elif isinstance(widget, QLineEdit):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(255, 255, 255); font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; font: 12pt "Cambria";}}')
             elif isinstance(widget, QComboBox):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
             elif isinstance(widget, QPushButton):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(183, 232, 77); color: black; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
+            elif isinstance(widget, QCheckBox):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
 
         set_derived_styles()
         return None
+
+
 
 
     def setup_comboboxes(self):
@@ -79,7 +83,27 @@ class CreatureEditorForm(QDialog, Ui_Form):
             self.damage_combobox.addItem(damage)
         return True
 
-app = QApplication(sys.argv)
-myWindow = CreatureEditorForm(monster_block=statblockdatastructs.MonsterBlock(), parent=None)
-myWindow.show()
-app.exec()
+    def setup_checkbox_signals(self):
+        def toggle_container_visibility(checkbox, container):
+            checkbox_checked = checkbox.isChecked()
+            print(f"Toggling {container} visibility to {checkbox_checked}")
+            container.setVisible(True if checkbox_checked else False)
+            checkbox.setText("Enabled" if checkbox_checked else "Disabled")
+
+        self.reactions_enable_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.reactions_enable_checkbox, self.reactions_container))
+        self.reactions_container.setVisible(False)
+
+        self.bonus_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.bonus_actions_enabled_checkbox, self.bonus_actions_container))
+        self.bonus_actions_container.setVisible(False)
+
+        self.legendary_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.legendary_actions_enabled_checkbox, self.legendary_actions_container))
+        self.legendary_actions_container.setVisible(False)
+
+        self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
+        self.mythic_actions_container.setVisible(False)
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    myWindow = CreatureEditorForm(monster_block=statblockdatastructs.MonsterBlock(), parent=None)
+    myWindow.show()
+    app.exec()
