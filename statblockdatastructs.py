@@ -56,7 +56,6 @@ class AbilityScores(Enum):
         for i, value in enumerate(cls):
             print(f"({i}) {value} ")
 
-
 SKILL_LIST = [
     "Acrobatics",
     "Animal Handling",

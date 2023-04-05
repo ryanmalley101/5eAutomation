@@ -6,40 +6,37 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1009</width>
-    <height>728</height>
+    <width>1448</width>
+    <height>814</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="widget" native="true">
+  <widget class="QFrame" name="topframe">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
-     <height>700</height>
+     <width>1171</width>
+     <height>811</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget{background-image:url(:/pyqtui/images/1659875.jpg)}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>10</number>
-    </property>
-    <property name="topMargin">
-     <number>10</number>
-    </property>
-    <property name="rightMargin">
-     <number>10</number>
-    </property>
-    <property name="bottomMargin">
-     <number>10</number>
-    </property>
-    <property name="spacing">
-     <number>5</number>
-    </property>
-    <item row="0" column="0" rowspan="2">
+    <item row="0" column="0">
      <widget class="QScrollArea" name="scrollArea">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
@@ -48,9 +45,12 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>957</width>
-         <height>1317</height>
+         <width>1124</width>
+         <height>1590</height>
         </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -61,13 +61,24 @@
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
                <widget class="QLabel" name="name_label">
+                <property name="styleSheet">
+                 <string notr="true">background-image: none; background-color: rgb(255, 255, 255);
+font: 12pt &quot;Cambria&quot;;</string>
+                </property>
                 <property name="text">
                  <string>Name:</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="name_edit"/>
+               <widget class="QLineEdit" name="name_edit">
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#name_edit{f'background-image: none; background-color:rgb(255, 255, 255)'}</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
@@ -75,6 +86,12 @@
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <widget class="QLabel" name="size_label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>Size:</string>
                 </property>
@@ -137,25 +154,81 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
+             <layout class="QVBoxLayout" name="verticalLayout_22">
               <item>
-               <widget class="QLabel" name="hit_dice_label">
+               <widget class="QLabel" name="challenge_rating_label">
                 <property name="text">
-                 <string>Hit Dice</string>
+                 <string>Challenge Rating</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="hit_dice_edit"/>
+               <widget class="QComboBox" name="challenge_rating_combobox"/>
               </item>
              </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_23">
+              <item>
+               <widget class="QLabel" name="proficiency_bonus_label">
+                <property name="text">
+                 <string>PB</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="proficiency_bonus_calculation_label">
+                <property name="styleSheet">
+                 <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                </property>
+                <property name="text">
+                 <string>+0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
                <widget class="QLabel" name="hit_points_label">
+                <property name="styleSheet">
+                 <string notr="true">QLabel {
+    background-image: none;
+    background-color: rgb(255, 255, 255);
+}</string>
+                </property>
                 <property name="text">
                  <string>Hit Points</string>
                 </property>
@@ -165,6 +238,54 @@
                <widget class="QLineEdit" name="hit_points_edit"/>
               </item>
              </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_6">
+              <item>
+               <widget class="QLabel" name="max_hit_dice_label">
+                <property name="text">
+                 <string>Max Hit Dice</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="max_hit_dice_edit"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_31">
+              <item>
+               <widget class="QLabel" name="hit_die_label">
+                <property name="text">
+                 <string>Hit Die</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="hit_die_calculation_label">
+                <property name="styleSheet">
+                 <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                </property>
+                <property name="text">
+                 <string>d0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -197,45 +318,25 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_14">
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_22">
-                <item>
-                 <widget class="QLabel" name="challenge_rating_label">
-                  <property name="text">
-                   <string>Challenge Rating</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="challenge_rating_combobox"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_23">
-                <item>
-                 <widget class="QLabel" name="proficiency_bonus_label">
-                  <property name="text">
-                   <string>Proficiency Bonus</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="proficiency_bonus_calculation_label">
-                  <property name="text">
-                   <string>Proficiency Bonus</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_21">
+             <layout class="QVBoxLayout" name="verticalLayout_32">
               <item>
                <widget class="QLabel" name="senses_label">
                 <property name="text">
@@ -265,13 +366,29 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_10">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_9">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_11">
               <item>
                <widget class="QLabel" name="str_label">
                 <property name="text">
-                 <string>DEX:</string>
+                 <string>Strength Score</string>
                 </property>
                </widget>
               </item>
@@ -282,8 +399,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="str_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -296,7 +416,7 @@
               <item>
                <widget class="QLabel" name="dex_label">
                 <property name="text">
-                 <string>DEX:</string>
+                 <string>Dexterity Score:</string>
                 </property>
                </widget>
               </item>
@@ -307,8 +427,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="dex_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -321,7 +444,7 @@
               <item>
                <widget class="QLabel" name="con_label">
                 <property name="text">
-                 <string>CON:</string>
+                 <string>Constitution Score</string>
                 </property>
                </widget>
               </item>
@@ -332,8 +455,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="con_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -346,7 +472,7 @@
               <item>
                <widget class="QLabel" name="int_label">
                 <property name="text">
-                 <string>INT:</string>
+                 <string>Intelligence Score</string>
                 </property>
                </widget>
               </item>
@@ -357,8 +483,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="int_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -371,7 +500,7 @@
               <item>
                <widget class="QLabel" name="wis_edit">
                 <property name="text">
-                 <string>WIS:</string>
+                 <string>Wisdom Score</string>
                 </property>
                </widget>
               </item>
@@ -382,8 +511,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="wis_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -396,7 +528,7 @@
               <item>
                <widget class="QLabel" name="cha_label">
                 <property name="text">
-                 <string>CHA:</string>
+                 <string>Charisma Score</string>
                 </property>
                </widget>
               </item>
@@ -407,8 +539,11 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="cha_mod_label">
+                  <property name="styleSheet">
+                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                  </property>
                   <property name="text">
-                   <string>MOD</string>
+                   <string>NA</string>
                   </property>
                  </widget>
                 </item>
@@ -417,6 +552,22 @@
              </layout>
             </item>
            </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -541,6 +692,22 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QVBoxLayout" name="verticalLayout_25">
             <item>
              <widget class="QLabel" name="abilities_label">
@@ -577,6 +744,22 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <item>
              <widget class="QLabel" name="actions_label">
@@ -609,6 +792,22 @@
                </layout>
               </item>
              </layout>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -676,6 +875,22 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QVBoxLayout" name="verticalLayout_28">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -736,6 +951,22 @@
            </layout>
           </item>
           <item>
+           <spacer name="verticalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <layout class="QVBoxLayout" name="verticalLayout_97">
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_59">
@@ -794,6 +1025,22 @@
              </layout>
             </item>
            </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Minimum</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_100">
@@ -891,6 +1138,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../uiresources.qrc"/>
+ </resources>
  <connections/>
 </ui>
