@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 import statblockdatastructs
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QMainWindow, QMessageBox, QLabel, QLineEdit, QListView, QSizePolicy
+    QApplication, QDialog, QMainWindow, QMessageBox, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton
 )
 from PyQt6 import QtCore
 
@@ -44,14 +44,19 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.topframe.setStyleSheet('#topframe{background-image: url(images:papyrusbackground.jpg)};')
         self.scrollArea.setStyleSheet('#scrollArea{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollAreaWidgetContents.setStyleSheet('#scrollAreaWidgetContents{background-image: url(images:papyrusbackground.jpg)}')
-        for widget in self.topframe.findChildren((QLabel, QListView)):
+        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton)):
             print(widget)
             if isinstance(widget, QLabel):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(92,43,27); font: 16pt "Cambria";}}')
                 widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
             elif isinstance(widget, QListView):
-                widget.setStyleSheet(
-                    f'#{widget.objectName()}{{background-image: none; background-color: rgb(241,233,208); font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(241,233,208); font: 12pt "Cambria";}}')
+            elif isinstance(widget, QLineEdit):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(255, 255, 255); font: 12pt "Cambria";}}')
+            elif isinstance(widget, QComboBox):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+            elif isinstance(widget, QPushButton):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(183, 232, 77); color: black; font: 12pt "Cambria";}}')
 
         set_derived_styles()
         return None

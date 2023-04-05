@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1448</width>
-    <height>814</height>
+    <width>1172</width>
+    <height>1152</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,11 @@
      <x>0</x>
      <y>0</y>
      <width>1171</width>
-     <height>811</height>
+     <height>1791</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QWidget{background-image:url(:/pyqtui/images/1659875.jpg)}</string>
+    <string notr="true"/>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -45,8 +45,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1124</width>
-         <height>1590</height>
+         <width>1143</width>
+         <height>1763</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -62,8 +62,7 @@
               <item>
                <widget class="QLabel" name="name_label">
                 <property name="styleSheet">
-                 <string notr="true">background-image: none; background-color: rgb(255, 255, 255);
-font: 12pt &quot;Cambria&quot;;</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>Name:</string>
@@ -76,7 +75,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                  <bool>false</bool>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">#name_edit{f'background-image: none; background-color:rgb(255, 255, 255)'}</string>
+                 <string notr="true"/>
                 </property>
                </widget>
               </item>
@@ -197,7 +196,7 @@ font: 12pt &quot;Cambria&quot;;</string>
               <item>
                <widget class="QLabel" name="proficiency_bonus_calculation_label">
                 <property name="styleSheet">
-                 <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>+0</string>
@@ -265,7 +264,7 @@ font: 12pt &quot;Cambria&quot;;</string>
               <item>
                <widget class="QLabel" name="hit_die_calculation_label">
                 <property name="styleSheet">
-                 <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                 <string notr="true"/>
                 </property>
                 <property name="text">
                  <string>d0</string>
@@ -400,7 +399,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="str_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -428,7 +427,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="dex_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -456,7 +455,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="con_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -484,7 +483,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="int_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -512,7 +511,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="wis_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -540,7 +539,7 @@ font: 12pt &quot;Cambria&quot;;</string>
                 <item>
                  <widget class="QLabel" name="cha_mod_label">
                   <property name="styleSheet">
-                   <string notr="true">QLabel { background-color : rgb(255, 170, 0);}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>NA</string>
@@ -716,32 +715,50 @@ font: 12pt &quot;Cambria&quot;;</string>
               </property>
              </widget>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_15">
-              <item>
-               <widget class="QListWidget" name="abilities_listview"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_24">
-                <item>
-                 <widget class="QPushButton" name="add_ability_button">
-                  <property name="text">
-                   <string>+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="add_ability_button_2">
-                  <property name="text">
-                   <string>-</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QWidget" name="abilities_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QListWidget" name="abilities_listview"/>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_24">
+                 <item>
+                  <widget class="QPushButton" name="add_ability_button">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="add_ability_button_2">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_5">
@@ -769,29 +786,47 @@ font: 12pt &quot;Cambria&quot;;</string>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_16">
-              <item>
-               <widget class="QListWidget" name="actions_listview"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_27">
-                <item>
-                 <widget class="QPushButton" name="add_action_button">
-                  <property name="text">
-                   <string>+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="remove_action_button">
-                  <property name="text">
-                   <string>-</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
+             <widget class="QWidget" name="actions_container" native="true">
+              <layout class="QGridLayout" name="gridLayout_4">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                 <item>
+                  <widget class="QListWidget" name="actions_listview"/>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_27">
+                   <item>
+                    <widget class="QPushButton" name="add_action_button">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="remove_action_button">
+                     <property name="text">
+                      <string>-</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
             </item>
             <item>
              <spacer name="verticalSpacer_6">
@@ -843,36 +878,54 @@ font: 12pt &quot;Cambria&quot;;</string>
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_38">
-            <item>
-             <widget class="QListWidget" name="reactions_listview">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>89</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_62">
-              <item>
-               <widget class="QPushButton" name="add_reaction_button">
-                <property name="text">
-                 <string>+</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="add_reaction_button_2">
-                <property name="text">
-                 <string>-</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
+           <widget class="QWidget" name="reactions_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_5">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_38">
+               <item>
+                <widget class="QListWidget" name="reactions_listview">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>89</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_62">
+                 <item>
+                  <widget class="QPushButton" name="add_reaction_button">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="add_reaction_button_2">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_7">
@@ -923,32 +976,50 @@ font: 12pt &quot;Cambria&quot;;</string>
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_17">
-              <item>
-               <widget class="QListWidget" name="bonus_actions_listview"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_29">
-                <item>
-                 <widget class="QPushButton" name="add_bonus_action_button">
-                  <property name="text">
-                   <string>+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="remove_bonus_action_button">
-                  <property name="text">
-                   <string>-</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QWidget" name="bonus_actions_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_7">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_17">
+               <item>
+                <widget class="QListWidget" name="bonus_actions_listview"/>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_29">
+                 <item>
+                  <widget class="QPushButton" name="add_bonus_action_button">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_bonus_action_button">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_8">
@@ -999,32 +1070,50 @@ font: 12pt &quot;Cambria&quot;;</string>
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_60">
-              <item>
-               <widget class="QListWidget" name="legendary_actions_listview"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_98">
-                <item>
-                 <widget class="QPushButton" name="add_legendary_action_button">
-                  <property name="text">
-                   <string>+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="remove_legendary_actions_button">
-                  <property name="text">
-                   <string>-</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QWidget" name="legendary_actions_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_8">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_60">
+               <item>
+                <widget class="QListWidget" name="legendary_actions_listview"/>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_98">
+                 <item>
+                  <widget class="QPushButton" name="add_legendary_action_button">
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="remove_legendary_actions_button">
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
            <spacer name="verticalSpacer_9">
@@ -1075,61 +1164,83 @@ font: 12pt &quot;Cambria&quot;;</string>
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_63">
-              <item>
-               <widget class="QLabel" name="mythic_description_label">
-                <property name="text">
-                 <string>Mythic Description</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QTextEdit" name="mythic_description_edit"/>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_62">
-              <item>
-               <widget class="QListWidget" name="mythic_action_listview"/>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_99">
-                <item>
-                 <widget class="QPushButton" name="add_mythic_action_button">
-                  <property name="text">
-                   <string>+</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="remove_mythic_action_button">
-                  <property name="text">
-                   <string>-</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
            </layout>
           </item>
          </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="QWidget" name="mythic_actions_container" native="true">
+          <layout class="QGridLayout" name="gridLayout_9">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_21">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_63">
+               <item>
+                <widget class="QLabel" name="mythic_description_label">
+                 <property name="text">
+                  <string>Mythic Description</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="mythic_description_edit"/>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_62">
+             <item>
+              <widget class="QListWidget" name="mythic_action_listview"/>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_99">
+               <item>
+                <widget class="QPushButton" name="add_mythic_action_button">
+                 <property name="text">
+                  <string>+</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="remove_mythic_action_button">
+                 <property name="text">
+                  <string>-</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1139,7 +1250,7 @@ font: 12pt &quot;Cambria&quot;;</string>
   </widget>
  </widget>
  <resources>
-  <include location="../uiresources.qrc"/>
+  <include location="../pyqtui.qrc"/>
  </resources>
  <connections/>
 </ui>
