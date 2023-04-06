@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 from PyQt6 import QtCore
 
 from creature_editor_ui import Ui_Form
+from monstergenerator import generate_test_monster
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
@@ -22,10 +23,9 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.setupUi(self)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "images"))
         self.setup_comboboxes()
-        self.name_edit.setText(monster_block.name)
-        self.alignment_edit.setText(monster_block.alignment)
         self.set_stylesheet()
         self.setup_checkbox_signals()
+        self.init_creature_data(monster_block)
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -52,7 +52,7 @@ class CreatureEditorForm(QDialog, Ui_Form):
             elif isinstance(widget, QListView) or isinstance(widget, QTextEdit):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
             elif isinstance(widget, QLineEdit):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
             elif isinstance(widget, QComboBox):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
             elif isinstance(widget, QPushButton):
@@ -64,15 +64,13 @@ class CreatureEditorForm(QDialog, Ui_Form):
         return None
 
 
-
-
     def setup_comboboxes(self):
         # Size combobox
         self.size_combobox.clear()
         for size in statblockdatastructs.Size:
             self.size_combobox.addItem(size.name)
         for cr in statblockdatastructs.CR_TO_XP_TABLE:
-            self.challenge_rating_combobox.addItem(f"{cr} ({statblockdatastructs.CR_TO_XP_TABLE[cr]} xp)")
+            self.challenge_rating_combobox.addItem(str(cr))
         for save in statblockdatastructs.AbilityScores:
             self.saving_throws_combobox.addItem(save.name)
         for skill in statblockdatastructs.SKILL_LIST:
@@ -82,6 +80,7 @@ class CreatureEditorForm(QDialog, Ui_Form):
         for damage in statblockdatastructs.DAMAGE_LIST:
             self.damage_combobox.addItem(damage)
         return True
+
 
     def setup_checkbox_signals(self):
         def toggle_container_visibility(checkbox, container):
@@ -102,8 +101,27 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
         self.mythic_actions_container.setVisible(False)
 
+
+    def init_creature_data(self, creature):
+        print(creature.name)
+        self.name_edit.setText(creature.name)
+        self.size_combobox.setCurrentIndex(self.size_combobox.findData(creature.size.value))
+        self.type_edit.setText(creature.type)
+        self.tag_edit.setText(creature.tag)
+        self.alignment_edit.setText(creature.alignment)
+        self.challenge_rating_combobox.setCurrentIndex(self.challenge_rating_combobox.findData(creature.challengerating))
+        self.xp_calculation_label.setText(str(statblockdatastructs.CR_TO_XP_TABLE[creature.challengerating]))
+        self.proficiency_bonus_calculation_label.setText(str(statblockdatastructs.get_prof_bonus(creature.challengerating)))
+        self.hit_points_edit.setText(str(creature.hitpoints))
+        self.max_hit_dice_edit.setText(creature.hitdice)
+        self.hit_die_calculation_label.setText(f"d{statblockdatastructs.Size.hitdice(creature.size)}")
+        self.ac_bonus_edit.setText(str(creature.acbonus))
+        self.armor_type_edit.setText(creature.acdesc)
+        self.senses_edit.setText(creature.senses)
+        self.speeds_edit.setText(creature.speed)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = CreatureEditorForm(monster_block=statblockdatastructs.MonsterBlock(), parent=None)
+    myWindow = CreatureEditorForm(monster_block=generate_test_monster(), parent=None)
     myWindow.show()
     app.exec()

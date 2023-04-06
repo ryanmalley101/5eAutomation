@@ -118,6 +118,8 @@ CONDITION_LIST = (
 class MonsterBlock:
     name: str = "PLACEHOLDER"
     size: Size = Size.CHANGEME
+    type: str = "NOTYPE"
+    tag: str = ""
     alignment: str = 'unaligned'
     acdesc: str = ""
     acbonus: int = 10
@@ -256,6 +258,8 @@ class MonsterBlock:
         monster_statblock = MonsterBlock()
         monster_statblock.name = monster_json['name']
         monster_statblock.size = Size(monster_json['size'])
+        monster_statblock.type = monster_json['type']
+        monster_statblock.tag = monster_json['tag']
         monster_statblock.alignment = monster_json['alignment']
         monster_statblock.acdesc = monster_json['acdesc']
         monster_statblock.acbonus = int(monster_json['acbonus'])

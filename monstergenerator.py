@@ -17,16 +17,6 @@ def size_wizard():
             print("Invalid Size index")
 
 
-def alignment_wizard():
-    alignmentinput = ""
-    while not Alignment.has_value(alignmentinput):
-        alignmentinput = input("Alignment (eg. Chaotic Good, Lawful Neutral, etc.)\n").strip().upper()
-        if alignmentinput:
-            return alignmentinput
-        else:
-            return 'unaligned'
-
-
 def print_skill_choices(monster=None):
     if monster is None:
         for i, x in enumerate(SKILL_LIST):
@@ -636,8 +626,17 @@ def interactive_monster_gen():
     # Get creature size
     monster.size = size_wizard()
 
+    # Get creature type
+    typeinput = input("Creature Type\n")
+    monster.type = "NOTYPE" if typeinput == "" else typeinput
+
+    # Get creature tag
+    taginput = input("Creature Type Tag\n")
+    monster.tag = taginput
+
     # Get creature alignment
-    monster.alignment = alignment_wizard()
+    alignmentinput = input("Alignment Type\n")
+    monster.alignment = "unaligned" if alignmentinput == "" else alignmentinput
 
     # Get creature type
     creaturetype = input("Monster Type (eg. celestial, humanoid(demi-human), "
@@ -752,6 +751,7 @@ def generate_test_monster():
     return MonsterBlock(
         name="TEST MONSTER",
         size=Size.MEDIUM,
+        type="Tester",
         alignment='chaotic evil',
         acdesc="natural armor",
         acbonus=2,
