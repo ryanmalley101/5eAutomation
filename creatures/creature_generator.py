@@ -1,6 +1,6 @@
 # This is a sample Python script.
 
-from statblockdatastructs import *
+from creature_datastructs import *
 import math
 import re
 from patterns import DICESTRINGPATTERN
@@ -17,44 +17,44 @@ def size_wizard():
             print("Invalid Size index")
 
 
-def print_skill_choices(monster=None):
-    if monster is None:
+def print_skill_choices(creature=None):
+    if creature is None:
         for i, x in enumerate(SKILL_LIST):
             print(f'| {str(i)} - {x} |')
         print('| (e)xit |')
     else:
         for i, x in enumerate(SKILL_LIST):
-            isprof = "*" if monster.skills[x] else ""
+            isprof = "*" if creature.skills[x] else ""
             print(f"| {str(i)} - {x}{isprof} |")
         print('| (e)xit |')
 
 
-def print_damage_types(monster=None):
-    if monster is None:
+def print_damage_types(creature=None):
+    if creature is None:
         for i, x in enumerate(DAMAGE_LIST):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
         for i, x in enumerate(DAMAGE_LIST):
             isprof = ""
-            if monster.damageimmunities[x]:
+            if creature.damageimmunities[x]:
                 isprof = "i"
-            elif monster.damagevulnerabilities[x]:
+            elif creature.damagevulnerabilities[x]:
                 isprof = "v"
-            elif monster.damageresistances[x]:
+            elif creature.damageresistances[x]:
                 isprof = "r"
             print(f"| {str(i)} - {x} {isprof}|")
         print('| (e)xit |')
 
 
-def print_condition_immunities(monster=None):
-    if monster is None:
+def print_condition_immunities(creature=None):
+    if creature is None:
         for i, x in enumerate(CONDITION_LIST):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
         for i, x in enumerate(CONDITION_LIST):
-            isprof = "*" if monster.conditionimmunities[x] else ""
+            isprof = "*" if creature.conditionimmunities[x] else ""
             print(f"| {str(i)} - {x}{isprof}|")
         print('| (e)xit |')
 
@@ -120,7 +120,7 @@ def calculate_hitpoints(hitdie, con, hitdice):
 def get_ability_score(score):
     scoreinput = ""
     while not scoreinput.isdigit():
-        scoreinput = input(f"Monster {score} Score (not the modifier)\n")
+        scoreinput = input(f"Creature {score} Score (not the modifier)\n")
         if scoreinput.isdigit() and int(scoreinput) >= 0:
             return int(scoreinput)
         elif scoreinput == "":
@@ -130,65 +130,65 @@ def get_ability_score(score):
                                        "than or equal to 0")
 
 
-def save_prof_wizard(monster):
+def save_prof_wizard(creature):
     print('Entering saving throw wizard. Default response for options is no')
     strprof = input("Is the creature proficient in "
                     "Strength saves, (y)es or (n)o\n")
     if strprof == 'y' or strprof == 'yes':
-        monster.strsave = True
+        creature.strsave = True
     dexprof = input("Is the creature proficient in "
                     "Dexterity saves, (y)es or (n)o\n")
     if dexprof == 'y' or dexprof == 'yes':
-        monster.dexsave = True
+        creature.dexsave = True
     conprof = input("Is the creature proficient in "
                     "Constitution saves, (y)es or (n)o\n")
     if conprof == 'y' or conprof == 'yes':
-        monster.consave = True
+        creature.consave = True
     intprof = input("Is the creature proficient in "
                     "Intelligence saves, (y)es or (n)o\n")
     if intprof == 'y' or intprof == 'yes':
-        monster.intsave = True
+        creature.intsave = True
     wisprof = input("Is the creature proficient in "
                     "Wisdom saves, (y)es or (n)o\n")
     if wisprof == 'y' or wisprof == 'yes':
-        monster.wissave = True
+        creature.wissave = True
     chaprof = input("Is the creature proficient in "
                     "Charisma saves, (y)es or (n)o\n")
     if chaprof == 'y' or chaprof == 'yes':
-        monster.chasave = True
-    return monster
+        creature.chasave = True
+    return creature
 
 
-def toggle_skill(monster, skill):
-    monster.skills[skill] = not monster.skills[skill]
+def toggle_skill(creature, skill):
+    creature.skills[skill] = not creature.skills[skill]
 
 
-def toggle_damage(monster, damage, damagemodifier=None):
-    if damagemodifier == MonsterBlock.IMMUNITY:
-        monster.damageimmunities[damage] = \
-            not monster.damageimmunities[damage]
-    elif damagemodifier == MonsterBlock.VULNERABILITY:
-        monster.damagevulnerabilities[damage] = \
-            not monster.damagevulnerabilities[damage]
-    elif damagemodifier == MonsterBlock.RESISTANCE:
-        monster.damageresistances[damage] = \
-            not monster.damageresistances[damage]
+def toggle_damage(creature, damage, damagemodifier=None):
+    if damagemodifier == CreatureStatblock.IMMUNITY:
+        creature.damageimmunities[damage] = \
+            not creature.damageimmunities[damage]
+    elif damagemodifier == CreatureStatblock.VULNERABILITY:
+        creature.damagevulnerabilities[damage] = \
+            not creature.damagevulnerabilities[damage]
+    elif damagemodifier == CreatureStatblock.RESISTANCE:
+        creature.damageresistances[damage] = \
+            not creature.damageresistances[damage]
     else:
-        print(f"Damage Modifier does not match {MonsterBlock.IMMUNITY}, "
-              f"{MonsterBlock.VULNERABILITY}, or {MonsterBlock.RESISTANCE}")
+        print(f"Damage Modifier does not match {CreatureStatblock.IMMUNITY}, "
+              f"{CreatureStatblock.VULNERABILITY}, or {CreatureStatblock.RESISTANCE}")
 
 
-def toggle_condition(monster, condition):
-    monster.conditionimmunities[condition] = \
-        not monster.conditionimmunities[condition]
+def toggle_condition(creature, condition):
+    creature.conditionimmunities[condition] = \
+        not creature.conditionimmunities[condition]
 
 
-def skill_prof_wizard(monster, initialize=True):
+def skill_prof_wizard(creature, initialize=True):
     print("Entering skill proficiency wizard. "
           "Default response for options is no")
     if initialize:
         for skill in SKILL_LIST:
-            monster.skills[skill] = False
+            creature.skills[skill] = False
 
     skillprompt = 'WIZARD'
     while skillprompt != '' and skillprompt != 'exit':
@@ -199,12 +199,12 @@ def skill_prof_wizard(monster, initialize=True):
               "Skills the creature is already "
               "proficient in are marked with a *"
               "Enter 'exit' or just hit return to exit the skill wizard\n")
-        print_skill_choices(monster)
+        print_skill_choices(creature)
         skillprompt = input()
         if skillprompt.isdigit():
             skillchoice = int(skillprompt)
             if 0 <= skillchoice < len(SKILL_LIST):
-                toggle_skill(monster, SKILL_LIST[skillchoice])
+                toggle_skill(creature, SKILL_LIST[skillchoice])
             else:
                 print(f'Invalid index. Expected integer '
                       f'between 0 and {len(SKILL_LIST)}')
@@ -214,17 +214,17 @@ def skill_prof_wizard(monster, initialize=True):
         else:
             print(f'Invalid input. Expected integer '
                   f'between 0 and {len(SKILL_LIST)}')
-    return monster
+    return creature
 
 
-def damage_type_wizard(monster, mode=None, initialize=True):
+def damage_type_wizard(creature, mode=None, initialize=True):
     print(f"Entering damage {mode} wizard. Default response for options is no")
     damageprompt = 'WIZARD'
     if initialize:
         for damage in DAMAGE_LIST:
-            monster.damageresistances[damage] = False
-            monster.damageimmunities[damage] = False
-            monster.damagevulnerabilities[damage] = False
+            creature.damageresistances[damage] = False
+            creature.damageimmunities[damage] = False
+            creature.damagevulnerabilities[damage] = False
 
     while damageprompt != '' and damageprompt != 'exit':
         print(f"Enter the digit corresponding to the damage {mode} you would "
@@ -234,12 +234,12 @@ def damage_type_wizard(monster, mode=None, initialize=True):
               f"marked with a * Enter 'exit' or just hit return to exit the "
               f"skill wizard\n")
 
-        print_damage_types(monster)
+        print_damage_types(creature)
         damage_prompt = input()
         if damage_prompt.isdigit():
             damage_choice = int(damage_prompt)
             if 0 <= damage_choice < len(DAMAGE_LIST):
-                toggle_damage(monster, DAMAGE_LIST[damage_choice], mode)
+                toggle_damage(creature, DAMAGE_LIST[damage_choice], mode)
             else:
                 print(f'Invalid index. Expected integer '
                       f'between 0 and {len(DAMAGE_LIST)}')
@@ -249,16 +249,16 @@ def damage_type_wizard(monster, mode=None, initialize=True):
         else:
             print(f'Invalid input. Expected integer '
                   f'between 0 and {len(DAMAGE_LIST)}')
-    return monster
+    return creature
 
 
-def condition_immunity_wizard(monster, initialize=True):
+def condition_immunity_wizard(creature, initialize=True):
     print(f"Entering condition immunity wizard. "
           f"Default response for options is no")
     conditionprompt = 'WIZARD'
     if initialize:
         for condition in CONDITION_LIST:
-            monster.conditionimmunities[condition] = False
+            creature.conditionimmunities[condition] = False
 
     while conditionprompt != '' and conditionprompt != 'exit':
         print(f"Enter the digit corresponding to the condition immunity "
@@ -268,12 +268,12 @@ def condition_immunity_wizard(monster, initialize=True):
               f"marked with a * Enter 'exit' or just hit return to exit the "
               f"skill wizard\n")
 
-        print_condition_immunities(monster)
+        print_condition_immunities(creature)
         condition_prompt = input()
         if condition_prompt.isdigit():
             condition_prompt = int(condition_prompt)
             if 0 <= condition_prompt < len(DAMAGE_LIST):
-                toggle_condition(monster, CONDITION_LIST[condition_prompt])
+                toggle_condition(creature, CONDITION_LIST[condition_prompt])
             else:
                 print(
                     f'Invalid index. Expected integer '
@@ -285,12 +285,12 @@ def condition_immunity_wizard(monster, initialize=True):
             print(
                 f'Invalid input. Expected integer '
                 f'between 0 and {len(CONDITION_LIST)}')
-    return monster
+    return creature
 
 def get_challenge_rating():
     crinput = ""
     while not crinput.isdigit():
-        crinput = input(f"Monster Challenge Rating (Default 0)\n")
+        crinput = input(f"Creature Challenge Rating (Default 0)\n")
         if crinput.isdigit() and int(crinput) >= 0:
             return int(crinput)
         elif crinput == "":
@@ -613,98 +613,98 @@ def mythic_action_wizard():
     return mythic_description, mythic_action_list
 
 
-def interactive_monster_gen():
-    monster = MonsterBlock()
+def interactive_creature_gen():
+    creature = CreatureStatblock()
     print("Welcome to the interactive 5e creature generator\n"
           "All of the following fields are optional, "
           "just hit return to skip one\n")
 
     # Get creature name
     nameinput = input("Creature Name\n")
-    monster.name = "PLACEHOLDER" if nameinput == "" else nameinput
+    creature.name = "PLACEHOLDER" if nameinput == "" else nameinput
 
     # Get creature size
-    monster.size = size_wizard()
+    creature.size = size_wizard()
 
     # Get creature type
     typeinput = input("Creature Type\n")
-    monster.type = "NOTYPE" if typeinput == "" else typeinput
+    creature.type = "NOTYPE" if typeinput == "" else typeinput
 
     # Get creature tag
     taginput = input("Creature Type Tag\n")
-    monster.tag = taginput
+    creature.tag = taginput
 
     # Get creature alignment
     alignmentinput = input("Alignment Type\n")
-    monster.alignment = "unaligned" if alignmentinput == "" else alignmentinput
+    creature.alignment = "unaligned" if alignmentinput == "" else alignmentinput
 
     # Get creature type
-    creaturetype = input("Monster Type (eg. celestial, humanoid(demi-human), "
+    creaturetype = input("Creature Type (eg. celestial, humanoid(demi-human), "
                          "etc\n").strip().upper()
-    monster.type = creaturetype
+    creature.type = creaturetype
 
     # Get AC bonus
     acbonusinput = "NOTADIGIT"
     while not acbonusinput.isdigit():
-        acbonusinput = input("Monster AC Bonus (eg. armor bonus) "
+        acbonusinput = input("Creature AC Bonus (eg. armor bonus) "
                              "disgregading dex bonuses\n")
 
         if acbonusinput.isdigit():
-            monster.acbonus = int(acbonusinput)
+            creature.acbonus = int(acbonusinput)
             break
         elif acbonusinput == "":
-            monster.acbonus = 0
+            creature.acbonus = 0
             break
         else:
             print("Invalid AC bonus. Must be an integer "
                   "greater than or equal to 0\n")
 
     # Get AC Bonus description
-    monster.acdesc = input("AC Bonus description (eg. plate, "
+    creature.acdesc = input("AC Bonus description (eg. plate, "
                            "natural armor, mage armor, etc.\n")
 
     # Get Ability Scores
-    monster.ability_scores[AbilityScores.STRENGTH] = \
+    creature.ability_scores[AbilityScores.STRENGTH] = \
         get_ability_score("Strength")
-    monster.ability_scores[AbilityScores.DEXTERITY] = \
+    creature.ability_scores[AbilityScores.DEXTERITY] = \
         get_ability_score("Dexterity")
-    monster.ability_scores[AbilityScores.CONSTITUTION] = \
+    creature.ability_scores[AbilityScores.CONSTITUTION] = \
         get_ability_score("Constitution")
-    monster.ability_scores[AbilityScores.INTELLIGENCE] = \
+    creature.ability_scores[AbilityScores.INTELLIGENCE] = \
         get_ability_score("Intelligence")
-    monster.ability_scores[AbilityScores.WISDOM] = \
+    creature.ability_scores[AbilityScores.WISDOM] = \
         get_ability_score("Wisdom")
-    monster.ability_scores[AbilityScores.CHARISMA] = \
+    creature.ability_scores[AbilityScores.CHARISMA] = \
         get_ability_score("Charisma")
 
     # Get hit dice through the hp wizard
-    monster.hitdice = get_hit_dice(hitdie=Size.hitdice(monster.size),
-                                   con=monster.constitution)
-    monster.hitpoints = calculate_hitpoints(hitdie=Size.hitdice(monster.size),
-                                            con=monster.constitution,
-                                            hitdice=monster.hitdice)
+    creature.hitdice = get_hit_dice(hitdie=Size.hitdice(creature.size),
+                                   con=creature.ability_scores[AbilityScores.CONSTITUTION])
+    creature.hitpoints = calculate_hitpoints(hitdie=Size.hitdice(creature.size),
+                                            con=creature.ability_scores[AbilityScores.CONSTITUTION],
+                                            hitdice=creature.hitdice)
 
     # Get speed
-    speedinput = input("Monster Speed (default 30 ft.)\n")
-    monster.speed = "30 ft." if speedinput == "" else speedinput
+    speedinput = input("Creature Speed (default 30 ft.)\n")
+    creature.speed = "30 ft." if speedinput == "" else speedinput
 
     # Get save proficients
     saveprompt = input("Does the creature have any saving throw "
                        "proficiencies: (y)es or (n)o? Default no\n")
     if saveprompt == 'y' or saveprompt == 'yes':
-        monster = save_prof_wizard(monster)
+        creature = save_prof_wizard(creature)
 
     # Get skill proficiencies
     skillprompt = input("Does the creature have any skill "
                         "proficiencies: (y)es or (n)o? Default no\n")
     if skillprompt == 'y' or skillprompt == 'yes':
-        monster = skill_prof_wizard(monster)
+        creature = skill_prof_wizard(creature)
 
     # Get damage vulnerabilities
     vulnerabilityprompt = input("Does the creature have any damage "
                                 "vulnerabilities: (y)es or (n)o? Default no\n")
     if vulnerabilityprompt == 'y' or vulnerabilityprompt == 'yes':
-        monster = damage_type_wizard(monster, MonsterBlock.VULNERABILITY,
+        creature = damage_type_wizard(creature, CreatureStatblock.VULNERABILITY,
                                      initialize=True)
 
     # Get damage resistances
@@ -712,7 +712,7 @@ def interactive_monster_gen():
         "Does the creature have any damage resistances:"
         " (y)es or (n)o? Default no\n")
     if resistanceprompt == 'y' or resistanceprompt == 'yes':
-        monster = damage_type_wizard(monster, MonsterBlock.RESISTANCE,
+        creature = damage_type_wizard(creature, CreatureStatblock.RESISTANCE,
                                      initialize=True)
 
     # Get damage resistances
@@ -720,36 +720,36 @@ def interactive_monster_gen():
         "Does the creature have any damage immunities: "
         "(y)es or (n)o? Default no\n")
     if immunityprompt == 'y' or immunityprompt == 'yes':
-        monster = damage_type_wizard(monster, MonsterBlock.IMMUNITY,
+        creature = damage_type_wizard(creature, CreatureStatblock.IMMUNITY,
                                      initialize=True)
 
     conditionprompt = input("Does the creature have any condition "
                             "immunities: (y)es or (n)o? Default no\n")
     if conditionprompt == 'y' or conditionprompt == 'yes':
-        monster = condition_immunity_wizard(monster)
+        creature = condition_immunity_wizard(creature)
 
     # Get senses
-    monster.senses = input("Monster Senses (eg. darkvision "
+    creature.senses = input("Creature Senses (eg. darkvision "
                        "60 ft., blindsight 10 ft.\n")
 
     # Get languages
-    monster.languages = input("Monster languages (eg. Common, "
+    creature.languages = input("Creature languages (eg. Common, "
                           "Draconic, understands Gnomish\n")
 
-    monster.challengerating = get_challenge_rating()
+    creature.challengerating = get_challenge_rating()
 
-    monster.abilities = ability_wizard()
-    monster.actions = action_wizard()
-    monster.bonusactions = bonus_action_wizard()
-    monster.reactions = reaction_wizard()
-    monster.legendaryactions = legendary_action_wizard()
-    monster.mythicdescription, monster.mythicactions = mythic_action_wizard()
+    creature.abilities = ability_wizard()
+    creature.actions = action_wizard()
+    creature.bonusactions = bonus_action_wizard()
+    creature.reactions = reaction_wizard()
+    creature.legendaryactions = legendary_action_wizard()
+    creature.mythicdescription, creature.mythicactions = mythic_action_wizard()
 
-    return monster
+    return creature
 
-def generate_test_monster():
-    return MonsterBlock(
-        name="TEST MONSTER",
+def generate_test_creature():
+    return CreatureStatblock(
+        name="TEST CREATURE",
         size=Size.MEDIUM,
         type="Tester",
         alignment='chaotic evil',

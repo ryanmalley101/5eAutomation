@@ -1,7 +1,7 @@
-from statblockdatastructs import *
+from creature_datastructs import *
 
 
-def print_monster_ability_scores(monster: MonsterBlock):
+def print_monster_ability_scores(monster: CreatureStatblock):
     strscore = monster.ability_scores[AbilityScores.STRENGTH]
     dexscore = monster.ability_scores[AbilityScores.DEXTERITY]
     conscore = monster.ability_scores[AbilityScores.CONSTITUTION]
@@ -176,7 +176,7 @@ def print_monster_senses(monster):
     return senses_string
 
 
-def convert_monster(monster: MonsterBlock):
+def convert_monster(monster: CreatureStatblock):
     monster_markup  =  "# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
     monster_markup += f"# >* {monster.size.value}, {monster.alignment}\n"

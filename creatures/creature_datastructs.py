@@ -115,7 +115,7 @@ CONDITION_LIST = (
 
 
 @dataclass
-class MonsterBlock:
+class CreatureStatblock:
     name: str = "PLACEHOLDER"
     size: Size = Size.CHANGEME
     type: str = "NOTYPE"
@@ -154,31 +154,31 @@ class MonsterBlock:
     RESISTANCE = "RESISTANCE"
 
     def to_json(self):
-        monster_dict = dataclasses.asdict(self)
-        monster_dict['size'] = self.size.value
-        monster_dict['alignment'] = self.alignment
-        monster_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
+        creature_dict = dataclasses.asdict(self)
+        creature_dict['size'] = self.size.value
+        creature_dict['alignment'] = self.alignment
+        creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
                                           for score in self.ability_scores]
-        monster_dict['abilities'] = [dataclasses.asdict(abil)
+        creature_dict['abilities'] = [dataclasses.asdict(abil)
                                      for abil in self.abilities]
-        monster_dict['actions'] = [c.to_dict() for c in self.actions]
-        monster_dict['bonusactions'] = [dataclasses.asdict(ba)
+        creature_dict['actions'] = [c.to_dict() for c in self.actions]
+        creature_dict['bonusactions'] = [dataclasses.asdict(ba)
                                         for ba in self.bonusactions]
-        monster_dict['reactions'] = [dataclasses.asdict(react)
+        creature_dict['reactions'] = [dataclasses.asdict(react)
                                     for react in self.reactions]
-        monster_dict['legendaryactions'] = [dataclasses.asdict(la)
+        creature_dict['legendaryactions'] = [dataclasses.asdict(la)
                                             for la in self.legendaryactions]
-        monster_dict['mythicactions'] = [dataclasses.asdict(myth)
+        creature_dict['mythicactions'] = [dataclasses.asdict(myth)
                                          for myth in self.mythicactions]
-        print(monster_dict)
-        return json.dumps(monster_dict)
+        print(creature_dict)
+        return json.dumps(creature_dict)
 
     def save_json(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        monster_json = open(timestr + '.json', "w")
-        n = monster_json.write(self.to_json())
+        creature_json = open(timestr + '.json', "w")
+        n = creature_json.write(self.to_json())
         print(n)
-        monster_json.close()
+        creature_json.close()
 
     def get_total_ac(self):
         return 10 + score_to_mod(self.ability_scores[AbilityScores.DEXTERITY]) + self.acbonus
@@ -212,7 +212,7 @@ class MonsterBlock:
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
 
-    def load_json(self, monster_json):
+    def load_json(self, creature_json):
         def convert_json_attack(json_attack):
             if json_attack['type'] == BaseAttack.AttackType.MELEESPELL.value:
                 return MeleeSpellAttack(name=json_attack['name'],
@@ -254,69 +254,69 @@ class MonsterBlock:
             else:
                 raise ValueError('Invalid attack type')
 
-        print(monster_json)
-        monster_statblock = MonsterBlock()
-        monster_statblock.name = monster_json['name']
-        monster_statblock.size = Size(monster_json['size'])
-        monster_statblock.type = monster_json['type']
-        monster_statblock.tag = monster_json['tag']
-        monster_statblock.alignment = monster_json['alignment']
-        monster_statblock.acdesc = monster_json['acdesc']
-        monster_statblock.acbonus = int(monster_json['acbonus'])
-        for score in monster_json['ability_scores']:
+        print(creature_json)
+        creature_statblock = CreatureStatblock()
+        creature_statblock.name = creature_json['name']
+        creature_statblock.size = Size(creature_json['size'])
+        creature_statblock.type = creature_json['type']
+        creature_statblock.tag = creature_json['tag']
+        creature_statblock.alignment = creature_json['alignment']
+        creature_statblock.acdesc = creature_json['acdesc']
+        creature_statblock.acbonus = int(creature_json['acbonus'])
+        for score in creature_json['ability_scores']:
             for key in score:
                 print(key)
-                monster_statblock.ability_scores[AbilityScores(key)] = score[key]
-        monster_statblock.hitdice = monster_json['hitdice']
-        monster_statblock.hitpoints = int(monster_json['hitpoints'])
-        monster_statblock.speed = monster_json['speed']
-        monster_statblock.strsave = bool(monster_json['strsave'])
-        monster_statblock.dexsave = bool(monster_json['dexsave'])
-        monster_statblock.consave = bool(monster_json['consave'])
-        monster_statblock.intsave = bool(monster_json['intsave'])
-        monster_statblock.wissave = bool(monster_json['wissave'])
-        monster_statblock.chasave = bool(monster_json['chasave'])
-        for skill in monster_json['skills']:
-            monster_statblock.skills[skill] = bool(monster_json['skills'][skill])
-        for immunity in monster_json['damageimmunities']:
-            monster_statblock.damageimmunities[immunity] = bool(monster_json['damageimmunities'][immunity])
-        for resistance in monster_json['damageresistances']:
-            monster_statblock.damageresistances[resistance] = bool(monster_json['damageresistances'][resistance])
-        for vulnerability in monster_json['damagevulnerabilities']:
-            monster_statblock.damagevulnerabilities[vulnerability] = bool(monster_json['damagevulnerabilities'][vulnerability])
-        for condition in monster_json['conditionimmunities']:
-            monster_statblock.conditionimmunities[condition] = bool(monster_json['conditionimmunities'][condition])
-        monster_statblock.senses = monster_json['senses']
-        monster_statblock.languages = monster_json['languages']
-        monster_statblock.challengerating = int(monster_json['challengerating'])
-        for ability in monster_json['abilities']:
-            monster_statblock.abilities.append(AbilityDescription(name=ability['name'],
+                creature_statblock.ability_scores[AbilityScores(key)] = score[key]
+        creature_statblock.hitdice = creature_json['hitdice']
+        creature_statblock.hitpoints = int(creature_json['hitpoints'])
+        creature_statblock.speed = creature_json['speed']
+        creature_statblock.strsave = bool(creature_json['strsave'])
+        creature_statblock.dexsave = bool(creature_json['dexsave'])
+        creature_statblock.consave = bool(creature_json['consave'])
+        creature_statblock.intsave = bool(creature_json['intsave'])
+        creature_statblock.wissave = bool(creature_json['wissave'])
+        creature_statblock.chasave = bool(creature_json['chasave'])
+        for skill in creature_json['skills']:
+            creature_statblock.skills[skill] = bool(creature_json['skills'][skill])
+        for immunity in creature_json['damageimmunities']:
+            creature_statblock.damageimmunities[immunity] = bool(creature_json['damageimmunities'][immunity])
+        for resistance in creature_json['damageresistances']:
+            creature_statblock.damageresistances[resistance] = bool(creature_json['damageresistances'][resistance])
+        for vulnerability in creature_json['damagevulnerabilities']:
+            creature_statblock.damagevulnerabilities[vulnerability] = bool(creature_json['damagevulnerabilities'][vulnerability])
+        for condition in creature_json['conditionimmunities']:
+            creature_statblock.conditionimmunities[condition] = bool(creature_json['conditionimmunities'][condition])
+        creature_statblock.senses = creature_json['senses']
+        creature_statblock.languages = creature_json['languages']
+        creature_statblock.challengerating = int(creature_json['challengerating'])
+        for ability in creature_json['abilities']:
+            creature_statblock.abilities.append(AbilityDescription(name=ability['name'],
                                                                   description=ability['description']))
-        for action in monster_json['actions']:
+        for action in creature_json['actions']:
             if 'attack_mod' in action:
-                monster_statblock.actions.append(convert_json_attack(action))
+                creature_statblock.actions.append(convert_json_attack(action))
             else:
-                monster_statblock.actions.append(AbilityDescription(name=action['name'],
+                creature_statblock.actions.append(AbilityDescription(name=action['name'],
                                                                     description=action['description']))
 
-        for bonus_action in monster_json['bonusactions']:
-            monster_statblock.bonusactions.append(AbilityDescription(name=bonus_action['name'],
+        for bonus_action in creature_json['bonusactions']:
+            creature_statblock.bonusactions.append(AbilityDescription(name=bonus_action['name'],
                                                                   description=bonus_action['description']))
 
-        for reaction in monster_json['reactions']:
-            monster_statblock.reactions.append(AbilityDescription(name=reaction['name'],
+        for reaction in creature_json['reactions']:
+            creature_statblock.reactions.append(AbilityDescription(name=reaction['name'],
                                                                   description=reaction['description']))
 
-        for legendary_action in monster_json['legendaryactions']:
-            monster_statblock.legendaryactions.append(AbilityDescription(name=legendary_action['name'],
+        for legendary_action in creature_json['legendaryactions']:
+            creature_statblock.legendaryactions.append(AbilityDescription(name=legendary_action['name'],
                                                                   description=legendary_action['description']))
 
-        monster_statblock.mythicdescription = monster_json['mythicdescription']
-        for mythic_action in monster_json['mythicactions']:
-            monster_statblock.mythicactions.append(AbilityDescription(name=mythic_action['name'],
+        creature_statblock.mythicdescription = creature_json['mythicdescription']
+        for mythic_action in creature_json['mythicactions']:
+            creature_statblock.mythicactions.append(AbilityDescription(name=mythic_action['name'],
                                                                   description=mythic_action['description']))
 
-        return monster_statblock
+        return creature_statblock
 
 @dataclass
 class AbilityDescription:

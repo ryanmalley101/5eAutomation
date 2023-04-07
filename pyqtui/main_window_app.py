@@ -4,13 +4,12 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-from statblockdatastructs import MonsterBlock
+from creatures.creature_datastructs import CreatureStatblock
 import json
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QMainWindow, QMessageBox, QFileDialog
+    QApplication, QMainWindow, QFileDialog
 )
-from PyQt6.uic import loadUi
 
 from main_window import Ui_MainWindow
 
@@ -26,7 +25,7 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
             self.load_monster_button.setText(file_name)
             print(file_name)
             json_file = open(file_name, 'r')
-            monster = MonsterBlock()
+            monster = CreatureStatblock()
             monster.load_json(json.loads(json_file.read()))
 
 
