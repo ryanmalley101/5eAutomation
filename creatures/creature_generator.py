@@ -4,6 +4,8 @@ from creature_datastructs import *
 import math
 import re
 from patterns import DICESTRINGPATTERN
+from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST
+
 
 def size_wizard():
     sizeinput = ""

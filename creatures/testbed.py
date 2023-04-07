@@ -1,5 +1,5 @@
 from creature_datastructs import *
-from gmbinder_convert import *
+from creature_gmbinder_convert import *
 from creature_generator import generate_test_creature
 
 # Press the green button in the gutter to run the script.

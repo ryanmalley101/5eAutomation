@@ -1,4 +1,5 @@
 from creature_datastructs import *
+from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):
