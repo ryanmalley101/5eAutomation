@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScores, SKILL_TO_ABILITY, score_to_mod, get_prof_bonus
+from srd.srd_datastructs import Size, AbilityScores, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, get_prof_bonus
 
 @dataclass
 class CreatureStatblock:
@@ -145,7 +145,7 @@ class CreatureStatblock:
         creature_statblock.challengerating = int(creature_json['challengerating'])
         for ability in creature_json['abilities']:
             creature_statblock.abilities.append(AbilityDescription(name=ability['name'],
-                                                                  description=ability['description']))
+                                                                   description=ability['description']))
         for action in creature_json['actions']:
             if 'attack_mod' in action:
                 creature_statblock.actions.append(convert_json_attack(action))
@@ -210,16 +210,6 @@ class CreatureStatblock:
             return 10 + self.skill_bonus('Perception')
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
-
-
-@dataclass
-class AbilityDescription:
-    name: str = "PLACEHOLDER ABILITY"
-    description: str = "NO DESCRIPTION"
-
-    def to_dict(self):
-        return asdict(self)
-
 
 @dataclass
 class BaseAttack:

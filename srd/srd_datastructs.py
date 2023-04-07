@@ -1,5 +1,7 @@
 from enum import Enum
 import math
+from dataclasses import asdict, dataclass
+import json
 
 class Size(Enum):
     TINY = 0
@@ -136,3 +138,16 @@ def score_to_mod(score):
 
 def get_prof_bonus(cr):
     return max(math.floor((cr - 1) / 4), 0) + 2
+
+
+@dataclass
+class AbilityDescription:
+    name: str = "PLACEHOLDER ABILITY"
+    description: str = "NO DESCRIPTION"
+
+    def to_dict(self):
+        return asdict(self)
+
+    def to_json(self):
+        return json.dumps(asdict(self))
+
