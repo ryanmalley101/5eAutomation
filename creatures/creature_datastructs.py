@@ -1,6 +1,5 @@
-import dataclasses
 from enum import Enum
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 import time
 import json
 import math
@@ -154,63 +153,24 @@ class CreatureStatblock:
     RESISTANCE = "RESISTANCE"
 
     def to_json(self):
-        creature_dict = dataclasses.asdict(self)
+        creature_dict = asdict(self)
         creature_dict['size'] = self.size.value
         creature_dict['alignment'] = self.alignment
         creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
                                           for score in self.ability_scores]
-        creature_dict['abilities'] = [dataclasses.asdict(abil)
+        creature_dict['abilities'] = [asdict(abil)
                                      for abil in self.abilities]
         creature_dict['actions'] = [c.to_dict() for c in self.actions]
-        creature_dict['bonusactions'] = [dataclasses.asdict(ba)
+        creature_dict['bonusactions'] = [asdict(ba)
                                         for ba in self.bonusactions]
-        creature_dict['reactions'] = [dataclasses.asdict(react)
+        creature_dict['reactions'] = [asdict(react)
                                     for react in self.reactions]
-        creature_dict['legendaryactions'] = [dataclasses.asdict(la)
+        creature_dict['legendaryactions'] = [asdict(la)
                                             for la in self.legendaryactions]
-        creature_dict['mythicactions'] = [dataclasses.asdict(myth)
+        creature_dict['mythicactions'] = [asdict(myth)
                                          for myth in self.mythicactions]
         print(creature_dict)
         return json.dumps(creature_dict)
-
-    def save_json(self):
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        creature_json = open(timestr + '.json', "w")
-        n = creature_json.write(self.to_json())
-        print(n)
-        creature_json.close()
-
-    def get_total_ac(self):
-        return 10 + score_to_mod(self.ability_scores[AbilityScores.DEXTERITY]) + self.acbonus
-
-    def get_attack_bonus(self, attack):
-        return get_prof_bonus(self.challengerating) + \
-               self.ability_scores[attack.attack_mod] + \
-               attack.attack_bonus
-
-    def initialize_ability_scores(self):
-        self.ability_scores[AbilityScores.STRENGTH] = 10
-        self.ability_scores[AbilityScores.DEXTERITY] = 10
-        self.ability_scores[AbilityScores.CONSTITUTION] = 10
-        self.ability_scores[AbilityScores.INTELLIGENCE] = 10
-        self.ability_scores[AbilityScores.WISDOM] = 10
-        self.ability_scores[AbilityScores.CHARISMA] = 10
-
-    def prof_bonus(self):
-        return get_prof_bonus(self.challengerating)
-
-    def save_bonus(self, save):
-        return self.prof_bonus() + score_to_mod(self.ability_scores[save])
-
-    def skill_bonus(self, skill):
-        return self.prof_bonus() + score_to_mod(
-            self.ability_scores[SKILL_TO_ABILITY[skill]])
-
-    def passive_perception(self):
-        if self.skills['Perception']:
-            return 10 + self.skill_bonus('Perception')
-        else:
-            return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
 
     def load_json(self, creature_json):
         def convert_json_attack(json_attack):
@@ -318,13 +278,53 @@ class CreatureStatblock:
 
         return creature_statblock
 
+    def save_json(self):
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        creature_json = open(timestr + '.json', "w")
+        n = creature_json.write(self.to_json())
+        print(n)
+        creature_json.close()
+
+    def get_total_ac(self):
+        return 10 + score_to_mod(self.ability_scores[AbilityScores.DEXTERITY]) + self.acbonus
+
+    def get_attack_bonus(self, attack):
+        return get_prof_bonus(self.challengerating) + \
+               self.ability_scores[attack.attack_mod] + \
+               attack.attack_bonus
+
+    def initialize_ability_scores(self):
+        self.ability_scores[AbilityScores.STRENGTH] = 10
+        self.ability_scores[AbilityScores.DEXTERITY] = 10
+        self.ability_scores[AbilityScores.CONSTITUTION] = 10
+        self.ability_scores[AbilityScores.INTELLIGENCE] = 10
+        self.ability_scores[AbilityScores.WISDOM] = 10
+        self.ability_scores[AbilityScores.CHARISMA] = 10
+
+    def prof_bonus(self):
+        return get_prof_bonus(self.challengerating)
+
+    def save_bonus(self, save):
+        return self.prof_bonus() + score_to_mod(self.ability_scores[save])
+
+    def skill_bonus(self, skill):
+        return self.prof_bonus() + score_to_mod(
+            self.ability_scores[SKILL_TO_ABILITY[skill]])
+
+    def passive_perception(self):
+        if self.skills['Perception']:
+            return 10 + self.skill_bonus('Perception')
+        else:
+            return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
+
+
 @dataclass
 class AbilityDescription:
     name: str = "PLACEHOLDER ABILITY"
     description: str = "NO DESCRIPTION"
 
     def to_dict(self):
-        return dataclasses.asdict(self)
+        return asdict(self)
 
 
 @dataclass
@@ -374,7 +374,7 @@ class BaseAttack:
             raise ValueError('Invalid dice roll format')
 
     def to_dict(self):
-        attackdict = dataclasses.asdict(self)
+        attackdict = asdict(self)
         attackdict['type'] = self.type.value
         attackdict['attack_mod'] = self.attack_mod.value
         return attackdict
@@ -389,7 +389,7 @@ class MeleeWeaponAttack(BaseAttack):
         self.type = BaseAttack.AttackType.MELEEWEAPON
 
     def to_dict(self):
-        attackdict = dataclasses.asdict(self)
+        attackdict =ataclasses.asdict(self)
         attackdict['type'] = BaseAttack.AttackType.MELEEWEAPON.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['reach'] = self.reach
@@ -406,7 +406,7 @@ class RangedWeaponAttack(BaseAttack):
         self.type = BaseAttack.AttackType.RANGEDWEAPON
 
     def to_dict(self):
-        attackdict = dataclasses.asdict(self)
+        attackdict = asdict(self)
         attackdict['type'] = BaseAttack.AttackType.RANGEDWEAPON.value
         attackdict['short_range'] = self.short_range
         attackdict['attack_mod'] = self.attack_mod.value
@@ -423,7 +423,7 @@ class MeleeSpellAttack(BaseAttack):
         self.type = BaseAttack.AttackType.MELEESPELL
 
     def to_dict(self):
-        attackdict = dataclasses.asdict(self)
+        attackdict = asdict(self)
         attackdict['type'] = BaseAttack.AttackType.MELEESPELL.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['reach'] = self.reach
@@ -439,7 +439,7 @@ class RangedSpellAttack(BaseAttack):
         self.type = BaseAttack.AttackType.RANGEDSPELL
 
     def to_dict(self):
-        attackdict = dataclasses.asdict(self)
+        attackdict = asdict(self)
         attackdict['type'] = BaseAttack.AttackType.RANGEDSPELL.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['range'] = self.range
