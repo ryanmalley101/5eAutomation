@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScores
+from srd.srd_datastructs import Size, AbilityScores, SKILL_TO_ABILITY, score_to_mod, get_prof_bonus
 
 @dataclass
 class CreatureStatblock:
@@ -376,32 +376,3 @@ CR_TO_XP_TABLE = {
     30: 155000
 }
 
-SKILL_TO_ABILITY = {
-    "Athletics": AbilityScores.STRENGTH,
-    "Acrobatics": AbilityScores.DEXTERITY,
-    "Sleight of Hand": AbilityScores.DEXTERITY,
-    "Stealth": AbilityScores.DEXTERITY,
-    "Arcana": AbilityScores.INTELLIGENCE,
-    "History": AbilityScores.INTELLIGENCE,
-    "Investigation": AbilityScores.INTELLIGENCE,
-    "Nature": AbilityScores.INTELLIGENCE,
-    "Religion": AbilityScores.INTELLIGENCE,
-    "Animal Handling": AbilityScores.WISDOM,
-    "Insight": AbilityScores.WISDOM,
-    "Medicine": AbilityScores.WISDOM,
-    "Perception": AbilityScores.WISDOM,
-    "Survival": AbilityScores.WISDOM,
-    "Deception": AbilityScores.CHARISMA,
-    "Intimidation": AbilityScores.CHARISMA,
-    "Performance": AbilityScores.CHARISMA,
-    "Persuasion": AbilityScores.CHARISMA
-}
-
-def score_to_mod(score):
-    if score < 0:
-        raise Exception("Ability Score is less than 0")
-
-    return int((score-10)/2)
-
-def get_prof_bonus(cr):
-    return max(math.floor((cr - 1) / 4), 0) + 2
