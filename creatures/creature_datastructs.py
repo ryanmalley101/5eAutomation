@@ -389,7 +389,7 @@ class MeleeWeaponAttack(BaseAttack):
         self.type = BaseAttack.AttackType.MELEEWEAPON
 
     def to_dict(self):
-        attackdict =ataclasses.asdict(self)
+        attackdict = asdict(self)
         attackdict['type'] = BaseAttack.AttackType.MELEEWEAPON.value
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['reach'] = self.reach
