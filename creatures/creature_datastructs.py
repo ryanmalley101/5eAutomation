@@ -20,12 +20,7 @@ class CreatureStatblock:
     hitdice: str = '0d0'
     hitpoints: int = 0
     speed: str = '30 ft.'
-    strsave: bool = False
-    dexsave: bool = False
-    consave: bool = False
-    intsave: bool = False
-    wissave: bool = False
-    chasave: bool = False
+    saving_throws:set = field(default_factory=set)
     skills: dict = field(default_factory=dict)
     damageimmunities: dict = field(default_factory=dict)
     damageresistances: dict = field(default_factory=dict)
@@ -63,12 +58,10 @@ class CreatureStatblock:
             for key in score:
                 creature_dict['ability_scores'][AbilityScores(key)] = score[key]
         creature_dict['hitpoints'] = int(creature_dict['hitpoints'])
-        creature_dict['strsave'] = bool(creature_dict['strsave'])
-        creature_dict['dexsave'] = bool(creature_dict['dexsave'])
-        creature_dict['consave'] = bool(creature_dict['consave'])
-        creature_dict['intsave'] = bool(creature_dict['intsave'])
-        creature_dict['wissave'] = bool(creature_dict['wissave'])
-        creature_dict['chasave'] = bool(creature_dict['chasave'])
+        saves = creature_dict['saving_throws']
+        creature_dict['saving_throws'] = set()
+        for save in saves:
+            creature_dict['saving_throws'].add(AbilityScores(save))
         for skill in creature_dict['skills']:
             creature_dict['skills'][skill] = bool(skill)
         for immunity in creature_dict['damageimmunities']:
@@ -183,6 +176,7 @@ class MonsterStatblock(CreatureStatblock):
         creature_dict['alignment'] = self.alignment
         creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
                                           for score in self.ability_scores]
+        creature_dict['saving_throws'] = [save.value for save in self.saving_throws]
         creature_dict['abilities'] = [asdict(abil)
                                      for abil in self.abilities]
         creature_dict['actions'] = [c.to_dict() for c in self.actions]

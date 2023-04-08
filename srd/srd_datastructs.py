@@ -5,6 +5,7 @@ import json
 from patterns import DICESTRINGPATTERN
 import re
 
+
 class Size(Enum):
     TINY = 0
     SMALL = 1
@@ -42,12 +43,12 @@ class Size(Enum):
 
 
 class AbilityScores(Enum):
-    STRENGTH = "strength"
-    DEXTERITY = "dexterity"
-    CONSTITUTION = "constitution"
-    INTELLIGENCE = "intelligence"
-    WISDOM = "wisdom"
-    CHARISMA = "charisma"
+    STRENGTH = "Strength"
+    DEXTERITY = "Dexterity"
+    CONSTITUTION = "Constitution"
+    INTELLIGENCE = "Intelligence"
+    WISDOM = "Wisdom"
+    CHARISMA = "Charisma"
 
     @classmethod
     def menu(cls):

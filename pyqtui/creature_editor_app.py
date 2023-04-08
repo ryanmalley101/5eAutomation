@@ -29,12 +29,12 @@ class MonsterEditorForm(QDialog, Ui_Form):
         super().__init__(parent)
         self.setupUi(self)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "images"))
-
+        self.creature_block = creature_block
         self.setup_comboboxes()
         self.set_stylesheet()
         self.setup_checkbox_signals()
         self.setup_label_signals()
-        self.init_creature_data(creature_block)
+        self.init_creature_data()
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -87,7 +87,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         for cr in creature_datastructs.CR_TO_XP_TABLE:
             self.challenge_rating_combobox.addItem(str(cr))
         for save in creature_datastructs.AbilityScores:
-            self.saving_throws_combobox.addItem(save.name)
+            self.saving_throws_combobox.addItem(save.value)
         for skill in SKILL_LIST:
             self.skills_combobox.addItem(skill)
         for condition in CONDITION_LIST:
@@ -115,6 +115,14 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
         self.mythic_actions_container.setVisible(False)
 
+    def setup_pushbutton_signals(self):
+        self.save_button.pressed.connect(self.add_save_proficiency)
+
+    def add_save_proficiency(self):
+        selected_save = AbilityScores(self.saving_throws_combobox.currentText())
+        if selected_save not in self.creature_block.saving_throws:
+            self.creature_block.saving_throws.add(selected_save)
+
     def setup_label_signals(self):
         self.str_edit.editingFinished.connect(lambda: update_modifier(self.str_edit.text(), self.str_mod_label))
         self.dex_edit.editingFinished.connect(lambda: update_modifier(self.dex_edit.text(), self.dex_mod_label))
@@ -125,21 +133,17 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
         self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
 
-    def init_creature_data(self, creature):
+    def init_creature_data(self):
         def initsaves():
-            if creature.strsave: self.save_listwidget.addItem(AbilityScores.STRENGTH.value)
-            if creature.dexsave: self.save_listwidget.addItem(AbilityScores.DEXTERITY.value)
-            if creature.consave: self.save_listwidget.addItem(AbilityScores.CONSTITUTION.value)
-            if creature.intsave: self.save_listwidget.addItem(AbilityScores.INTELLIGENCE.value)
-            if creature.wissave: self.save_listwidget.addItem(AbilityScores.WISDOM.value)
-            if creature.chasave: self.save_listwidget.addItem(AbilityScores.CHARISMA.value)
+            for save in self.creature_block.saving_throws:
+                self.save_listwidget.addItem(save.value)
 
         def initskills():
-            for skill in creature.skills.keys():
+            for skill in self.creature_block.skills.keys():
                 self.skills_listwidget.addItem(skill)
 
         def initconditions():
-            for condition in creature.conditionimmunities.keys():
+            for condition in self.creature_block.conditionimmunities.keys():
                 self.condition_listwidget.addItem(condition)
 
         def initdamage():
@@ -148,11 +152,11 @@ class MonsterEditorForm(QDialog, Ui_Form):
                 self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype))
                 self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
 
-            for damage in creature.damagevulnerabilities:
+            for damage in self.creature_block.damagevulnerabilities:
                 insert_damage_row(damage, 'vulnerable')
-            for damage in creature.damageresistances:
+            for damage in self.creature_block.damageresistances:
                 insert_damage_row(damage, 'resistant')
-            for damage in creature.damageimmunities:
+            for damage in self.creature_block.damageimmunities:
                 insert_damage_row(damage, 'immune')
 
         def insert_ability(layout, ability):
@@ -160,16 +164,16 @@ class MonsterEditorForm(QDialog, Ui_Form):
             layout.addWidget(new_ability)
 
         def insert_attack(layout, attack):
-            new_attack = AttackButton(attack, creature)
+            new_attack = AttackButton(attack, self.creature_block)
             print(new_attack.text())
             layout.addWidget(new_attack)
 
         def initabilities():
-            for ability in creature.abilities:
+            for ability in self.creature_block.abilities:
                 insert_ability(self.abilities_list_layout, ability)
 
         def initactions():
-            for action in creature.actions:
+            for action in self.creature_block.actions:
                 if isinstance(action, AbilityDescription):
                     print("Adding ability action")
                     insert_ability(self.actions_list_layout, action)
@@ -180,52 +184,52 @@ class MonsterEditorForm(QDialog, Ui_Form):
                     print("Invalid action")
 
         def initreactions():
-            for reaction in creature.reactions:
+            for reaction in self.creature_block.reactions:
                 insert_ability(self.reactions_list_layout, reaction)
 
         def initbonusactions():
-            for bonusactions in creature.bonusactions:
+            for bonusactions in self.creature_block.bonusactions:
                 insert_ability(self.bonus_actions_list_layout, bonusactions)
 
         def initlegendaryactions():
-            for legendaryactions in creature.legendaryactions:
+            for legendaryactions in self.creature_block.legendaryactions:
                 insert_ability(self.legendary_actions_list_layout, legendaryactions)
 
         def initmythicactions():
-            for mythicactions in creature.mythicactions:
+            for mythicactions in self.creature_block.mythicactions:
                 insert_ability(self.mythic_actions_list_layout, mythicactions)
 
 
-        print(creature.name)
-        self.name_edit.setText(creature.name)
-        set_combo_box_selected_item(self.size_combobox, creature.size.name)
-        self.type_edit.setText(creature.type)
-        self.tag_edit.setText(creature.tag)
-        self.alignment_edit.setText(creature.alignment)
-        self.proficiency_bonus_calculation_label.setText(str(proficiency_bonus(creature.challengerating)))
-        set_combo_box_selected_item(self.challenge_rating_combobox, str(creature.challengerating))
+        print(self.creature_block.name)
+        self.name_edit.setText(self.creature_block.name)
+        set_combo_box_selected_item(self.size_combobox, self.creature_block.size.name)
+        self.type_edit.setText(self.creature_block.type)
+        self.tag_edit.setText(self.creature_block.tag)
+        self.alignment_edit.setText(self.creature_block.alignment)
+        self.proficiency_bonus_calculation_label.setText(str(proficiency_bonus(self.creature_block.challengerating)))
+        set_combo_box_selected_item(self.challenge_rating_combobox, str(self.creature_block.challengerating))
         self.xp_calculation_label.setText(str(
-            creature_datastructs.CR_TO_XP_TABLE[creature.challengerating]))
+            creature_datastructs.CR_TO_XP_TABLE[self.creature_block.challengerating]))
         self.proficiency_bonus_calculation_label.setText(str(
-            creature_datastructs.proficiency_bonus(creature.challengerating)))
-        self.hit_points_edit.setText(str(creature.hitpoints))
-        self.max_hit_dice_edit.setText(creature.hitdice)
-        self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(creature.size)}")
-        self.ac_bonus_edit.setText(str(creature.acbonus))
-        self.armor_type_edit.setText(creature.acdesc)
-        self.senses_edit.setText(creature.senses)
-        self.speeds_edit.setText(creature.speed)
-        self.str_edit.setText(str(creature.ability_scores[AbilityScores.STRENGTH]))
+            creature_datastructs.proficiency_bonus(self.creature_block.challengerating)))
+        self.hit_points_edit.setText(str(self.creature_block.hitpoints))
+        self.max_hit_dice_edit.setText(self.creature_block.hitdice)
+        self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(self.creature_block.size)}")
+        self.ac_bonus_edit.setText(str(self.creature_block.acbonus))
+        self.armor_type_edit.setText(self.creature_block.acdesc)
+        self.senses_edit.setText(self.creature_block.senses)
+        self.speeds_edit.setText(self.creature_block.speed)
+        self.str_edit.setText(str(self.creature_block.ability_scores[AbilityScores.STRENGTH]))
         update_modifier(self.str_edit.text(), self.str_mod_label)
-        self.dex_edit.setText(str(creature.ability_scores[AbilityScores.DEXTERITY]))
+        self.dex_edit.setText(str(self.creature_block.ability_scores[AbilityScores.DEXTERITY]))
         update_modifier(self.dex_edit.text(), self.dex_mod_label)
-        self.con_edit.setText(str(creature.ability_scores[AbilityScores.CONSTITUTION]))
+        self.con_edit.setText(str(self.creature_block.ability_scores[AbilityScores.CONSTITUTION]))
         update_modifier(self.con_edit.text(), self.con_mod_label)
-        self.int_edit.setText(str(creature.ability_scores[AbilityScores.INTELLIGENCE]))
+        self.int_edit.setText(str(self.creature_block.ability_scores[AbilityScores.INTELLIGENCE]))
         update_modifier(self.int_edit.text(), self.int_mod_label)
-        self.wis_edit.setText(str(creature.ability_scores[AbilityScores.WISDOM]))
+        self.wis_edit.setText(str(self.creature_block.ability_scores[AbilityScores.WISDOM]))
         update_modifier(self.wis_edit.text(), self.wis_mod_label)
-        self.cha_edit.setText(str(creature.ability_scores[AbilityScores.CHARISMA]))
+        self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScores.CHARISMA]))
         update_modifier(self.cha_edit.text(), self.cha_mod_label)
         initsaves()
         initskills()

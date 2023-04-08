@@ -1,5 +1,5 @@
 from creature_datastructs import *
-from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST
+from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, BaseAttack, MeleeWeaponAttack
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):
@@ -59,20 +59,19 @@ def print_monster_actions(monster):
 
 def print_monster_saves(monster):
     save_string = ""
-    if monster.strsave or monster.dexsave or monster.consave \
-        or monster.intsave or monster.wissave or monster.chasave:
+    if monster.saving_throws:
         save_string = "> - **Saving Throws** "
-        if monster.strsave:
+        if AbilityScores.STRENGTH in monster.saving_throws:
             save_string += f"STR +{monster.save_bonus(AbilityScores.STRENGTH)}, "
-        if monster.dexsave:
+        if AbilityScores.DEXTERITY in monster.saving_throws:
             save_string += f"DEX +{monster.save_bonus(AbilityScores.DEXTERITY)}, "
-        if monster.strsave:
+        if AbilityScores.CONSTITUTION in monster.saving_throws:
             save_string += f"CON +{monster.save_bonus(AbilityScores.CONSTITUTION)}, "
-        if monster.strsave:
+        if AbilityScores.INTELLIGENCE in monster.saving_throws:
             save_string += f"INT +{monster.save_bonus(AbilityScores.INTELLIGENCE)}, "
-        if monster.strsave:
+        if AbilityScores.WISDOM in monster.saving_throws:
             save_string += f"WIS +{monster.save_bonus(AbilityScores.WISDOM)}, "
-        if monster.strsave:
+        if AbilityScores.CHARISMA in monster.saving_throws:
             save_string += f"CHA +{monster.save_bonus(AbilityScores.CHARISMA)} "
         save_string += '\n'
     return save_string
@@ -177,7 +176,7 @@ def print_monster_senses(monster):
     return senses_string
 
 
-def convert_monster(monster: CreatureStatblock):
+def convert_monster(monster: MonsterStatblock):
     monster_markup  =  "# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
     monster_markup += f"# >* {monster.size.value}, {monster.alignment}\n"

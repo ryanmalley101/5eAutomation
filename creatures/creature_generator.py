@@ -138,27 +138,27 @@ def save_prof_wizard(creature):
     strprof = input("Is the creature proficient in "
                     "Strength saves, (y)es or (n)o\n")
     if strprof == 'y' or strprof == 'yes':
-        creature.strsave = True
+        creature.saving_throws.add(AbilityScores.STRENGTH)
     dexprof = input("Is the creature proficient in "
                     "Dexterity saves, (y)es or (n)o\n")
     if dexprof == 'y' or dexprof == 'yes':
-        creature.dexsave = True
+        creature.saving_throws.add(AbilityScores.DEXTERITY)
     conprof = input("Is the creature proficient in "
                     "Constitution saves, (y)es or (n)o\n")
     if conprof == 'y' or conprof == 'yes':
-        creature.consave = True
+        creature.saving_throws.add(AbilityScores.CONSTITUTION)
     intprof = input("Is the creature proficient in "
                     "Intelligence saves, (y)es or (n)o\n")
     if intprof == 'y' or intprof == 'yes':
-        creature.intsave = True
+        creature.saving_throws.add(AbilityScores.INTELLIGENCE)
     wisprof = input("Is the creature proficient in "
                     "Wisdom saves, (y)es or (n)o\n")
     if wisprof == 'y' or wisprof == 'yes':
-        creature.wissave = True
+        creature.saving_throws.add(AbilityScores.WISDOM)
     chaprof = input("Is the creature proficient in "
                     "Charisma saves, (y)es or (n)o\n")
     if chaprof == 'y' or chaprof == 'yes':
-        creature.chasave = True
+        creature.saving_throws.add(AbilityScores.CHARISMA)
     return creature
 
 
@@ -771,12 +771,7 @@ def generate_test_creature():
         hitdice='7d8',
         hitpoints=100,
         speed='30 ft.',
-        strsave=True,
-        dexsave=False,
-        consave=True,
-        intsave=False,
-        wissave=True,
-        chasave=False,
+        saving_throws={AbilityScores.STRENGTH, AbilityScores.CONSTITUTION, AbilityScores.WISDOM},
         skills={"Perception": True, "Stealth": True},
         damageimmunities={"fire": True, "cold": True},
         damageresistances={"psychic": True, "lightning": True},
