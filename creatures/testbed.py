@@ -1,12 +1,12 @@
-from statblockdatastructs import *
-from gmbinderconvert import *
-from monstergenerator import generate_test_monster
+from creature_datastructs import *
+from creature_gmbinder_convert import *
+from creature_generator import generate_test_creature
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    generated_monster = generate_test_monster()
+    generated_monster = generate_test_creature()
     monster_json = generated_monster.to_json()
-    post_json_monster = MonsterBlock().load_json(json.loads(monster_json))
+    post_json_monster = CreatureStatblock().load_json(json.loads(monster_json))
     for attr, value in generated_monster.__dict__.items():
         oldvalue = value
         newvalue = post_json_monster.__dict__[attr]

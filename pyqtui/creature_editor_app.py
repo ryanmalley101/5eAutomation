@@ -5,11 +5,10 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-import statblockdatastructs
-from statblockdatastructs import AbilityScores
+from creatures import creature_datastructs
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QMainWindow, QMessageBox, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit
+    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit
 )
 
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
@@ -17,12 +16,12 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6 import QtCore
 
 from creature_editor_ui import Ui_Form
-from monstergenerator import generate_test_monster
+from creatures.creature_generator import generate_test_creature
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
 class CreatureEditorForm(QDialog, Ui_Form):
-    def __init__(self, monster_block: statblockdatastructs.MonsterBlock, parent=None):
+    def __init__(self, creature_block: creature_datastructs.CreatureStatblock, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "images"))
@@ -40,10 +39,9 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.mythic_actions_list_model = QStandardItemModel()
 
         self.setup_comboboxes()
-        self.setup_list_models()
         self.set_stylesheet()
         self.setup_checkbox_signals()
-        self.init_creature_data(monster_block)
+        self.init_creature_data(creature_block)
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -85,18 +83,17 @@ class CreatureEditorForm(QDialog, Ui_Form):
     def setup_comboboxes(self):
         # Size combobox
         self.size_combobox.clear()
-        for size in statblockdatastructs.Size:
+        for size in creature_datastructs.Size:
             self.size_combobox.addItem(size.name)
-        for cr in statblockdatastructs.CR_TO_XP_TABLE:
+        for cr in creature_datastructs.CR_TO_XP_TABLE:
             self.challenge_rating_combobox.addItem(str(cr))
-            self.challenge_rating_combobox.setCurrentIndex(0)
-        for save in statblockdatastructs.AbilityScores:
+        for save in creature_datastructs.AbilityScores:
             self.saving_throws_combobox.addItem(save.name)
-        for skill in statblockdatastructs.SKILL_LIST:
+        for skill in creature_datastructs.SKILL_LIST:
             self.skills_combobox.addItem(skill)
-        for condition in statblockdatastructs.CONDITION_LIST:
+        for condition in creature_datastructs.CONDITION_LIST:
             self.conditions_combobox.addItem(condition)
-        for damage in statblockdatastructs.DAMAGE_LIST:
+        for damage in creature_datastructs.DAMAGE_LIST:
             self.damage_combobox.addItem(damage)
         return True
 
@@ -139,9 +136,14 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.alignment_edit.setText(creature.alignment)
         set_combo_box_selected_item(self.challenge_rating_combobox, str(creature.challengerating))
         self.proficiency_bonus_calculation_label.setText(str(statblockdatastructs.get_prof_bonus(creature.challengerating)))
+        self.challenge_rating_combobox.setCurrentIndex(self.challenge_rating_combobox.findData(creature.challengerating))
+        self.xp_calculation_label.setText(str(
+            creature_datastructs.CR_TO_XP_TABLE[creature.challengerating]))
+        self.proficiency_bonus_calculation_label.setText(str(
+            creature_datastructs.get_prof_bonus(creature.challengerating)))
         self.hit_points_edit.setText(str(creature.hitpoints))
         self.max_hit_dice_edit.setText(creature.hitdice)
-        self.hit_die_calculation_label.setText(f"d{statblockdatastructs.Size.hitdice(creature.size)}")
+        self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(creature.size)}")
         self.ac_bonus_edit.setText(str(creature.acbonus))
         self.armor_type_edit.setText(creature.acdesc)
         self.senses_edit.setText(creature.senses)
@@ -166,6 +168,6 @@ def set_combo_box_selected_item(combo_box, item):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = CreatureEditorForm(monster_block=generate_test_monster(), parent=None)
+    myWindow = CreatureEditorForm(creature_block=generate_test_creature(), parent=None)
     myWindow.show()
     app.exec()
