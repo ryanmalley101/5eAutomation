@@ -33,18 +33,10 @@ class CreatureStatblock:
     conditionimmunities: dict = field(default_factory=dict)
     senses: str = ""
     languages: str = ""
-    challengerating: int = 0
     abilities: list = field(default_factory=list)
     actions: list = field(default_factory=list)
     bonusactions: list = field(default_factory=list)
     reactions: list = field(default_factory=list)
-    legendaryactions: list = field(default_factory=list)
-    mythicdescription: str = None
-    mythicactions: list = field(default_factory=list)
-
-    VULNERABILITY = "VULNERABILITY"
-    IMMUNITY = "IMMUNITY"
-    RESISTANCE = "RESISTANCE"
 
     def to_json(self):
         creature_dict = asdict(self)
@@ -59,12 +51,7 @@ class CreatureStatblock:
                                         for ba in self.bonusactions]
         creature_dict['reactions'] = [asdict(react)
                                     for react in self.reactions]
-        creature_dict['legendaryactions'] = [asdict(la)
-                                            for la in self.legendaryactions]
-        creature_dict['mythicactions'] = [asdict(myth)
-                                         for myth in self.mythicactions]
-        print(creature_dict)
-        return json.dumps(creature_dict)
+
 
     def load_json(self, creature_json):
         def convert_json_attack(json_attack):
@@ -211,6 +198,29 @@ class CreatureStatblock:
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
 
+
+@dataclass
+class PlayerCharacterStatblock(CreatureStatblock):
+    class_levels: dict = field(default_factory=dict)
+
+
+@dataclass
+class MonsterStatblock(CreatureStatblock):
+    challengerating: int = 0
+    legendaryactions: list = field(default_factory=list)
+    mythicdescription: str = None
+    mythicactions: list = field(default_factory=list)
+
+    def to_json(self):
+        creature_dict = super().to_json(self)
+
+        creature_dict['legendaryactions'] = [asdict(la)
+                                            for la in self.legendaryactions]
+        creature_dict['mythicactions'] = [asdict(myth)
+                                         for myth in self.mythicactions]
+        print(creature_dict)
+        return json.dumps(creature_dict)
+
 @dataclass
 class BaseAttack:
     class AttackType(Enum):
@@ -328,6 +338,12 @@ class RangedSpellAttack(BaseAttack):
         attackdict['attack_mod'] = self.attack_mod.value
         attackdict['range'] = self.range
         return attackdict
+
+
+class DamageModifiers(Enum):
+    VULNERABILITY = "VULNERABILITY"
+    IMMUNITY = "IMMUNITY"
+    RESISTANCE = "RESISTANCE"
 
 CR_TO_XP_TABLE = {
     0: 0,
