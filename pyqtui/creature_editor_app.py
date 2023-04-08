@@ -6,6 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
+from srd.srd_datastructs import AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus
 
 from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit
@@ -89,14 +90,13 @@ class CreatureEditorForm(QDialog, Ui_Form):
             self.challenge_rating_combobox.addItem(str(cr))
         for save in creature_datastructs.AbilityScores:
             self.saving_throws_combobox.addItem(save.name)
-        for skill in creature_datastructs.SKILL_LIST:
+        for skill in SKILL_LIST:
             self.skills_combobox.addItem(skill)
-        for condition in creature_datastructs.CONDITION_LIST:
+        for condition in CONDITION_LIST:
             self.conditions_combobox.addItem(condition)
-        for damage in creature_datastructs.DAMAGE_LIST:
+        for damage in DAMAGE_LIST:
             self.damage_combobox.addItem(damage)
         return True
-
 
     def setup_checkbox_signals(self):
         def toggle_container_visibility(checkbox, container):
@@ -135,12 +135,12 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.tag_edit.setText(creature.tag)
         self.alignment_edit.setText(creature.alignment)
         set_combo_box_selected_item(self.challenge_rating_combobox, str(creature.challengerating))
-        self.proficiency_bonus_calculation_label.setText(str(statblockdatastructs.get_prof_bonus(creature.challengerating)))
+        self.proficiency_bonus_calculation_label.setText(str(proficiency_bonus(creature.challengerating)))
         self.challenge_rating_combobox.setCurrentIndex(self.challenge_rating_combobox.findData(creature.challengerating))
         self.xp_calculation_label.setText(str(
             creature_datastructs.CR_TO_XP_TABLE[creature.challengerating]))
         self.proficiency_bonus_calculation_label.setText(str(
-            creature_datastructs.get_prof_bonus(creature.challengerating)))
+            creature_datastructs.proficiency_bonus(creature.challengerating)))
         self.hit_points_edit.setText(str(creature.hitpoints))
         self.max_hit_dice_edit.setText(creature.hitdice)
         self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(creature.size)}")
@@ -154,7 +154,7 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.int_edit.setText(str(creature.ability_scores[AbilityScores.INTELLIGENCE]))
         self.wis_edit.setText(str(creature.ability_scores[AbilityScores.WISDOM]))
         self.cha_edit.setText(str(creature.ability_scores[AbilityScores.CHARISMA]))
-        initSaves()
+        initsaves()
 
 
 def set_combo_box_selected_item(combo_box, item):
@@ -165,6 +165,7 @@ def set_combo_box_selected_item(combo_box, item):
             break
 
     combo_box.setCurrentIndex(index)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

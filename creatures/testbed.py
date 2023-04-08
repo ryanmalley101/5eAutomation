@@ -6,7 +6,7 @@ from creature_generator import generate_test_creature
 if __name__ == '__main__':
     generated_monster = generate_test_creature()
     monster_json = generated_monster.to_json()
-    post_json_monster = CreatureStatblock().load_json(json.loads(monster_json))
+    post_json_monster = MonsterStatblock.load_json(monster_json)
     for attr, value in generated_monster.__dict__.items():
         oldvalue = value
         newvalue = post_json_monster.__dict__[attr]

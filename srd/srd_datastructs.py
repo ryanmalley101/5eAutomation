@@ -136,7 +136,7 @@ def score_to_mod(score):
 
     return int((score-10)/2)
 
-def get_prof_bonus(cr):
+def proficiency_bonus(cr):
     return max(math.floor((cr - 1) / 4), 0) + 2
 
 

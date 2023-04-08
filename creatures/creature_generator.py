@@ -5,6 +5,7 @@ import math
 import re
 from patterns import DICESTRINGPATTERN
 from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST
+from creature_datastructs import DamageModifiers
 
 
 def size_wizard():
@@ -166,18 +167,18 @@ def toggle_skill(creature, skill):
 
 
 def toggle_damage(creature, damage, damagemodifier=None):
-    if damagemodifier == CreatureStatblock.IMMUNITY:
+    if damagemodifier == DamageModifiers.IMMUNITY:
         creature.damageimmunities[damage] = \
             not creature.damageimmunities[damage]
-    elif damagemodifier == CreatureStatblock.VULNERABILITY:
+    elif damagemodifier == DamageModifiers.VULNERABILITY:
         creature.damagevulnerabilities[damage] = \
             not creature.damagevulnerabilities[damage]
-    elif damagemodifier == CreatureStatblock.RESISTANCE:
+    elif damagemodifier == DamageModifiers.RESISTANCE:
         creature.damageresistances[damage] = \
             not creature.damageresistances[damage]
     else:
-        print(f"Damage Modifier does not match {CreatureStatblock.IMMUNITY}, "
-              f"{CreatureStatblock.VULNERABILITY}, or {CreatureStatblock.RESISTANCE}")
+        print(f"Damage Modifier does not match {DamageModifiers.IMMUNITY}, "
+              f"{DamageModifiers.VULNERABILITY}, or {DamageModifiers.RESISTANCE}")
 
 
 def toggle_condition(creature, condition):
@@ -288,6 +289,7 @@ def condition_immunity_wizard(creature, initialize=True):
                 f'Invalid input. Expected integer '
                 f'between 0 and {len(CONDITION_LIST)}')
     return creature
+
 
 def get_challenge_rating():
     crinput = ""
@@ -706,7 +708,7 @@ def interactive_creature_gen():
     vulnerabilityprompt = input("Does the creature have any damage "
                                 "vulnerabilities: (y)es or (n)o? Default no\n")
     if vulnerabilityprompt == 'y' or vulnerabilityprompt == 'yes':
-        creature = damage_type_wizard(creature, CreatureStatblock.VULNERABILITY,
+        creature = damage_type_wizard(creature, DamageModifiers.VULNERABILITY,
                                      initialize=True)
 
     # Get damage resistances
@@ -714,7 +716,7 @@ def interactive_creature_gen():
         "Does the creature have any damage resistances:"
         " (y)es or (n)o? Default no\n")
     if resistanceprompt == 'y' or resistanceprompt == 'yes':
-        creature = damage_type_wizard(creature, CreatureStatblock.RESISTANCE,
+        creature = damage_type_wizard(creature, DamageModifiers.RESISTANCE,
                                      initialize=True)
 
     # Get damage resistances
@@ -722,7 +724,7 @@ def interactive_creature_gen():
         "Does the creature have any damage immunities: "
         "(y)es or (n)o? Default no\n")
     if immunityprompt == 'y' or immunityprompt == 'yes':
-        creature = damage_type_wizard(creature, CreatureStatblock.IMMUNITY,
+        creature = damage_type_wizard(creature, DamageModifiers.IMMUNITY,
                                      initialize=True)
 
     conditionprompt = input("Does the creature have any condition "
@@ -749,8 +751,9 @@ def interactive_creature_gen():
 
     return creature
 
+
 def generate_test_creature():
-    return CreatureStatblock(
+    return MonsterStatblock(
         name="TEST CREATURE",
         size=Size.MEDIUM,
         type="Tester",
