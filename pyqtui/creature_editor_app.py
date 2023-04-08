@@ -179,6 +179,22 @@ class MonsterEditorForm(QDialog, Ui_Form):
                 else:
                     print("Invalid action")
 
+        def initreactions():
+            for reaction in creature.reactions:
+                insert_ability(self.reactions_list_layout, reaction)
+
+        def initbonusactions():
+            for bonusactions in creature.bonusactions:
+                insert_ability(self.bonus_actions_list_layout, bonusactions)
+
+        def initlegendaryactions():
+            for legendaryactions in creature.legendaryactions:
+                insert_ability(self.legendary_actions_list_layout, legendaryactions)
+
+        def initmythicactions():
+            for mythicactions in creature.mythicactions:
+                insert_ability(self.mythic_actions_list_layout, mythicactions)
+
 
         print(creature.name)
         self.name_edit.setText(creature.name)
@@ -217,6 +233,10 @@ class MonsterEditorForm(QDialog, Ui_Form):
         initdamage()
         initabilities()
         initactions()
+        initbonusactions()
+        initreactions()
+        initlegendaryactions()
+        initmythicactions()
 
 def set_combo_box_selected_item(combo_box, item):
     index = -1

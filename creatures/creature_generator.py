@@ -796,6 +796,8 @@ def generate_test_creature():
                                    reach=5)],
         reactions=[AbilityDescription(name="Parry",
                                       description="This is a test reaction")],
+        bonusactions=[AbilityDescription(name="Misty Step",
+                                         description="Teleport 30 feet.")],
         legendaryactions=[AbilityDescription(name="Move",
                                              description="This is a test legendary action"),
                           AbilityDescription(name="Attack",
