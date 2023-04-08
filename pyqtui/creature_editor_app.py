@@ -6,11 +6,13 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus
+from srd.srd_datastructs import AbilityScores, Size, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus, score_to_mod, BaseAttack
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit
+    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem
 )
+
+from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
 
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 
@@ -21,33 +23,23 @@ from creatures.creature_generator import generate_test_creature
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
-class CreatureEditorForm(QDialog, Ui_Form):
-    def __init__(self, creature_block: creature_datastructs.CreatureStatblock, parent=None):
+
+class MonsterEditorForm(QDialog, Ui_Form):
+    def __init__(self, creature_block: creature_datastructs.MonsterStatblock, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "images"))
 
-        # Set up the list models for the various QListViews
-        self.save_list_model = QStandardItemModel()
-        self.skills_list_model = QStandardItemModel()
-        self.condition_list_model = QStandardItemModel()
-        self.damage_list_model = QStandardItemModel()
-        self.abilities_list_model = QStandardItemModel()
-        self.actions_list_model = QStandardItemModel()
-        self.reactions_list_model = QStandardItemModel()
-        self.bonus_actions_list_model = QStandardItemModel()
-        self.legendary_actions_list_model = QStandardItemModel()
-        self.mythic_actions_list_model = QStandardItemModel()
-
         self.setup_comboboxes()
         self.set_stylesheet()
         self.setup_checkbox_signals()
+        self.setup_label_signals()
         self.init_creature_data(creature_block)
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
         def set_derived_styles():
-            derived_stylesheet = 'background-color: rgb(125, 132, 145); font: 16pt "Cambria";'
+            derived_stylesheet = 'background-color: rgb(235, 146, 52); font: 16pt "Cambria";'
             self.proficiency_bonus_calculation_label.setStyleSheet(derived_stylesheet)
             self.hit_die_calculation_label.setStyleSheet(derived_stylesheet)
             self.str_mod_label.setStyleSheet(derived_stylesheet)
@@ -62,7 +54,6 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.scrollArea.setStyleSheet('#scrollArea{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollAreaWidgetContents.setStyleSheet('#scrollAreaWidgetContents{background-image: url(images:papyrusbackground.jpg)}')
         for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton, QCheckBox, QTextEdit)):
-            print(widget)
             if isinstance(widget, QLabel):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}')
                 widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
@@ -76,10 +67,17 @@ class CreatureEditorForm(QDialog, Ui_Form):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
             elif isinstance(widget, QCheckBox):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
+        self.abilities_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.actions_list_groupbox.setStyleSheet(f'#{self.actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.bonus_actions_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.reactions_list_groupbox.setStyleSheet(f'#{self.reactions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.bonus_actions_list_groupbox.setStyleSheet(f'#{self.bonus_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.legendary_actions_list_groupbox.setStyleSheet(f'#{self.legendary_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+        self.mythic_actions_list_groupbox.setStyleSheet(f'#{self.mythic_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+
 
         set_derived_styles()
         return None
-
 
     def setup_comboboxes(self):
         # Size combobox
@@ -117,26 +115,79 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
         self.mythic_actions_container.setVisible(False)
 
+    def setup_label_signals(self):
+        self.str_edit.editingFinished.connect(lambda: update_modifier(self.str_edit.text(), self.str_mod_label))
+        self.dex_edit.editingFinished.connect(lambda: update_modifier(self.dex_edit.text(), self.dex_mod_label))
+        self.con_edit.editingFinished.connect(lambda: update_modifier(self.con_edit.text(), self.con_mod_label))
+        self.int_edit.editingFinished.connect(lambda: update_modifier(self.int_edit.text(), self.int_mod_label))
+        self.wis_edit.editingFinished.connect(lambda: update_modifier(self.wis_edit.text(), self.wis_mod_label))
+        self.cha_edit.editingFinished.connect(lambda: update_modifier(self.cha_edit.text(), self.cha_mod_label))
+        self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
+        self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
 
     def init_creature_data(self, creature):
         def initsaves():
-            # if creature.strsave: self.save_listview
-            if creature.dexsave: self.save_list_model.appendRow(QStandardItem(AbilityScores.DEXTERITY.value))
-            if creature.consave: self.save_list_model.appendRow(QStandardItem(AbilityScores.CONSTITUTION.value))
-            if creature.intsave: self.save_list_model.appendRow(QStandardItem(AbilityScores.INTELLIGENCE.value))
-            if creature.wissave: self.save_list_model.appendRow(QStandardItem(AbilityScores.WISDOM.value))
-            if creature.chasave: self.save_list_model.appendRow(QStandardItem(AbilityScores.CHARISMA.value))
+            if creature.strsave: self.save_listwidget.addItem(AbilityScores.STRENGTH.value)
+            if creature.dexsave: self.save_listwidget.addItem(AbilityScores.DEXTERITY.value)
+            if creature.consave: self.save_listwidget.addItem(AbilityScores.CONSTITUTION.value)
+            if creature.intsave: self.save_listwidget.addItem(AbilityScores.INTELLIGENCE.value)
+            if creature.wissave: self.save_listwidget.addItem(AbilityScores.WISDOM.value)
+            if creature.chasave: self.save_listwidget.addItem(AbilityScores.CHARISMA.value)
+
+        def initskills():
+            for skill in creature.skills.keys():
+                self.skills_listwidget.addItem(skill)
+
+        def initconditions():
+            for condition in creature.conditionimmunities.keys():
+                self.condition_listwidget.addItem(condition)
+
+        def initdamage():
+            def insert_damage_row(damagetype, modifier):
+                self.damage_tablewidget.insertRow(self.damage_tablewidget.rowCount())
+                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype))
+                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
+
+            for damage in creature.damagevulnerabilities:
+                insert_damage_row(damage, 'vulnerable')
+            for damage in creature.damageresistances:
+                insert_damage_row(damage, 'resistant')
+            for damage in creature.damageimmunities:
+                insert_damage_row(damage, 'immune')
+
+        def insert_ability(layout, ability):
+            new_ability = AbilityButton(ability)
+            layout.addWidget(new_ability)
+
+        def insert_attack(layout, attack):
+            new_attack = AttackButton(attack, creature)
+            print(new_attack.text())
+            layout.addWidget(new_attack)
+
+        def initabilities():
+            for ability in creature.abilities:
+                insert_ability(self.abilities_list_layout, ability)
+
+        def initactions():
+            for action in creature.actions:
+                if isinstance(action, AbilityDescription):
+                    print("Adding ability action")
+                    insert_ability(self.actions_list_layout, action)
+                elif isinstance(action, BaseAttack):
+                    print("Adding attack action")
+                    insert_attack(self.actions_list_layout, action)
+                else:
+                    print("Invalid action")
 
 
         print(creature.name)
         self.name_edit.setText(creature.name)
-        self.size_combobox.setCurrentIndex(self.size_combobox.findData(creature.size.value))
+        set_combo_box_selected_item(self.size_combobox, creature.size.name)
         self.type_edit.setText(creature.type)
         self.tag_edit.setText(creature.tag)
         self.alignment_edit.setText(creature.alignment)
-        set_combo_box_selected_item(self.challenge_rating_combobox, str(creature.challengerating))
         self.proficiency_bonus_calculation_label.setText(str(proficiency_bonus(creature.challengerating)))
-        self.challenge_rating_combobox.setCurrentIndex(self.challenge_rating_combobox.findData(creature.challengerating))
+        set_combo_box_selected_item(self.challenge_rating_combobox, str(creature.challengerating))
         self.xp_calculation_label.setText(str(
             creature_datastructs.CR_TO_XP_TABLE[creature.challengerating]))
         self.proficiency_bonus_calculation_label.setText(str(
@@ -149,26 +200,58 @@ class CreatureEditorForm(QDialog, Ui_Form):
         self.senses_edit.setText(creature.senses)
         self.speeds_edit.setText(creature.speed)
         self.str_edit.setText(str(creature.ability_scores[AbilityScores.STRENGTH]))
+        update_modifier(self.str_edit.text(), self.str_mod_label)
         self.dex_edit.setText(str(creature.ability_scores[AbilityScores.DEXTERITY]))
+        update_modifier(self.dex_edit.text(), self.dex_mod_label)
         self.con_edit.setText(str(creature.ability_scores[AbilityScores.CONSTITUTION]))
+        update_modifier(self.con_edit.text(), self.con_mod_label)
         self.int_edit.setText(str(creature.ability_scores[AbilityScores.INTELLIGENCE]))
+        update_modifier(self.int_edit.text(), self.int_mod_label)
         self.wis_edit.setText(str(creature.ability_scores[AbilityScores.WISDOM]))
+        update_modifier(self.wis_edit.text(), self.wis_mod_label)
         self.cha_edit.setText(str(creature.ability_scores[AbilityScores.CHARISMA]))
+        update_modifier(self.cha_edit.text(), self.cha_mod_label)
         initsaves()
-
+        initskills()
+        initconditions()
+        initdamage()
+        initabilities()
+        initactions()
 
 def set_combo_box_selected_item(combo_box, item):
     index = -1
     for i in range(combo_box.count()):
+        print(f"{combo_box.itemText(i)} {item}" )
         if combo_box.itemText(i) == item:
             index = i
             break
 
     combo_box.setCurrentIndex(index)
+    print(combo_box.currentText())
+
+
+def update_modifier(score, modifier_label):
+    if score.isdigit():
+        mod = score_to_mod(int(score))
+        modstr = f'+{mod}' if mod >= 0 else f'{mod}'
+        modifier_label.setText(modstr)
+    else:
+        raise TypeError("Tried to update a score modifier with a non integer value")
+
+
+def update_hitdice(size, modifier_label):
+    if isinstance(size, Size):
+        modifier_label.setText(str(f"d{Size.hitdice(size)}"))
+    else:
+        raise TypeError("Tried to enter a non-Size value to calculate hitdice")
+
+
+def update_prof_bonus(cr, modifier_label):
+    modifier_label.setText(f'+{proficiency_bonus(cr)}')
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = CreatureEditorForm(creature_block=generate_test_creature(), parent=None)
+    myWindow = MonsterEditorForm(creature_block=generate_test_creature(), parent=None)
     myWindow.show()
     app.exec()

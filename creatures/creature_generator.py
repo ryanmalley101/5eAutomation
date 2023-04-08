@@ -1,11 +1,11 @@
 # This is a sample Python script.
 
-from creature_datastructs import *
+from creatures.creature_datastructs import *
 import math
 import re
 from patterns import DICESTRINGPATTERN
-from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST
-from creature_datastructs import DamageModifiers
+from srd.srd_datastructs import *
+from creatures.creature_datastructs import DamageModifiers
 
 
 def size_wizard():
