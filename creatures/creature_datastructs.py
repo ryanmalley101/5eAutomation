@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScores, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus
+from srd.srd_datastructs import Size, AbilityScores, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
 
 @dataclass
 class CreatureStatblock:

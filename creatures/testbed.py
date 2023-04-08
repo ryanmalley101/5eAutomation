@@ -14,6 +14,6 @@ if __name__ == '__main__':
             print(f"Old Object: {attr}, {oldvalue}\n"
                   f"New Object: {attr}, {newvalue}")
 
-    assert generated_monster == post_json_monster
+    assert (generated_monster.__dict__.items() ^ post_json_monster.__dict__.items()) == set()
     generated_monster.save_json()
     # print(convert_monster(generated_monster))
