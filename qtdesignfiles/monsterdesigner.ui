@@ -39,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>899</width>
-           <height>1636</height>
+           <width>882</width>
+           <height>1587</height>
           </rect>
          </property>
          <property name="styleSheet">
@@ -473,7 +473,7 @@
                 <item>
                  <widget class="QLabel" name="str_label">
                   <property name="text">
-                   <string>Strength Score</string>
+                   <string>STR Score</string>
                   </property>
                  </widget>
                 </item>
@@ -501,7 +501,7 @@
                 <item>
                  <widget class="QLabel" name="dex_label">
                   <property name="text">
-                   <string>Dexterity Score:</string>
+                   <string>DEX Score</string>
                   </property>
                  </widget>
                 </item>
@@ -529,7 +529,7 @@
                 <item>
                  <widget class="QLabel" name="con_label">
                   <property name="text">
-                   <string>Constitution Score</string>
+                   <string>CON Score</string>
                   </property>
                  </widget>
                 </item>
@@ -557,7 +557,7 @@
                 <item>
                  <widget class="QLabel" name="int_label">
                   <property name="text">
-                   <string>Intelligence Score</string>
+                   <string>INT Score</string>
                   </property>
                  </widget>
                 </item>
@@ -583,16 +583,16 @@
               <item>
                <layout class="QVBoxLayout" name="verticalLayout_15">
                 <item>
-                 <widget class="QLabel" name="wis_edit">
+                 <widget class="QLabel" name="wis_label">
                   <property name="text">
-                   <string>Wisdom Score</string>
+                   <string>WIS Score</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <item>
-                   <widget class="QLineEdit" name="wis_edit_2"/>
+                   <widget class="QLineEdit" name="wis_edit"/>
                   </item>
                   <item>
                    <widget class="QLabel" name="wis_mod_label">
@@ -613,7 +613,7 @@
                 <item>
                  <widget class="QLabel" name="cha_label">
                   <property name="text">
-                   <string>Charisma Score</string>
+                   <string>CHA Score</string>
                   </property>
                  </widget>
                 </item>
@@ -678,7 +678,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QListView" name="save_listview"/>
+                   <widget class="QListWidget" name="save_listview"/>
                   </item>
                  </layout>
                 </item>
@@ -702,7 +702,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QListView" name="skills_listview"/>
+                   <widget class="QListWidget" name="skills_listview"/>
                   </item>
                  </layout>
                 </item>
@@ -726,7 +726,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QListView" name="condition_listview"/>
+                   <widget class="QListWidget" name="condition_listview"/>
                   </item>
                  </layout>
                 </item>
@@ -770,7 +770,7 @@
                  </layout>
                 </item>
                 <item>
-                 <widget class="QListView" name="damage_listview"/>
+                 <widget class="QListWidget" name="damage_listview"/>
                 </item>
                </layout>
               </item>
