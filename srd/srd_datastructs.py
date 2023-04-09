@@ -7,13 +7,12 @@ import re
 
 
 class Size(Enum):
-    TINY = 0
-    SMALL = 1
-    MEDIUM = 2
-    LARGE = 3
-    HUGE = 4
-    GARGANTUAN = 5
-    CHANGEME = 6
+    TINY = 'Tiny'
+    SMALL = 'Small'
+    MEDIUM = 'Medium'
+    LARGE = 'Large'
+    HUGE = 'Huge'
+    GARGANTUAN = 'Gargantuan'
 
     @classmethod
     def has_value(cls, value):

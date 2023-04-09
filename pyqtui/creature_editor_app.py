@@ -29,10 +29,10 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.creature_block = creature_block
         self.setup_comboboxes()
         self.set_stylesheet()
-        self.setup_checkbox_signals()
-        self.setup_label_signals()
-        self.setup_pushbutton_signals()
         self.update_creature_data()
+        self.setup_checkbox_signals()
+        self.setup_combobox_signals()
+        self.setup_pushbutton_signals()
         if self.creature_block.bonusactions: self.bonus_actions_enabled_checkbox.setChecked(True)
         if self.creature_block.reactions: self.reactions_enable_checkbox.setChecked(True)
         if self.creature_block.legendaryactions: self.legendary_actions_enabled_checkbox.setChecked(True)
@@ -85,7 +85,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         # Size combobox
         self.size_combobox.clear()
         for size in creature_datastructs.Size:
-            self.size_combobox.addItem(size.name)
+            self.size_combobox.addItem(size.value)
         for cr in creature_datastructs.CR_TO_XP_TABLE:
             self.challenge_rating_combobox.addItem(str(cr))
         for save in creature_datastructs.AbilityScore:
@@ -99,40 +99,70 @@ class MonsterEditorForm(QDialog, Ui_Form):
         return True
 
     def setup_lineedit_signals(self):
-        def name_edit_changed():
-            self.creature_block.name = self.name_edit.text()
+        self.name_edit.editingFinished.connect(self.name_edit_changed)
+        self.type_edit.editingFinished.connect(self.type_edit_changed)
+        self.tag_edit.editingFinished.connect(self.tag_edit_changed)
+        self.alignment_edit.editingFinished.connect(self.alignment_edit_changed)
+        self.str_edit.editingFinished.connect(lambda: self.score_edit_changed(self.str_edit.text(), self.str_mod_label, AbilityScore.STRENGTH))
+        self.dex_edit.editingFinished.connect(lambda: self.score_edit_changed(self.dex_edit.text(), self.dex_mod_label, AbilityScore.DEXTERITY))
+        self.con_edit.editingFinished.connect(lambda: self.score_edit_changed(self.con_edit.text(), self.con_mod_label, AbilityScore.CONSTITUTION))
+        self.int_edit.editingFinished.connect(lambda: self.score_edit_changed(self.int_edit.text(), self.int_mod_label, AbilityScore.INTELLIGENCE))
+        self.wis_edit.editingFinished.connect(lambda: self.score_edit_changed(self.wis_edit.text(), self.wis_mod_label, AbilityScore.WISDOM))
+        self.cha_edit.editingFinished.connect(lambda: self.score_edit_changed(self.cha_edit.text(), self.cha_mod_label, AbilityScore.CHARISMA))
+        self.hit_points_edit.editingFinished.connect(self.hit_points_edit_changed)
+        self.max_hit_dice_edit.editingFinished.connect(self.hit_dice_edit_changed)
+        self.ac_bonus_edit.editingFinished.connect(self.ac_bonus_edit_changed)
+        self.armor_type_edit.editingFinished.connect(self.armor_type_edit_changed)
+        self.senses_edit.editingFinished.connect(self.senses_edit_changed)
+        self.speeds_edit.editingFinished.connect(self.speed_edit_changed)
 
-        def type_edit_changed():
-            self.creature_block.type = self.type_edit.text()
+    def name_edit_changed(self):
+        self.creature_block.name = self.name_edit.text()
 
-        def tag_edit_changed():
-            self.creature_block.tag = self.tag_edit.text()
+    def type_edit_changed(self):
+        self.creature_block.type = self.type_edit.text()
 
-        def alignment_edit_changed():
-            self.creature_block.alignment = self.alignment_edit.text()
+    def tag_edit_changed(self):
+        self.creature_block.tag = self.tag_edit.text()
 
-        def score_edit_changed(score, modifier_label, abilityscore: AbilityScore):
-            if score.isdigit():
-                score = int(score)
-                self.creature_block.ability_scores[abilityscore] = score
-                update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
-            else:
-                raise TypeError("Tried to update a score modifier with a non integer value")
+    def alignment_edit_changed(self):
+        self.creature_block.alignment = self.alignment_edit.text()
 
-        def hit_points_edit_changed():
+    def score_edit_changed(self, score, modifier_label, abilityscore: AbilityScore):
+        if score.isdigit():
+            score = int(score)
+            self.creature_block.ability_scores[abilityscore] = score
+            update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
+        else:
+            raise TypeError("Tried to update a score modifier with a non integer value")
 
+    def hit_points_edit_changed(self):
+        hit_dice_calc, hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=int(self.hit_points_edit.text), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        self.creature_block.hitpoints = hit_points_calc
+        self.creature_block.hitdice = hit_dice_calc
+        self.update_creature_data()
 
-        self.name_edit.editingFinished.connect(name_edit_changed)
-        self.type_edit.editingFinished.connect(type_edit_changed)
-        self.tag_edit.editingFinished.connect(tag_edit_changed)
-        self.alignment_edit.editingFinished.connect(alignment_edit_changed)
-        self.str_edit.editingFinished.connect(lambda: score_edit_changed(self.str_edit.text(), self.str_mod_label, AbilityScore.STRENGTH))
-        self.dex_edit.editingFinished.connect(lambda: score_edit_changed(self.dex_edit.text(), self.dex_mod_label, AbilityScore.DEXTERITY))
-        self.con_edit.editingFinished.connect(lambda: score_edit_changed(self.con_edit.text(), self.con_mod_label, AbilityScore.CONSTITUTION))
-        self.int_edit.editingFinished.connect(lambda: score_edit_changed(self.int_edit.text(), self.int_mod_label, AbilityScore.INTELLIGENCE))
-        self.wis_edit.editingFinished.connect(lambda: score_edit_changed(self.wis_edit.text(), self.wis_mod_label, AbilityScore.WISDOM))
-        self.cha_edit.editingFinished.connect(lambda: score_edit_changed(self.cha_edit.text(), self.cha_mod_label, AbilityScore.CHARISMA))
-        self.hit_points_edit.editingFinished.connect(hit_points_edit_changed)
+    def hit_dice_edit_changed(self):
+        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=int(self.max_hit_dice_edit.text()), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        self.creature_block.hitpoints = hit_points_calc
+        self.creature_block.hitdice = int(self.max_hit_dice_edit.text())
+        self.update_creature_data()
+
+    def ac_bonus_edit_changed(self):
+        self.creature_block.acbonus = int(self.ac_bonus_edit.text())
+        self.update_creature_data()
+
+    def armor_type_edit_changed(self):
+        self.creature_block.acdesc = self.ac_bonus_edit.text()
+        self.update_creature_data()
+
+    def senses_edit_changed(self):
+        self.creature_block.senses = self.senses_edit.text()
+        self.update_creature_data()
+
+    def speed_edit_changed(self):
+        self.creature_block.speed = self.speeds_edit.text()
+        self.update_creature_data()
 
     def setup_checkbox_signals(self):
         def toggle_container_visibility(checkbox, container):
@@ -199,9 +229,19 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.creature_block.add_damage_modifier(selected_damage, DamageModifier.VULNERABILITY)
         self.update_damage()
 
-    def setup_label_signals(self):
-        self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
-        self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
+    def setup_combobox_signals(self):
+        def size_combobox_changed():
+            print(self.size_combobox.currentText())
+            size = Size(self.size_combobox.currentText())
+            self.creature_block.size = size
+            self.hit_dice_edit_changed()
+
+        def cr_combobox_changed():
+            self.creature_block.challengerating = int(self.challenge_rating_combobox.currentText())
+            self.update_creature_data()
+
+        self.size_combobox.currentTextChanged.connect(size_combobox_changed)
+        self.challenge_rating_combobox.currentTextChanged.connect(cr_combobox_changed)
 
     def update_saves(self):
         self.save_listwidget.clear()
@@ -273,7 +313,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
     def update_creature_data(self):
         print(self.creature_block.name)
         self.name_edit.setText(self.creature_block.name)
-        set_combo_box_selected_item(self.size_combobox, self.creature_block.size.name)
+        set_combo_box_selected_item(self.size_combobox, self.creature_block.size.value)
         self.type_edit.setText(self.creature_block.type)
         self.tag_edit.setText(self.creature_block.tag)
         self.alignment_edit.setText(self.creature_block.alignment)
@@ -284,7 +324,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.proficiency_bonus_calculation_label.setText(str(
             creature_datastructs.proficiency_bonus(self.creature_block.challengerating)))
         self.hit_points_edit.setText(str(self.creature_block.hitpoints))
-        self.max_hit_dice_edit.setText(self.creature_block.hitdice)
+        self.max_hit_dice_edit.setText(str(self.creature_block.hitdice))
         self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(self.creature_block.size)}")
         self.ac_bonus_edit.setText(str(self.creature_block.acbonus))
         self.armor_type_edit.setText(self.creature_block.acdesc)

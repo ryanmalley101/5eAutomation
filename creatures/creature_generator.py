@@ -5,24 +5,6 @@ from srd.srd_datastructs import *
 from creatures.creature_datastructs import DamageModifier
 
 
-
-def calculate_hitdice(hitdie, con, hitpoints):
-    halfdie = hitdie/2
-    hdtotal = 1
-    temphp = halfdie + con
-    while math.floor(temphp) < hitpoints:
-        hdtotal += 1
-        temphp += (halfdie + con)
-    return hdtotal
-
-
-def calculate_hitpoints(hitdie, con, hitdice):
-    halfdie = hitdie/2
-    temphp = 0
-    for i in range(hitdice):
-        temphp += (halfdie+con)
-    return math.floor(temphp)
-
 def generate_test_creature():
     return MonsterStatblock(
         name="TEST CREATURE",
@@ -39,7 +21,7 @@ def generate_test_creature():
             AbilityScore.WISDOM: 20,
             AbilityScore.CHARISMA: 10
         },
-        hitdice='7d8',
+        hitdice=7,
         hitpoints=100,
         speed='30 ft.',
         saving_throws={AbilityScore.STRENGTH, AbilityScore.CONSTITUTION, AbilityScore.WISDOM},

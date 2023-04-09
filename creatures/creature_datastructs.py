@@ -10,14 +10,14 @@ from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, D
 @dataclass
 class CreatureStatblock:
     name: str = "PLACEHOLDER"
-    size: Size = Size.CHANGEME
+    size: Size = Size.MEDIUM
     type: str = "NOTYPE"
     tag: str = ""
     alignment: str = 'unaligned'
     acdesc: str = ""
     acbonus: int = 10
     ability_scores: dict = field(default_factory=dict)
-    hitdice: str = '0d0'
+    hitdice: int = 1
     hitpoints: int = 0
     speed: str = '30 ft.'
     saving_throws: set = field(default_factory=set)
@@ -258,6 +258,25 @@ class MonsterStatblock(CreatureStatblock):
                                                                      description=mythicaction['description'])
 
         return cls(**creature_dict)
+
+    @staticmethod
+    def calc_monster_hit_dice(target_hit_points: int, size: Size, con: int):
+        hit_die = Size.hitdice(size)
+        max_hit_dice = 0
+        max_hit_points = 0
+        average_hit_die = (hit_die / 2) + con
+        while max_hit_points + average_hit_die < target_hit_points:
+            max_hit_dice += 1
+            max_hit_points += average_hit_die
+        return max_hit_dice, round(max_hit_points)
+
+
+    @staticmethod
+    def calc_monster_hit_points(hit_dice: int, size: Size, con: int):
+        hit_die = Size.hitdice(size)
+        average_hit_die = (hit_die / 2) + con
+        max_hit_points = round(average_hit_die*hit_dice)
+        return max_hit_points
 
 CR_TO_XP_TABLE = {
     0: 0,

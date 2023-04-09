@@ -68,9 +68,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>0</y>
+           <y>-322</y>
            <width>931</width>
-           <height>1282</height>
+           <height>1066</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -1212,13 +1212,6 @@
                         </property>
                        </widget>
                       </item>
-                      <item>
-                       <widget class="QPushButton" name="add_ability_button_2">
-                        <property name="text">
-                         <string>-</string>
-                        </property>
-                       </widget>
-                      </item>
                      </layout>
                     </item>
                    </layout>
@@ -1311,13 +1304,6 @@
                            </property>
                           </widget>
                          </item>
-                         <item>
-                          <widget class="QPushButton" name="remove_action_button">
-                           <property name="text">
-                            <string>-</string>
-                           </property>
-                          </widget>
-                         </item>
                         </layout>
                        </item>
                       </layout>
@@ -1346,6 +1332,9 @@
                  <number>0</number>
                 </property>
                 <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
                  <number>0</number>
                 </property>
                 <item row="0" column="0">
@@ -1384,6 +1373,18 @@
                   <item>
                    <widget class="QGroupBox" name="bonus_actions_container">
                     <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QGroupBox" name="bonus_actions_list_groupbox">
                        <property name="sizePolicy">
@@ -1420,13 +1421,6 @@
                         <widget class="QPushButton" name="add_bonus_action_button">
                          <property name="text">
                           <string>+</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="remove_bonus_action_button">
-                         <property name="text">
-                          <string>-</string>
                          </property>
                         </widget>
                        </item>
@@ -1494,6 +1488,18 @@
                   <item>
                    <widget class="QGroupBox" name="reactions_container">
                     <layout class="QHBoxLayout" name="horizontalLayout_18">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QGroupBox" name="reactions_list_groupbox">
                        <property name="sizePolicy">
@@ -1530,13 +1536,6 @@
                         <widget class="QPushButton" name="add_reaction_button_3">
                          <property name="text">
                           <string>+</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="add_reaction_button_4">
-                         <property name="text">
-                          <string>-</string>
                          </property>
                         </widget>
                        </item>
@@ -1604,6 +1603,18 @@
                   <item>
                    <widget class="QGroupBox" name="legendary_actions_container">
                     <layout class="QHBoxLayout" name="horizontalLayout_60">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QGroupBox" name="legendary_actions_list_groupbox">
                        <property name="sizePolicy">
@@ -1640,13 +1651,6 @@
                         <widget class="QPushButton" name="add_legendary_action_button">
                          <property name="text">
                           <string>+</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="remove_legendary_actions_button">
-                         <property name="text">
-                          <string>-</string>
                          </property>
                         </widget>
                        </item>
@@ -1758,13 +1762,6 @@
                         <widget class="QPushButton" name="add_mythic_action_button">
                          <property name="text">
                           <string>+</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="remove_mythic_action_button">
-                         <property name="text">
-                          <string>-</string>
                          </property>
                         </widget>
                        </item>
