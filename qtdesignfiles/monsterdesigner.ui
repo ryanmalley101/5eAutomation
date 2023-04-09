@@ -1533,7 +1533,7 @@
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_63">
                        <item>
-                        <widget class="QPushButton" name="add_reaction_button_3">
+                        <widget class="QPushButton" name="add_reaction_button">
                          <property name="text">
                           <string>+</string>
                          </property>

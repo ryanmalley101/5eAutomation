@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>AbilityDialogueUi</class>
+ <widget class="QDialog" name="AbilityDialogueUi">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>414</height>
+    <width>527</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -53,6 +53,13 @@
          <widget class="QPushButton" name="delete_ability_pushbutton">
           <property name="text">
            <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cancel_ability_pushbutton">
+          <property name="text">
+           <string>Cancel</string>
           </property>
          </widget>
         </item>

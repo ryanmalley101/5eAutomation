@@ -9,7 +9,7 @@ from creatures import creature_datastructs
 from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem
+    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QMainWindow
 )
 
 from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
@@ -18,12 +18,14 @@ from PyQt6 import QtCore
 from creature_editor_ui import Ui_Form
 from creatures.creature_generator import generate_test_creature
 
+from ability_dialogue_app import AbilityDialog
+
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
 
-class MonsterEditorForm(QDialog, Ui_Form):
+class MonsterEditorForm(QWidget, Ui_Form):
     def __init__(self, creature_block: creature_datastructs.MonsterStatblock, parent=None):
-        super().__init__(parent)
+        super().__init__()
         self.setupUi(self)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "images"))
         self.creature_block = creature_block
@@ -191,6 +193,11 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.damage_vulnerable_button.pressed.connect(self.add_damage_vulnerability)
         self.damage_immune_button.pressed.connect(self.add_damage_immunity)
         self.damage_resistant_button.pressed.connect(self.add_damage_resistance)
+        self.add_ability_button.pressed.connect(self.add_ability_dialog)
+        self.add_reaction_button.pressed.connect(self.add_reaction_dialog)
+        self.add_bonus_action_button.pressed.connect(self.add_bonus_action_dialog)
+        self.add_legendary_action_button.pressed.connect(self.add_legendary_action_dialog)
+        self.add_mythic_action_button.pressed.connect(self.add_mythic_action_dialog)
 
     def add_save_proficiency(self):
         selected_save = AbilityScore(self.saving_throws_combobox.currentText())
@@ -228,6 +235,127 @@ class MonsterEditorForm(QDialog, Ui_Form):
         selected_damage = DamageType(self.damage_combobox.currentText())
         self.creature_block.add_damage_modifier(selected_damage, DamageModifier.VULNERABILITY)
         self.update_damage()
+
+    def add_ability_dialog(self, ability_target:AbilityDescription=None):
+        print(QApplication.instance())
+        if ability_target is None:
+            ability_target = AbilityDescription()
+        dialog = AbilityDialog(ability_target, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for ability in self.creature_block.abilities:
+                    if dialog.ability.name == ability.name:
+                        self.creature_block.abilities.remove(ability)
+            else:
+                for ability in self.creature_block.abilities:
+                    if dialog.ability.name == ability.name:
+                        self.creature_block.abilities.remove(ability)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.abilities.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_abilities()
+        return
+
+
+    def add_reaction_dialog(self, reaction:AbilityDescription=None):
+        print(QApplication.instance())
+        if reaction is None:
+            reaction = AbilityDescription()
+        dialog = AbilityDialog(reaction, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for reaction in self.creature_block.reactions:
+                    if dialog.ability.name == reaction.name:
+                        self.creature_block.reactions.remove(reaction)
+            else:
+                for reaction in self.creature_block.reactions:
+                    if dialog.ability.name == reaction.name:
+                        self.creature_block.reactions.remove(reaction)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.reactions.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_reactions()
+        return
+
+    def add_bonus_action_dialog(self, bonus_action: AbilityDescription = None):
+        print(QApplication.instance())
+        if bonus_action is None:
+            bonus_action = AbilityDescription()
+        dialog = AbilityDialog(bonus_action, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for bonus_action in self.creature_block.bonusactions:
+                    if dialog.ability.name == bonus_action.name:
+                        self.creature_block.bonusactions.remove(bonus_action)
+            else:
+                for bonus_action in self.creature_block.bonusactions:
+                    if dialog.ability.name == bonus_action.name:
+                        self.creature_block.bonusactions.remove(bonus_action)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.bonusactions.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_bonus_actions()
+        return
+
+    def add_legendary_action_dialog(self, legendary_action: AbilityDescription = None):
+        print(QApplication.instance())
+        if legendary_action is None:
+            legendary_action = AbilityDescription()
+        dialog = AbilityDialog(legendary_action, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for legendary_action in self.creature_block.legendaryactions:
+                    if dialog.ability.name == legendary_action.name:
+                        self.creature_block.legendaryactions.remove(legendary_action)
+            else:
+                for legendary_action in self.creature_block.legendaryactions:
+                    if dialog.ability.name == legendary_action.name:
+                        self.creature_block.legendaryactions.remove(legendary_action)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.legendaryactions.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_legendary_actions()
+        return
+
+    def add_mythic_action_dialog(self, mythic_action: AbilityDescription = None):
+        print(QApplication.instance())
+        if mythic_action is None:
+            mythic_action = AbilityDescription()
+        dialog = AbilityDialog(mythic_action, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for mythic_action in self.creature_block.mythicactions:
+                    if dialog.ability.name == mythic_action.name:
+                        self.creature_block.mythicactions.remove(mythic_action)
+            else:
+                for mythic_action in self.creature_block.mythicactions:
+                    if dialog.ability.name == mythic_action.name:
+                        self.creature_block.mythicactions.remove(mythic_action)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.mythicactions.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_mythic_actions()
+        return
 
     def setup_combobox_signals(self):
         def size_combobox_changed():
@@ -280,6 +408,8 @@ class MonsterEditorForm(QDialog, Ui_Form):
             insert_damage_row(damage, 'immune')
 
     def update_abilities(self):
+        for i in reversed(range(self.abilities_list_layout.count())):
+            self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for ability in self.creature_block.abilities:
             insert_ability(self.abilities_list_layout, ability)
 
@@ -295,18 +425,26 @@ class MonsterEditorForm(QDialog, Ui_Form):
                 print("Invalid action")
 
     def update_reactions(self):
+        for i in reversed(range(self.reactions_list_layout.count())):
+            self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for reaction in self.creature_block.reactions:
             insert_ability(self.reactions_list_layout, reaction)
 
     def update_bonus_actions(self):
+        for i in reversed(range(self.bonus_actions_list_layout.count())):
+            self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for bonusactions in self.creature_block.bonusactions:
             insert_ability(self.bonus_actions_list_layout, bonusactions)
 
     def update_legendary_actions(self):
+        for i in reversed(range(self.legendary_actions_list_layout.count())):
+            self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for legendaryactions in self.creature_block.legendaryactions:
             insert_ability(self.legendary_actions_list_layout, legendaryactions)
 
     def update_mythic_actions(self):
+        for i in reversed(range(self.mythic_actions_list_layout.count())):
+            self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for mythicactions in self.creature_block.mythicactions:
             insert_ability(self.mythic_actions_list_layout, mythicactions)
 
@@ -397,6 +535,6 @@ def insert_attack(layout, attack, creature):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = MonsterEditorForm(creature_block=generate_test_creature(), parent=None)
+    myWindow = MonsterEditorForm(creature_block=generate_test_creature())
     myWindow.show()
     app.exec()

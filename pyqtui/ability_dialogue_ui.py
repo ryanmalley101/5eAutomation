@@ -9,13 +9,13 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(557, 414)
-        self.gridLayout = QtWidgets.QGridLayout(Form)
+class Ui_AbilityDialogueUi(object):
+    def setupUi(self, AbilityDialogueUi):
+        AbilityDialogueUi.setObjectName("AbilityDialogueUi")
+        AbilityDialogueUi.resize(527, 419)
+        self.gridLayout = QtWidgets.QGridLayout(AbilityDialogueUi)
         self.gridLayout.setObjectName("gridLayout")
-        self.ability_dialogue_groupbox = QtWidgets.QGroupBox(parent=Form)
+        self.ability_dialogue_groupbox = QtWidgets.QGroupBox(parent=AbilityDialogueUi)
         self.ability_dialogue_groupbox.setTitle("")
         self.ability_dialogue_groupbox.setObjectName("ability_dialogue_groupbox")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.ability_dialogue_groupbox)
@@ -40,26 +40,30 @@ class Ui_Form(object):
         self.delete_ability_pushbutton = QtWidgets.QPushButton(parent=self.ability_dialogue_groupbox)
         self.delete_ability_pushbutton.setObjectName("delete_ability_pushbutton")
         self.horizontalLayout.addWidget(self.delete_ability_pushbutton)
+        self.cancel_ability_pushbutton = QtWidgets.QPushButton(parent=self.ability_dialogue_groupbox)
+        self.cancel_ability_pushbutton.setObjectName("cancel_ability_pushbutton")
+        self.horizontalLayout.addWidget(self.cancel_ability_pushbutton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.gridLayout.addWidget(self.ability_dialogue_groupbox, 0, 0, 1, 1)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(AbilityDialogueUi)
+        QtCore.QMetaObject.connectSlotsByName(AbilityDialogueUi)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, AbilityDialogueUi):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.ability_name_label.setText(_translate("Form", "Ability Name"))
-        self.ability_description_label.setText(_translate("Form", "Description"))
-        self.apply_ability_pushbutton.setText(_translate("Form", "Apply"))
-        self.delete_ability_pushbutton.setText(_translate("Form", "Delete"))
+        AbilityDialogueUi.setWindowTitle(_translate("AbilityDialogueUi", "Dialog"))
+        self.ability_name_label.setText(_translate("AbilityDialogueUi", "Ability Name"))
+        self.ability_description_label.setText(_translate("AbilityDialogueUi", "Description"))
+        self.apply_ability_pushbutton.setText(_translate("AbilityDialogueUi", "Apply"))
+        self.delete_ability_pushbutton.setText(_translate("AbilityDialogueUi", "Delete"))
+        self.cancel_ability_pushbutton.setText(_translate("AbilityDialogueUi", "Cancel"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
+    AbilityDialogueUi = QtWidgets.QDialog()
+    ui = Ui_AbilityDialogueUi()
+    ui.setupUi(AbilityDialogueUi)
+    AbilityDialogueUi.show()
     sys.exit(app.exec())
