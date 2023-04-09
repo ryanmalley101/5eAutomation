@@ -76,6 +76,8 @@ class Skill(Enum):
     STEALTH = "Stealth"
     SURVIVAL = "Survival"
 
+PROFICIENT = "Proficient"
+EXPERT = "Expertise"
 
 class DamageType(Enum):
     ACID = "acid"
@@ -359,3 +361,10 @@ class RangedSpellAttack(BaseAttack):
                 text += ' plus '
         text += f'. {self.description}'
         return text
+
+
+
+class DamageModifier(Enum):
+    VULNERABILITY = "VULNERABILITY"
+    IMMUNITY = "IMMUNITY"
+    RESISTANCE = "RESISTANCE"

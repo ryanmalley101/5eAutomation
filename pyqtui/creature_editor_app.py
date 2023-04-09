@@ -6,7 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack
+from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier
 
 from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem
@@ -31,7 +31,12 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.set_stylesheet()
         self.setup_checkbox_signals()
         self.setup_label_signals()
+        self.setup_pushbutton_signals()
         self.update_creature_data()
+        if self.creature_block.bonusactions: self.bonus_actions_enabled_checkbox.setChecked(True)
+        if self.creature_block.reactions: self.reactions_enable_checkbox.setChecked(True)
+        if self.creature_block.legendaryactions: self.legendary_actions_enabled_checkbox.setChecked(True)
+        if self.creature_block.mythicactions: self.mythic_actions_enabled_checkbox.setChecked(True)
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -114,18 +119,49 @@ class MonsterEditorForm(QDialog, Ui_Form):
 
     def setup_pushbutton_signals(self):
         self.save_button.pressed.connect(self.add_save_proficiency)
+        self.skills_button.pressed.connect(self.add_skill_proficiency)
+        self.expertise_pushbutton.pressed.connect(self.add_skill_expertise)
+        self.condition_button.pressed.connect(self.add_condition_immunity)
+        self.damage_vulnerable_button.pressed.connect(self.add_damage_vulnerability)
+        self.damage_immune_button.pressed.connect(self.add_damage_immunity)
+        self.damage_resistant_button.pressed.connect(self.add_damage_resistance)
 
     def add_save_proficiency(self):
         selected_save = AbilityScore(self.saving_throws_combobox.currentText())
         if selected_save not in self.creature_block.saving_throws:
             self.creature_block.saving_throws.add(selected_save)
-        self.update_creature_data()
+        self.update_saves()
 
-    # def add_skill_proficiency(self):
-    #     selected_skill = AbilityScores(self.saving_throws_combobox.currentText())
-    #     if selected_save not in self.creature_block.saving_throws:
-    #         self.creature_block.saving_throws.add(selected_save)
-    #     self.update_creature_data()
+    def add_skill_proficiency(self):
+        selected_skill = Skill(self.skills_combobox.currentText())
+        self.creature_block.add_skill_proficiency(selected_skill)
+        self.update_skills()
+
+    def add_skill_expertise(self):
+        selected_skill = Skill(self.skills_combobox.currentText())
+        self.creature_block.add_skill_expertise(selected_skill)
+        self.update_skills()
+
+    def add_condition_immunity(self):
+        selected_condition = Condition(self.conditions_combobox.currentText())
+        if selected_condition not in self.creature_block.condition_immunities:
+            self.creature_block.condition_immunities.add(selected_condition)
+        self.update_conditions()
+
+    def add_damage_resistance(self):
+        selected_damage = DamageType(self.damage_combobox.currentText())
+        self.creature_block.add_damage_modifier(selected_damage, DamageModifier.RESISTANCE)
+        self.update_damage()
+
+    def add_damage_immunity(self):
+        selected_damage = DamageType(self.damage_combobox.currentText())
+        self.creature_block.add_damage_modifier(selected_damage, DamageModifier.IMMUNITY)
+        self.update_damage()
+
+    def add_damage_vulnerability(self):
+        selected_damage = DamageType(self.damage_combobox.currentText())
+        self.creature_block.add_damage_modifier(selected_damage, DamageModifier.VULNERABILITY)
+        self.update_damage()
 
     def setup_label_signals(self):
         self.str_edit.editingFinished.connect(lambda: update_modifier(self.str_edit.text(), self.str_mod_label))
@@ -137,73 +173,74 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
         self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
 
+    def update_saves(self):
+        self.save_listwidget.clear()
+        for save in self.creature_block.saving_throws:
+            self.save_listwidget.addItem(save.value)
+
+    def update_skills(self):
+        def insert_skill_row(damagetype, modifier):
+            self.skills_tablewidget.insertRow(self.skills_tablewidget.rowCount())
+            self.skills_tablewidget.setItem(self.skills_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype))
+            self.skills_tablewidget.setItem(self.skills_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
+
+        self.skills_tablewidget.setRowCount(0)
+        for skill in self.creature_block.skills:
+            insert_skill_row(skill.value, PROFICIENT)
+        for expert in self.creature_block.expertise:
+            insert_skill_row(expert.value, EXPERT)
+
+    def update_conditions(self):
+        self.condition_listwidget.clear()
+        for condition in self.creature_block.condition_immunities:
+            self.condition_listwidget.addItem(condition.value)
+
+    def update_damage(self):
+        def insert_damage_row(damagetype, modifier):
+            self.damage_tablewidget.insertRow(self.damage_tablewidget.rowCount())
+            self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype.value))
+            self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
+
+        self.damage_tablewidget.setRowCount(0)
+        for damage in self.creature_block.damage_vulnerabilities:
+            insert_damage_row(damage, 'vulnerable')
+        for damage in self.creature_block.damage_resistances:
+            insert_damage_row(damage, 'resistant')
+        for damage in self.creature_block.damage_immunities:
+            insert_damage_row(damage, 'immune')
+
+    def update_abilities(self):
+        for ability in self.creature_block.abilities:
+            insert_ability(self.abilities_list_layout, ability)
+
+    def update_actions(self):
+        for action in self.creature_block.actions:
+            if isinstance(action, AbilityDescription):
+                print("Adding ability action")
+                insert_ability(self.actions_list_layout, action)
+            elif isinstance(action, BaseAttack):
+                print("Adding attack action")
+                insert_attack(self.actions_list_layout, action, self.creature_block)
+            else:
+                print("Invalid action")
+
+    def update_reactions(self):
+        for reaction in self.creature_block.reactions:
+            insert_ability(self.reactions_list_layout, reaction)
+
+    def update_bonus_actions(self):
+        for bonusactions in self.creature_block.bonusactions:
+            insert_ability(self.bonus_actions_list_layout, bonusactions)
+
+    def update_legendary_actions(self):
+        for legendaryactions in self.creature_block.legendaryactions:
+            insert_ability(self.legendary_actions_list_layout, legendaryactions)
+
+    def update_mythic_actions(self):
+        for mythicactions in self.creature_block.mythicactions:
+            insert_ability(self.mythic_actions_list_layout, mythicactions)
+
     def update_creature_data(self):
-        def initsaves():
-            for save in self.creature_block.saving_throws:
-                self.save_listwidget.addItem(save.value)
-
-        def initskills():
-            for skill in self.creature_block.skills:
-                self.skills_listwidget.addItem(skill.value)
-
-        def initconditions():
-            for condition in self.creature_block.condition_immunities:
-                self.condition_listwidget.addItem(condition.value)
-
-        def initdamage():
-            def insert_damage_row(damagetype, modifier):
-                self.damage_tablewidget.insertRow(self.damage_tablewidget.rowCount())
-                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype.value))
-                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
-
-            for damage in self.creature_block.damage_vulnerabilities:
-                insert_damage_row(damage, 'vulnerable')
-            for damage in self.creature_block.damage_resistances:
-                insert_damage_row(damage, 'resistant')
-            for damage in self.creature_block.damage_immunities:
-                insert_damage_row(damage, 'immune')
-
-        def insert_ability(layout, ability):
-            new_ability = AbilityButton(ability)
-            layout.addWidget(new_ability)
-
-        def insert_attack(layout, attack):
-            new_attack = AttackButton(attack, self.creature_block)
-            print(new_attack.text())
-            layout.addWidget(new_attack)
-
-        def initabilities():
-            for ability in self.creature_block.abilities:
-                insert_ability(self.abilities_list_layout, ability)
-
-        def initactions():
-            for action in self.creature_block.actions:
-                if isinstance(action, AbilityDescription):
-                    print("Adding ability action")
-                    insert_ability(self.actions_list_layout, action)
-                elif isinstance(action, BaseAttack):
-                    print("Adding attack action")
-                    insert_attack(self.actions_list_layout, action)
-                else:
-                    print("Invalid action")
-
-        def initreactions():
-            for reaction in self.creature_block.reactions:
-                insert_ability(self.reactions_list_layout, reaction)
-
-        def initbonusactions():
-            for bonusactions in self.creature_block.bonusactions:
-                insert_ability(self.bonus_actions_list_layout, bonusactions)
-
-        def initlegendaryactions():
-            for legendaryactions in self.creature_block.legendaryactions:
-                insert_ability(self.legendary_actions_list_layout, legendaryactions)
-
-        def initmythicactions():
-            for mythicactions in self.creature_block.mythicactions:
-                insert_ability(self.mythic_actions_list_layout, mythicactions)
-
-
         print(self.creature_block.name)
         self.name_edit.setText(self.creature_block.name)
         set_combo_box_selected_item(self.size_combobox, self.creature_block.size.name)
@@ -235,16 +272,18 @@ class MonsterEditorForm(QDialog, Ui_Form):
         update_modifier(self.wis_edit.text(), self.wis_mod_label)
         self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CHARISMA]))
         update_modifier(self.cha_edit.text(), self.cha_mod_label)
-        initsaves()
-        initskills()
-        initconditions()
-        initdamage()
-        initabilities()
-        initactions()
-        initbonusactions()
-        initreactions()
-        initlegendaryactions()
-        initmythicactions()
+        self.update_saves()
+        self.update_skills()
+        self.update_conditions()
+        self.update_damage()
+        self.update_abilities()
+        self.update_actions()
+        self.update_bonus_actions()
+        self.update_reactions()
+        self.update_legendary_actions()
+        self.mythic_description_edit.setText(self.creature_block.mythicdescription)
+        self.update_mythic_actions()
+
 
 def set_combo_box_selected_item(combo_box, item):
     index = -1
@@ -277,6 +316,14 @@ def update_hitdice(size, modifier_label):
 def update_prof_bonus(cr, modifier_label):
     modifier_label.setText(f'+{proficiency_bonus(cr)}')
 
+def insert_ability(layout, ability):
+    new_ability = AbilityButton(ability)
+    layout.addWidget(new_ability)
+
+def insert_attack(layout, attack, creature):
+    new_attack = AttackButton(attack, creature)
+    print(new_attack.text())
+    layout.addWidget(new_attack)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

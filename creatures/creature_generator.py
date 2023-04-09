@@ -2,7 +2,7 @@
 
 from creatures.creature_datastructs import *
 from srd.srd_datastructs import *
-from creatures.creature_datastructs import DamageModifiers
+from creatures.creature_datastructs import DamageModifier
 
 
 

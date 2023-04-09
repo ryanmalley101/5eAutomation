@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, DamageType, Condition, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
+from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, DamageType, Condition, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack, DamageModifier
 
 @dataclass
 class CreatureStatblock:
@@ -148,10 +148,35 @@ class CreatureStatblock:
             self.ability_scores[SKILL_TO_ABILITY[skill]])
 
     def passive_perception(self):
-        if self.skills['Perception']:
+        if Skill.PERCEPTION in self.skills:
             return 10 + self.skill_bonus('Perception')
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScore.WISDOM])
+
+    def add_damage_modifier(self, damage:DamageType, modifier:DamageModifier):
+        if modifier is DamageModifier.IMMUNITY:
+            self.damage_vulnerabilities.discard(damage)
+            self.damage_resistances.discard(damage)
+            self.damage_immunities.add(damage)
+        elif modifier is DamageModifier.VULNERABILITY:
+            self.damage_immunities.discard(damage)
+            self.damage_resistances.discard(damage)
+            self.damage_vulnerabilities.add(damage)
+        elif modifier is DamageModifier.RESISTANCE:
+            self.damage_immunities.discard(damage)
+            self.damage_vulnerabilities.discard(damage)
+            self.damage_resistances.add(damage)
+        else:
+            raise ValueError("Tried to add an unaccounted for DamageModifier")
+
+    def add_skill_proficiency(self, skill:Skill):
+        self.expertise.discard(skill)
+        self.skills.add(skill)
+
+    def add_skill_expertise(self, skill:Skill):
+        self.skills.discard(skill)
+        self.expertise.add(skill)
+
 
 
 @dataclass
@@ -233,11 +258,6 @@ class MonsterStatblock(CreatureStatblock):
                                                                      description=mythicaction['description'])
 
         return cls(**creature_dict)
-
-class DamageModifiers(Enum):
-    VULNERABILITY = "VULNERABILITY"
-    IMMUNITY = "IMMUNITY"
-    RESISTANCE = "RESISTANCE"
 
 CR_TO_XP_TABLE = {
     0: 0,
