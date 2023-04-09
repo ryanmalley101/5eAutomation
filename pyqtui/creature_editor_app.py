@@ -143,8 +143,8 @@ class MonsterEditorForm(QDialog, Ui_Form):
                 self.save_listwidget.addItem(save.value)
 
         def initskills():
-            for skill in self.creature_block.skills.keys():
-                self.skills_listwidget.addItem(skill)
+            for skill in self.creature_block.skills:
+                self.skills_listwidget.addItem(skill.value)
 
         def initconditions():
             for condition in self.creature_block.condition_immunities:
@@ -153,7 +153,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         def initdamage():
             def insert_damage_row(damagetype, modifier):
                 self.damage_tablewidget.insertRow(self.damage_tablewidget.rowCount())
-                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype))
+                self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype.value))
                 self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
 
             for damage in self.creature_block.damage_vulnerabilities:
