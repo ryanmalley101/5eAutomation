@@ -1,10 +1,18 @@
-from PyQt6.QtWidgets import QDialog, QFormLayout, QLineEdit, QComboBox, QDialogButtonBox
+import os
+import sys
+from pathlib import Path
+import inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+CURRENT_DIRECTORY = Path(__file__).resolve().parent
 import sys
 from attack_dialogue_ui import Ui_AttackDialogue
 from srd.srd_datastructs import BaseAttack, MeleeWeaponAttack, MeleeSpellAttack, RangedWeaponAttack, RangedSpellAttack, AbilityScore, DamageType
 from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QMainWindow
 )
+from srd.srd_generator import generate_test_melee_attack
 import os
 
 
@@ -40,31 +48,43 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
             self.damage_tablewidget.setCellWidget(row, 1, damage_combobox)
 
     def update_attack(self):
+        for widget in self.groupBox.findChildren(QWidget):
+            widget.blockSignals(True)
         self.attack_name_edit.setText(self.attack.name)
         set_combo_box_selected_item(self.attack_type_combobox, self.attack.type.value)
         set_combo_box_selected_item(self.attack_modifier_combobox, self.attack.attack_mod.value)
         self.targets_edit.setText(self.attack.targets)
         self.attack_description_edit.setPlainText(self.attack.description)
-        for i, (dicestring, damagetype) in enumerate(self.attack.damage_dice):
-            self.damage_tablewidget.setItem(i, 0, dicestring)
-            self.damage_tablewidget.item(i, 1).setCurrentText(damagetype.value)
+        print(f"Damage String {self.attack.damage_dice}")
+        for i, damagedice in enumerate(self.attack.damage_dice):
+            dicestring = damagedice['dicestring']
+            damagetype = damagedice['damagetype'].value
+            print(f'Damage Dice {dicestring} {damagetype}')
+            self.damage_tablewidget.setItem(i, 0, QTableWidgetItem(dicestring))
+            set_combo_box_selected_item(self.damage_tablewidget.cellWidget(i, 1), damagetype)
         if self.attack.type == BaseAttack.AttackType.MELEEWEAPON or self.attack.type == BaseAttack.AttackType.MELEESPELL:
-            self.reach_spinbox.setValue(self.attack.reach)
+            self.reach_spinbox.setEnabled(True)
             self.range_spinbox.setEnabled(False)
             self.short_range_spinbox.setEnabled(False)
             self.long_range_spinbox.setEnabled(False)
+            self.reach_spinbox.setValue(self.attack.reach)
         elif self.attack.type == BaseAttack.AttackType.RANGEDWEAPON:
+            self.short_range_spinbox.setEnabled(True)
+            self.long_range_spinbox.setEnabled(True)
+            self.reach_spinbox.setEnabled(False)
+            self.range_spinbox.setEnabled(False)
             self.short_range_spinbox.setValue(self.attack.short_range)
             self.long_range_spinbox.setValue(self.attack.long_range)
-            self.reach_spinbox.setEnabled(False)
-            self.range_spinbox.setEnabled(False)
         elif self.attack.type == BaseAttack.AttackType.RANGEDSPELL:
-            self.range_edit.setText(self.attack.reach)
+            self.range_spinbox.setEnabled(True)
             self.reach_spinbox.setEnabled(False)
             self.short_range_spinbox.setEnabled(False)
             self.long_range_spinbox.setEnabled(False)
+            self.range_spinbox.setValue(self.attack.range)
         else:
             raise TypeError("Invalid Attack Type for attack")
+        for widget in self.groupBox.findChildren(QWidget):
+            widget.blockSignals(False)
 
     def setup_signals(self):
         def name_changed():
@@ -107,14 +127,39 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
             attack_type = BaseAttack.AttackType(self.attack_type_combobox.currentText())
             if attack_type == BaseAttack.AttackType.MELEEWEAPON:
                 self.attack = MeleeWeaponAttack(name=self.attack_name_edit.text(),
-                                                type=BaseAttack.AttackType.MELEEWEAPON,
                                                 attack_bonus=self.attack_bonus_spinbox.value(),
                                                 damage_dice= self.get_damage_dice(),
                                                 targets=self.targets_edit.text(),
                                                 reach=self.reach_spinbox.value(),
                                                 attack_mod=AbilityScore(self.attack_modifier_combobox.currentText()),
                                                 description=self.attack_description_edit.toPlainText())
+            elif attack_type == BaseAttack.AttackType.MELEESPELL:
+                self.attack = MeleeSpellAttack(name=self.attack_name_edit.text(),
+                                                attack_bonus=self.attack_bonus_spinbox.value(),
+                                                damage_dice= self.get_damage_dice(),
+                                                targets=self.targets_edit.text(),
+                                                reach=self.reach_spinbox.value(),
+                                                attack_mod=AbilityScore(self.attack_modifier_combobox.currentText()),
+                                                description=self.attack_description_edit.toPlainText())
+            elif attack_type == BaseAttack.AttackType.RANGEDWEAPON:
+                self.attack = RangedWeaponAttack(name=self.attack_name_edit.text(),
+                                                attack_bonus=self.attack_bonus_spinbox.value(),
+                                                damage_dice= self.get_damage_dice(),
+                                                targets=self.targets_edit.text(),
+                                                short_range=self.short_range_spinbox.value(),
+                                                long_range=self.long_range_spinbox.value(),
+                                                attack_mod=AbilityScore(self.attack_modifier_combobox.currentText()),
+                                                description=self.attack_description_edit.toPlainText())
+            elif attack_type == BaseAttack.AttackType.RANGEDSPELL:
+                self.attack = RangedSpellAttack(name=self.attack_name_edit.text(),
+                                                attack_bonus=self.attack_bonus_spinbox.value(),
+                                                damage_dice= self.get_damage_dice(),
+                                                targets=self.targets_edit.text(),
+                                                range=self.range_spinbox.value(),
+                                                attack_mod=AbilityScore(self.attack_modifier_combobox.currentText()),
+                                                description=self.attack_description_edit.toPlainText())
 
+            self.update_attack()
 
         self.attack_name_edit.editingFinished.connect(name_changed)
         self.attack_bonus_spinbox.valueChanged.connect(attack_bonus_changed)
@@ -124,8 +169,8 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
         self.range_spinbox.valueChanged.connect(range_changed)
         self.short_range_spinbox.valueChanged.connect(short_range_changed)
         self.long_range_spinbox.valueChanged.connect(long_range_changed)
-        self.attack_modifier_combobox.currentTextChanged.connect(attack_mod_changed)
-        self.attack_type_combobox.currentTextChanged.connect(attack_type_changed)
+        self.attack_modifier_combobox.currentIndexChanged.connect(attack_mod_changed)
+        self.attack_type_combobox.currentIndexChanged.connect(attack_type_changed)
         self.attack_description_edit.textChanged.connect(attack_description_changed)
 
     def damage_dice_changed(self):
@@ -134,8 +179,9 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
 
     def get_damage_dice(self):
         dice_list = []
-        for row in self.damage_tablewidget.rowCount():
-            dice_list.append((self.damage_tablewidget.item(row, 0), DamageType(self.damage_tablewidget.item(row, 1).currentText())))
+        for row in range(self.damage_tablewidget.rowCount()):
+            if self.damage_tablewidget.item(row, 0) is not None and self.damage_tablewidget.cellWidget(row, 1).currentText() != '':
+                dice_list.append({"dicestring": self.damage_tablewidget.item(row, 0).text(), "damagetype":DamageType(self.damage_tablewidget.cellWidget(row, 1).currentText())})
         return dice_list
 
 
@@ -149,18 +195,22 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
 
 def set_combo_box_selected_item(combo_box, item):
     index = -1
+    print(range(combo_box.count()))
+    print(f"Setting {combo_box.currentText()} index {item}")
     for i in range(combo_box.count()):
         print(f"{combo_box.itemText(i)} {item}" )
         if combo_box.itemText(i) == item:
             index = i
             break
 
-    combo_box.setCurrentIndex(index)
-    print(combo_box.currentText())
+    if index != combo_box.currentIndex():
+        print(f"Changing combo box index {item}")
+        combo_box.setCurrentIndex(index)
+        print(combo_box.currentText())
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = AttackDialog(attack=None)
+    myWindow = AttackDialog(attack=generate_test_melee_attack())
     myWindow.show()
     app.exec()
