@@ -1,14 +1,14 @@
 from creature_datastructs import *
-from srd.srd_datastructs import Size, AbilityScores, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, BaseAttack, MeleeWeaponAttack
+from srd.srd_datastructs import Size, AbilityScore, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, BaseAttack, MeleeWeaponAttack
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):
-    strscore = monster.ability_scores[AbilityScores.STRENGTH]
-    dexscore = monster.ability_scores[AbilityScores.DEXTERITY]
-    conscore = monster.ability_scores[AbilityScores.CONSTITUTION]
-    intscore = monster.ability_scores[AbilityScores.INTELLIGENCE]
-    wisscore = monster.ability_scores[AbilityScores.WISDOM]
-    chascore = monster.ability_scores[AbilityScores.CHARISMA]
+    strscore = monster.ability_scores[AbilityScore.STRENGTH]
+    dexscore = monster.ability_scores[AbilityScore.DEXTERITY]
+    conscore = monster.ability_scores[AbilityScore.CONSTITUTION]
+    intscore = monster.ability_scores[AbilityScore.INTELLIGENCE]
+    wisscore = monster.ability_scores[AbilityScore.WISDOM]
+    chascore = monster.ability_scores[AbilityScore.CHARISMA]
 
     abilitystring = f"|{strscore} ({score_to_mod(strscore)})"
     abilitystring += f"|{dexscore} ({score_to_mod(dexscore)})"
@@ -61,18 +61,18 @@ def print_monster_saves(monster):
     save_string = ""
     if monster.saving_throws:
         save_string = "> - **Saving Throws** "
-        if AbilityScores.STRENGTH in monster.saving_throws:
-            save_string += f"STR +{monster.save_bonus(AbilityScores.STRENGTH)}, "
-        if AbilityScores.DEXTERITY in monster.saving_throws:
-            save_string += f"DEX +{monster.save_bonus(AbilityScores.DEXTERITY)}, "
-        if AbilityScores.CONSTITUTION in monster.saving_throws:
-            save_string += f"CON +{monster.save_bonus(AbilityScores.CONSTITUTION)}, "
-        if AbilityScores.INTELLIGENCE in monster.saving_throws:
-            save_string += f"INT +{monster.save_bonus(AbilityScores.INTELLIGENCE)}, "
-        if AbilityScores.WISDOM in monster.saving_throws:
-            save_string += f"WIS +{monster.save_bonus(AbilityScores.WISDOM)}, "
-        if AbilityScores.CHARISMA in monster.saving_throws:
-            save_string += f"CHA +{monster.save_bonus(AbilityScores.CHARISMA)} "
+        if AbilityScore.STRENGTH in monster.saving_throws:
+            save_string += f"STR +{monster.save_bonus(AbilityScore.STRENGTH)}, "
+        if AbilityScore.DEXTERITY in monster.saving_throws:
+            save_string += f"DEX +{monster.save_bonus(AbilityScore.DEXTERITY)}, "
+        if AbilityScore.CONSTITUTION in monster.saving_throws:
+            save_string += f"CON +{monster.save_bonus(AbilityScore.CONSTITUTION)}, "
+        if AbilityScore.INTELLIGENCE in monster.saving_throws:
+            save_string += f"INT +{monster.save_bonus(AbilityScore.INTELLIGENCE)}, "
+        if AbilityScore.WISDOM in monster.saving_throws:
+            save_string += f"WIS +{monster.save_bonus(AbilityScore.WISDOM)}, "
+        if AbilityScore.CHARISMA in monster.saving_throws:
+            save_string += f"CHA +{monster.save_bonus(AbilityScore.CHARISMA)} "
         save_string += '\n'
     return save_string
 

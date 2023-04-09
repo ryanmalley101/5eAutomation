@@ -22,11 +22,11 @@ def size_wizard():
 
 def print_skill_choices(creature=None):
     if creature is None:
-        for i, x in enumerate(SKILL_LIST):
+        for i, x in enumerate(list(Skill)):
             print(f'| {str(i)} - {x} |')
         print('| (e)xit |')
     else:
-        for i, x in enumerate(SKILL_LIST):
+        for i, x in enumerate(list(Skill)):
             isprof = "*" if creature.skills[x] else ""
             print(f"| {str(i)} - {x}{isprof} |")
         print('| (e)xit |')
@@ -138,27 +138,27 @@ def save_prof_wizard(creature):
     strprof = input("Is the creature proficient in "
                     "Strength saves, (y)es or (n)o\n")
     if strprof == 'y' or strprof == 'yes':
-        creature.saving_throws.add(AbilityScores.STRENGTH)
+        creature.saving_throws.add(AbilityScore.STRENGTH)
     dexprof = input("Is the creature proficient in "
                     "Dexterity saves, (y)es or (n)o\n")
     if dexprof == 'y' or dexprof == 'yes':
-        creature.saving_throws.add(AbilityScores.DEXTERITY)
+        creature.saving_throws.add(AbilityScore.DEXTERITY)
     conprof = input("Is the creature proficient in "
                     "Constitution saves, (y)es or (n)o\n")
     if conprof == 'y' or conprof == 'yes':
-        creature.saving_throws.add(AbilityScores.CONSTITUTION)
+        creature.saving_throws.add(AbilityScore.CONSTITUTION)
     intprof = input("Is the creature proficient in "
                     "Intelligence saves, (y)es or (n)o\n")
     if intprof == 'y' or intprof == 'yes':
-        creature.saving_throws.add(AbilityScores.INTELLIGENCE)
+        creature.saving_throws.add(AbilityScore.INTELLIGENCE)
     wisprof = input("Is the creature proficient in "
                     "Wisdom saves, (y)es or (n)o\n")
     if wisprof == 'y' or wisprof == 'yes':
-        creature.saving_throws.add(AbilityScores.WISDOM)
+        creature.saving_throws.add(AbilityScore.WISDOM)
     chaprof = input("Is the creature proficient in "
                     "Charisma saves, (y)es or (n)o\n")
     if chaprof == 'y' or chaprof == 'yes':
-        creature.saving_throws.add(AbilityScores.CHARISMA)
+        creature.saving_throws.add(AbilityScore.CHARISMA)
     return creature
 
 
@@ -182,16 +182,17 @@ def toggle_damage(creature, damage, damagemodifier=None):
 
 
 def toggle_condition(creature, condition):
-    creature.conditionimmunities[condition] = \
-        not creature.conditionimmunities[condition]
+    # if creature.conditionimmunities[condition]:
+        # creature.conditionimmunities
+    # creature.conditionimmunities[condition] = \
+    #     not creature.conditionimmunities[condition]
 
 
 def skill_prof_wizard(creature, initialize=True):
     print("Entering skill proficiency wizard. "
           "Default response for options is no")
     if initialize:
-        for skill in SKILL_LIST:
-            creature.skills[skill] = False
+        creature.skills = {}
 
     skillprompt = 'WIZARD'
     while skillprompt != '' and skillprompt != 'exit':
@@ -206,17 +207,17 @@ def skill_prof_wizard(creature, initialize=True):
         skillprompt = input()
         if skillprompt.isdigit():
             skillchoice = int(skillprompt)
-            if 0 <= skillchoice < len(SKILL_LIST):
-                toggle_skill(creature, SKILL_LIST[skillchoice])
+            if 0 <= skillchoice < len(Skill):
+                toggle_skill(creature, Skill(list(Skill)[skillchoice]))
             else:
                 print(f'Invalid index. Expected integer '
-                      f'between 0 and {len(SKILL_LIST)}')
+                      f'between 0 and {len(Skill)}')
                 continue
         elif skillprompt == "" or skillprompt == "e" or skillprompt == "exit":
             break
         else:
             print(f'Invalid input. Expected integer '
-                  f'between 0 and {len(SKILL_LIST)}')
+                  f'between 0 and {len(Skill)}')
     return creature
 
 
@@ -224,7 +225,7 @@ def damage_type_wizard(creature, mode=None, initialize=True):
     print(f"Entering damage {mode} wizard. Default response for options is no")
     damageprompt = 'WIZARD'
     if initialize:
-        for damage in DAMAGE_LIST:
+        for damage in DamageType:
             creature.damageresistances[damage] = False
             creature.damageimmunities[damage] = False
             creature.damagevulnerabilities[damage] = False
@@ -241,17 +242,17 @@ def damage_type_wizard(creature, mode=None, initialize=True):
         damage_prompt = input()
         if damage_prompt.isdigit():
             damage_choice = int(damage_prompt)
-            if 0 <= damage_choice < len(DAMAGE_LIST):
-                toggle_damage(creature, DAMAGE_LIST[damage_choice], mode)
+            if 0 <= damage_choice < len(DamageType):
+                toggle_damage(creature, DamageType(list(DamageType)[damage_choice], mode))
             else:
                 print(f'Invalid index. Expected integer '
-                      f'between 0 and {len(DAMAGE_LIST)}')
+                      f'between 0 and {len(DamageType)}')
         elif damage_prompt == "" or damage_prompt == "e" \
                 or damage_prompt == "exit":
             break
         else:
             print(f'Invalid input. Expected integer '
-                  f'between 0 and {len(DAMAGE_LIST)}')
+                  f'between 0 and {len(Damagetype)}')
     return creature
 
 
@@ -260,7 +261,7 @@ def condition_immunity_wizard(creature, initialize=True):
           f"Default response for options is no")
     conditionprompt = 'WIZARD'
     if initialize:
-        for condition in CONDITION_LIST:
+        for condition in Condition:
             creature.conditionimmunities[condition] = False
 
     while conditionprompt != '' and conditionprompt != 'exit':
@@ -275,7 +276,7 @@ def condition_immunity_wizard(creature, initialize=True):
         condition_prompt = input()
         if condition_prompt.isdigit():
             condition_prompt = int(condition_prompt)
-            if 0 <= condition_prompt < len(DAMAGE_LIST):
+            if 0 <= condition_prompt < len(Condition):
                 toggle_condition(creature, CONDITION_LIST[condition_prompt])
             else:
                 print(
@@ -393,15 +394,15 @@ def get_attack_bonus():
     attackmod = None
     while attackmod is None:
         print("What ability is the attack made with?")
-        AbilityScores.menu()
+        AbilityScore.menu()
         mod_prompt = input("\n")
         if mod_prompt.isdigit() and 0 <= int(mod_prompt) < len(
-                AbilityScores):
+                AbilityScore):
             attackmod = int(mod_prompt)
             continue
         else:
             print(f"Invalid input. Expected an integer between 0 "
-                  f"and {len(AbilityScores)}")
+                  f"and {len(AbilityScore)}")
 
     attackbonus = None
     while attackbonus is None:
@@ -668,25 +669,25 @@ def interactive_creature_gen():
                            "natural armor, mage armor, etc.\n")
 
     # Get Ability Scores
-    creature.ability_scores[AbilityScores.STRENGTH] = \
+    creature.ability_scores[AbilityScore.STRENGTH] = \
         get_ability_score("Strength")
-    creature.ability_scores[AbilityScores.DEXTERITY] = \
+    creature.ability_scores[AbilityScore.DEXTERITY] = \
         get_ability_score("Dexterity")
-    creature.ability_scores[AbilityScores.CONSTITUTION] = \
+    creature.ability_scores[AbilityScore.CONSTITUTION] = \
         get_ability_score("Constitution")
-    creature.ability_scores[AbilityScores.INTELLIGENCE] = \
+    creature.ability_scores[AbilityScore.INTELLIGENCE] = \
         get_ability_score("Intelligence")
-    creature.ability_scores[AbilityScores.WISDOM] = \
+    creature.ability_scores[AbilityScore.WISDOM] = \
         get_ability_score("Wisdom")
-    creature.ability_scores[AbilityScores.CHARISMA] = \
+    creature.ability_scores[AbilityScore.CHARISMA] = \
         get_ability_score("Charisma")
 
     # Get hit dice through the hp wizard
     creature.hitdice = get_hit_dice(hitdie=Size.hitdice(creature.size),
-                                   con=creature.ability_scores[AbilityScores.CONSTITUTION])
+                                    con=creature.ability_scores[AbilityScore.CONSTITUTION])
     creature.hitpoints = calculate_hitpoints(hitdie=Size.hitdice(creature.size),
-                                            con=creature.ability_scores[AbilityScores.CONSTITUTION],
-                                            hitdice=creature.hitdice)
+                                             con=creature.ability_scores[AbilityScore.CONSTITUTION],
+                                             hitdice=creature.hitdice)
 
     # Get speed
     speedinput = input("Creature Speed (default 30 ft.)\n")
@@ -761,17 +762,17 @@ def generate_test_creature():
         acdesc="natural armor",
         acbonus=2,
         ability_scores={
-            AbilityScores.STRENGTH: 12,
-            AbilityScores.DEXTERITY: 11,
-            AbilityScores.CONSTITUTION: 16,
-            AbilityScores.INTELLIGENCE: 19,
-            AbilityScores.WISDOM: 20,
-            AbilityScores.CHARISMA: 10
+            AbilityScore.STRENGTH: 12,
+            AbilityScore.DEXTERITY: 11,
+            AbilityScore.CONSTITUTION: 16,
+            AbilityScore.INTELLIGENCE: 19,
+            AbilityScore.WISDOM: 20,
+            AbilityScore.CHARISMA: 10
         },
         hitdice='7d8',
         hitpoints=100,
         speed='30 ft.',
-        saving_throws={AbilityScores.STRENGTH, AbilityScores.CONSTITUTION, AbilityScores.WISDOM},
+        saving_throws={AbilityScore.STRENGTH, AbilityScore.CONSTITUTION, AbilityScore.WISDOM},
         skills={"Perception": True, "Stealth": True},
         damageimmunities={"fire": True, "cold": True},
         damageresistances={"psychic": True, "lightning": True},
@@ -783,7 +784,7 @@ def generate_test_creature():
         abilities=[AbilityDescription(name="Legendary Resistance (1/Long Rest)",
                                       description="This is a test ability")],
         actions=[MeleeWeaponAttack(name="PLACEHOLDER ATTACK",
-                                   attack_mod=AbilityScores.STRENGTH,
+                                   attack_mod=AbilityScore.STRENGTH,
                                    attack_bonus=1,
                                    description="Attack description here.",
                                    damage_dice=[{"dicestring": "1d4+2d6+8",

@@ -2,7 +2,7 @@ from enum import Enum
 from dataclasses import dataclass, field, asdict
 import json
 import time
-from srd.srd_datastructs import AbilityScores, AbilityDescription
+from srd.srd_datastructs import AbilityScore, AbilityDescription
 
 
 class ClassNames(Enum):

@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScores, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
+from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
 
 @dataclass
 class CreatureStatblock:
@@ -20,12 +20,12 @@ class CreatureStatblock:
     hitdice: str = '0d0'
     hitpoints: int = 0
     speed: str = '30 ft.'
-    saving_throws:set = field(default_factory=set)
+    saving_throws: set = field(default_factory=set)
     skills: dict = field(default_factory=dict)
-    damageimmunities: dict = field(default_factory=dict)
-    damageresistances: dict = field(default_factory=dict)
-    damagevulnerabilities: dict = field(default_factory=dict)
-    conditionimmunities: dict = field(default_factory=dict)
+    damageimmunities: set = field(default_factory=set)
+    damageresistances: set = field(default_factory=set)
+    damagevulnerabilities: set = field(default_factory=set)
+    conditionimmunities: set = field(default_factory=set)
     senses: str = ""
     languages: str = ""
     abilities: list = field(default_factory=list)
@@ -56,12 +56,12 @@ class CreatureStatblock:
         creature_dict['ability_scores'] = {}
         for index, score in enumerate(ability_scores):
             for key in score:
-                creature_dict['ability_scores'][AbilityScores(key)] = score[key]
+                creature_dict['ability_scores'][AbilityScore(key)] = score[key]
         creature_dict['hitpoints'] = int(creature_dict['hitpoints'])
         saves = creature_dict['saving_throws']
         creature_dict['saving_throws'] = set()
         for save in saves:
-            creature_dict['saving_throws'].add(AbilityScores(save))
+            creature_dict['saving_throws'].add(AbilityScore(save))
         for skill in creature_dict['skills']:
             creature_dict['skills'][skill] = bool(skill)
         for immunity in creature_dict['damageimmunities']:
@@ -104,15 +104,15 @@ class CreatureStatblock:
         creature_json.close()
 
     def get_total_ac(self):
-        return 10 + score_to_mod(self.ability_scores[AbilityScores.DEXTERITY]) + self.acbonus
+        return 10 + score_to_mod(self.ability_scores[AbilityScore.DEXTERITY]) + self.acbonus
 
     def initialize_ability_scores(self):
-        self.ability_scores[AbilityScores.STRENGTH] = 10
-        self.ability_scores[AbilityScores.DEXTERITY] = 10
-        self.ability_scores[AbilityScores.CONSTITUTION] = 10
-        self.ability_scores[AbilityScores.INTELLIGENCE] = 10
-        self.ability_scores[AbilityScores.WISDOM] = 10
-        self.ability_scores[AbilityScores.CHARISMA] = 10
+        self.ability_scores[AbilityScore.STRENGTH] = 10
+        self.ability_scores[AbilityScore.DEXTERITY] = 10
+        self.ability_scores[AbilityScore.CONSTITUTION] = 10
+        self.ability_scores[AbilityScore.INTELLIGENCE] = 10
+        self.ability_scores[AbilityScore.WISDOM] = 10
+        self.ability_scores[AbilityScore.CHARISMA] = 10
 
     def proficiency_bonus(self):
         return 0
@@ -128,7 +128,7 @@ class CreatureStatblock:
         if self.skills['Perception']:
             return 10 + self.skill_bonus('Perception')
         else:
-            return 10 + score_to_mod(self.ability_scores[AbilityScores.WISDOM])
+            return 10 + score_to_mod(self.ability_scores[AbilityScore.WISDOM])
 
 
 @dataclass
@@ -246,4 +246,3 @@ CR_TO_XP_TABLE = {
     29: 137000,
     30: 155000
 }
-

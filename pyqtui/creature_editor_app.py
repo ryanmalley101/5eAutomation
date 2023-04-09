@@ -6,7 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScores, Size, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus, score_to_mod, BaseAttack
+from srd.srd_datastructs import AbilityScore, Size, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus, score_to_mod, BaseAttack
 
 from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem
@@ -34,7 +34,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.set_stylesheet()
         self.setup_checkbox_signals()
         self.setup_label_signals()
-        self.init_creature_data()
+        self.update_creature_data()
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -86,7 +86,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
             self.size_combobox.addItem(size.name)
         for cr in creature_datastructs.CR_TO_XP_TABLE:
             self.challenge_rating_combobox.addItem(str(cr))
-        for save in creature_datastructs.AbilityScores:
+        for save in creature_datastructs.AbilityScore:
             self.saving_throws_combobox.addItem(save.value)
         for skill in SKILL_LIST:
             self.skills_combobox.addItem(skill)
@@ -119,9 +119,16 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.save_button.pressed.connect(self.add_save_proficiency)
 
     def add_save_proficiency(self):
-        selected_save = AbilityScores(self.saving_throws_combobox.currentText())
+        selected_save = AbilityScore(self.saving_throws_combobox.currentText())
         if selected_save not in self.creature_block.saving_throws:
             self.creature_block.saving_throws.add(selected_save)
+        self.update_creature_data()
+
+    # def add_skill_proficiency(self):
+    #     selected_skill = AbilityScores(self.saving_throws_combobox.currentText())
+    #     if selected_save not in self.creature_block.saving_throws:
+    #         self.creature_block.saving_throws.add(selected_save)
+    #     self.update_creature_data()
 
     def setup_label_signals(self):
         self.str_edit.editingFinished.connect(lambda: update_modifier(self.str_edit.text(), self.str_mod_label))
@@ -133,7 +140,7 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
         self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
 
-    def init_creature_data(self):
+    def update_creature_data(self):
         def initsaves():
             for save in self.creature_block.saving_throws:
                 self.save_listwidget.addItem(save.value)
@@ -219,17 +226,17 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.armor_type_edit.setText(self.creature_block.acdesc)
         self.senses_edit.setText(self.creature_block.senses)
         self.speeds_edit.setText(self.creature_block.speed)
-        self.str_edit.setText(str(self.creature_block.ability_scores[AbilityScores.STRENGTH]))
+        self.str_edit.setText(str(self.creature_block.ability_scores[AbilityScore.STRENGTH]))
         update_modifier(self.str_edit.text(), self.str_mod_label)
-        self.dex_edit.setText(str(self.creature_block.ability_scores[AbilityScores.DEXTERITY]))
+        self.dex_edit.setText(str(self.creature_block.ability_scores[AbilityScore.DEXTERITY]))
         update_modifier(self.dex_edit.text(), self.dex_mod_label)
-        self.con_edit.setText(str(self.creature_block.ability_scores[AbilityScores.CONSTITUTION]))
+        self.con_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
         update_modifier(self.con_edit.text(), self.con_mod_label)
-        self.int_edit.setText(str(self.creature_block.ability_scores[AbilityScores.INTELLIGENCE]))
+        self.int_edit.setText(str(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE]))
         update_modifier(self.int_edit.text(), self.int_mod_label)
-        self.wis_edit.setText(str(self.creature_block.ability_scores[AbilityScores.WISDOM]))
+        self.wis_edit.setText(str(self.creature_block.ability_scores[AbilityScore.WISDOM]))
         update_modifier(self.wis_edit.text(), self.wis_mod_label)
-        self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScores.CHARISMA]))
+        self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CHARISMA]))
         update_modifier(self.cha_edit.text(), self.cha_mod_label)
         initsaves()
         initskills()

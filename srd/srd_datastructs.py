@@ -42,7 +42,7 @@ class Size(Enum):
                 return 20
 
 
-class AbilityScores(Enum):
+class AbilityScore(Enum):
     STRENGTH = "Strength"
     DEXTERITY = "Dexterity"
     CONSTITUTION = "Constitution"
@@ -55,82 +55,84 @@ class AbilityScores(Enum):
         for i, value in enumerate(cls):
             print(f"({i}) {value} ")
 
-SKILL_LIST = [
-    "Acrobatics",
-    "Animal Handling",
-    "Arcana",
-    "Athletics",
-    "Deception",
-    "History",
-    "Insight",
-    "Intimidation",
-    "Investigation",
-    "Medicine",
-    "Nature",
-    "Perception",
-    "Persuasion",
-    "Religion",
-    "Sleight of Hand",
-    "Stealth",
-    "Survival"
-]
 
-DAMAGE_LIST = (
-    "acid",
-    "bludgeoning",
-    "cold",
-    "fire",
-    "force",
-    "lightning",
-    "necrotic",
-    "piercing",
-    "poison",
-    "psychic",
-    "radiant",
-    "slashing",
-    "thunder",
-)
+class Skill(Enum):
+    ACROBATICS = "Acrobatics"
+    ANIMAL_HANDLING = "Animal Handling"
+    ARCANA = "Arcana"
+    ATHLETICS = "Athletics"
+    DECEPTION = "Deception"
+    HISTORY = "History"
+    INSIGHT = "Insight"
+    INTIMIDATION = "Intimidation"
+    INVESTIGATION = "Investigation"
+    MEDICINE = "Medicine"
+    NATURE = "Nature"
+    PERCEPTION = "Perception"
+    PERFORMANCE = "Performance"
+    PERSUASION = "Persuasion"
+    RELIGION = "Religion"
+    SLEIGHT_OF_HAND = "Sleight of Hand"
+    STEALTH = "Stealth"
+    SURVIVAL = "Survival"
 
-CONDITION_LIST = (
-    "bleed",
-    "blinded",
-    "charmed",
-    "deafened",
-    "exhaustion",
-    "frightened",
-    "frostbitten",
-    "grappled",
-    "incapacitated",
-    "invisible",
-    "paralyzed",
-    "petrified",
-    "poisoned",
-    "prone",
-    "restrained",
-    "stunned",
-    "unconcious"
-)
+
+class DamageType(Enum):
+    ACID = "acid"
+    BLUDGEONING = "bludgeoning"
+    COLD = "cold"
+    FIRE = "fire"
+    FORCE = "force"
+    LIGHTNING = "lightning"
+    NECROTIC = "necrotic"
+    PIERCING = "piercing"
+    POISON = "poison"
+    PSYCHIC = "psychic"
+    RADIANT = "radiant"
+    SLASHING = "slashing"
+    THUNDER = "thunder"
+
+
+
+class Condition(Enum):
+    BLEED = "bleed"
+    BLINDED = "blinded"
+    CHARMED = "charmed"
+    DEAFENED = "deafened"
+    EXHUASTION = "exhaustion"
+    FRIGHTENED = "frightened"
+    FROSTBITE = "frostbite"
+    GRAPPLED = "grappled"
+    INCAPACITATED = "incapacitated"
+    INVISIBLE = "invisible"
+    PARALYZED = "paralyzed"
+    PETRIFIED = "petrified"
+    POISONED = "poisoned"
+    PRONE = "prone"
+    RESTRAINED = "restrained"
+    STUNNED = "stunned"
+    UNCONCIOUS = "unconcious"
 
 
 SKILL_TO_ABILITY = {
-    "Athletics": AbilityScores.STRENGTH,
-    "Acrobatics": AbilityScores.DEXTERITY,
-    "Sleight of Hand": AbilityScores.DEXTERITY,
-    "Stealth": AbilityScores.DEXTERITY,
-    "Arcana": AbilityScores.INTELLIGENCE,
-    "History": AbilityScores.INTELLIGENCE,
-    "Investigation": AbilityScores.INTELLIGENCE,
-    "Nature": AbilityScores.INTELLIGENCE,
-    "Religion": AbilityScores.INTELLIGENCE,
-    "Animal Handling": AbilityScores.WISDOM,
-    "Insight": AbilityScores.WISDOM,
-    "Medicine": AbilityScores.WISDOM,
-    "Perception": AbilityScores.WISDOM,
-    "Survival": AbilityScores.WISDOM,
-    "Deception": AbilityScores.CHARISMA,
-    "Intimidation": AbilityScores.CHARISMA,
-    "Performance": AbilityScores.CHARISMA,
-    "Persuasion": AbilityScores.CHARISMA
+    Skill.ATHLETICS: AbilityScore.STRENGTH,
+    Skill.ACROBATICS: AbilityScore.DEXTERITY,
+    Skill.SLEIGHT_OF_HAND: AbilityScore.DEXTERITY,
+    Skill.STEALTH: AbilityScore.DEXTERITY,
+    Skill.ARCANA: AbilityScore.INTELLIGENCE,
+    Skill.HISTORY: AbilityScore.INTELLIGENCE,
+    Skill.INVESTIGATION: AbilityScore.INTELLIGENCE,
+    Skill.NATURE: AbilityScore.INTELLIGENCE,
+    Skill.RELIGION: AbilityScore.INTELLIGENCE,
+    Skill.ANIMAL_HANDLING: AbilityScore.WISDOM,
+    Skill.INSIGHT: AbilityScore.WISDOM,
+    Skill.MEDICINE: AbilityScore.WISDOM,
+    Skill.PERCEPTION: AbilityScore.WISDOM,
+    Skill.SURVIVAL: AbilityScore.WISDOM,
+    Skill.DECEPTION: AbilityScore.CHARISMA,
+    Skill.INTIMIDATION: AbilityScore.CHARISMA,
+    Skill.PERFORMANCE: AbilityScore.CHARISMA,
+    Skill.PERSUASION: AbilityScore.CHARISMA
 }
 
 def score_to_mod(score):
@@ -165,7 +167,7 @@ class BaseAttack:
         UNKNOWN = 'un'
 
     name: str = "PLACEHOLDER ATTACK"
-    attack_mod: AbilityScores = AbilityScores.STRENGTH
+    attack_mod: AbilityScore = AbilityScore.STRENGTH
     attack_bonus: int = 0
     description: str = ""
     targets: str = "one target."
@@ -214,7 +216,7 @@ class BaseAttack:
     def convert_json_attack(json_attack):
         if json_attack['type'] == BaseAttack.AttackType.MELEESPELL.value:
             return MeleeSpellAttack(name=json_attack['name'],
-                                    attack_mod=AbilityScores(json_attack['attack_mod']),
+                                    attack_mod=AbilityScore(json_attack['attack_mod']),
                                     attack_bonus=int(json_attack['attack_bonus']),
                                     description=json_attack['description'],
                                     targets=json_attack['targets'],
@@ -223,7 +225,7 @@ class BaseAttack:
                                     reach=json_attack['reach'])
         elif json_attack['type'] == BaseAttack.AttackType.MELEEWEAPON.value:
             return MeleeWeaponAttack(name=json_attack['name'],
-                                     attack_mod=AbilityScores(json_attack['attack_mod']),
+                                     attack_mod=AbilityScore(json_attack['attack_mod']),
                                      attack_bonus=int(json_attack['attack_bonus']),
                                      description=json_attack['description'],
                                      targets=json_attack['targets'],
@@ -232,7 +234,7 @@ class BaseAttack:
                                      reach=json_attack['reach'])
         elif json_attack['type'] == BaseAttack.AttackType.RANGEDWEAPON.value:
             return RangedWeaponAttack(name=json_attack['name'],
-                                      attack_mod=AbilityScores(json_attack['attack_mod']),
+                                      attack_mod=AbilityScore(json_attack['attack_mod']),
                                       attack_bonus=int(json_attack['attack_bonus']),
                                       description=json_attack['description'],
                                       targets=json_attack['targets'],
@@ -242,7 +244,7 @@ class BaseAttack:
                                       long_range=json_attack['long_range'])
         elif json_attack['type'] == BaseAttack.AttackType.RANGEDSPELL.value:
             return RangedSpellAttack(name=json_attack['name'],
-                                     attack_mod=AbilityScores(json_attack['attack_mod']),
+                                     attack_mod=AbilityScore(json_attack['attack_mod']),
                                      attack_bonus=int(json_attack['attack_bonus']),
                                      description=json_attack['description'],
                                      targets=json_attack['targets'],
