@@ -1,5 +1,5 @@
 from creature_datastructs import *
-from srd.srd_datastructs import Size, AbilityScore, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, BaseAttack, MeleeWeaponAttack
+from srd.srd_datastructs import Size, AbilityScore, Skill, Condition, DamageType, BaseAttack, MeleeWeaponAttack
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):
@@ -77,7 +77,7 @@ def print_monster_saves(monster):
     return save_string
 
 
-def print_monster_skills(monster):
+def print_monster_skills(monster: MonsterStatblock):
     skill_string = ""
     if any(monster.skills) is True:
         skill_string = "> - **Skills** "
@@ -86,8 +86,7 @@ def print_monster_skills(monster):
         # intermediate values
         counter = len(monster.skills) - 1
         for skill in monster.skills:
-            if monster.skills[skill]:
-                skill_string += f'{skill} +{monster.skill_bonus(skill)}'
+            skill_string += f'{skill} +{monster.skill_bonus(skill)}'
             if counter > 0:
                 counter -= 1
                 skill_string += ', '
@@ -96,15 +95,15 @@ def print_monster_skills(monster):
     return skill_string
 
 
-def print_monster_vulnerabilities(monster):
+def print_monster_vulnerabilities(monster: MonsterStatblock):
     vulnerability_string = ""
-    if any(monster.damagevulnerabilities) is True:
+    if any(monster.damage_vulnerabilities) is True:
         vulnerability_string = "> - **Damage Vulnerabilities** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
-        counter = len(monster.damagevulnerabilities) - 1
-        for vulnerability in monster.damagevulnerabilities:
-            if monster.damagevulnerabilities[vulnerability]:
+        counter = len(monster.damage_vulnerabilities) - 1
+        for vulnerability in monster.damage_vulnerabilities:
+            if vulnerability in monster.damage_vulnerabilities:
                 vulnerability_string += f'{vulnerability}'
             if counter > 0:
                 counter -= 1
@@ -114,16 +113,16 @@ def print_monster_vulnerabilities(monster):
     return vulnerability_string
 
 
-def print_monster_resistances(monster):
+def print_monster_resistances(monster: MonsterStatblock):
     resistance_string = ""
-    if any(monster.damageresistances) is True:
+    if any(monster.damage_resistances) is True:
         resistance_string = "> - **Damage Resistances** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
-        counter = len(monster.damageresistances) - 1
-        for resistance in monster.damageresistances:
-            if monster.damageresistances[resistance]:
-                resistance_string += f'{resistance}'
+        counter = len(monster.damage_resistances) - 1
+        for resistance in monster.damage_resistances:
+            if resistance in monster.damage_resistances:
+                resistance_string += f'{resistance.value}'
             if counter > 0:
                 counter -= 1
                 resistance_string += ', '
@@ -132,16 +131,16 @@ def print_monster_resistances(monster):
     return resistance_string
 
 
-def print_monster_immunities(monster):
+def print_monster_immunities(monster: MonsterStatblock):
     immunity_string = ""
-    if any(monster.damageimmunities) is True:
+    if any(monster.damage_immunities) is True:
         immunity_string = "> - **Damage Immunities** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
-        counter = len(monster.damageimmunities) - 1
-        for immunity in monster.damageimmunities:
-            if monster.damageimmunities[immunity]:
-                immunity_string += f'{immunity}'
+        counter = len(monster.damage_immunities) - 1
+        for immunity in monster.damage_immunities:
+            if immunity in monster.damage_immunities:
+                immunity_string += f'{immunity.value}'
             if counter > 0:
                 counter -= 1
                 immunity_string += ', '
@@ -149,16 +148,15 @@ def print_monster_immunities(monster):
 
     return immunity_string
 
-def print_monster_condition_immunities(monster):
+def print_monster_condition_immunities(monster: MonsterStatblock):
     condition_string = ""
-    if any(monster.conditionimmunities) is True:
+    if monster.condition_immunities:
         condition_string = "> - **Condition Immunities** "
         # Counter for the number of vulnerabilities so a comma can be added between
         # intermediate values
-        counter = len(monster.conditionimmunities) - 1
-        for condition in monster.conditionimmunities:
-            if monster.conditionimmunities[condition]:
-                condition_string += f'{condition}'
+        counter = len(monster.condition_immunities) - 1
+        for condition in monster.condition_immunities:
+            condition_string += f'{condition.value}'
             if counter > 0:
                 counter -= 1
                 condition_string += ', '

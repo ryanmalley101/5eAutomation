@@ -5,7 +5,7 @@ import json
 import math
 from patterns import DICESTRINGPATTERN
 import re
-from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
+from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, DamageType, Condition, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack
 
 @dataclass
 class CreatureStatblock:
@@ -21,11 +21,12 @@ class CreatureStatblock:
     hitpoints: int = 0
     speed: str = '30 ft.'
     saving_throws: set = field(default_factory=set)
-    skills: dict = field(default_factory=dict)
-    damageimmunities: set = field(default_factory=set)
-    damageresistances: set = field(default_factory=set)
-    damagevulnerabilities: set = field(default_factory=set)
-    conditionimmunities: set = field(default_factory=set)
+    skills: set = field(default_factory=set)
+    expertise: set = field(default_factory=set)
+    damage_immunities: set = field(default_factory=set)
+    damage_resistances: set = field(default_factory=set)
+    damage_vulnerabilities: set = field(default_factory=set)
+    condition_immunities: set = field(default_factory=set)
     senses: str = ""
     languages: str = ""
     abilities: list = field(default_factory=list)
@@ -58,20 +59,42 @@ class CreatureStatblock:
             for key in score:
                 creature_dict['ability_scores'][AbilityScore(key)] = score[key]
         creature_dict['hitpoints'] = int(creature_dict['hitpoints'])
+
         saves = creature_dict['saving_throws']
         creature_dict['saving_throws'] = set()
         for save in saves:
             creature_dict['saving_throws'].add(AbilityScore(save))
-        for skill in creature_dict['skills']:
-            creature_dict['skills'][skill] = bool(skill)
-        for immunity in creature_dict['damageimmunities']:
-            creature_dict['damageimmunities'][immunity] = bool(immunity)
-        for resistance in creature_dict['damageresistances']:
-            creature_dict['damageresistances'][resistance] = bool(resistance)
-        for vulnerability in creature_dict['damagevulnerabilities']:
-            creature_dict['damagevulnerabilities'][vulnerability] = bool(vulnerability)
-        for condition in creature_dict['conditionimmunities']:
-            creature_dict['conditionimmunities'][condition] = bool(condition)
+
+        skills = creature_dict['skills']
+        creature_dict['skills'] = set()
+        for skill in skills:
+            creature_dict['skills'].add(Skill(skill))
+
+        expertise = creature_dict['expertise']
+        creature_dict['expertise'] = set()
+        for skill in expertise:
+            creature_dict['expertise'].add(Skill(skill))
+
+        immunities = creature_dict['damage_immunities']
+        creature_dict['damage_immunities'] = set()
+        for immunity in immunities:
+            creature_dict['damage_immunities'].add(DamageType(immunity))
+
+        resistances = creature_dict['damage_resistances']
+        creature_dict['damage_resistances'] = set()
+        for resistance in resistances:
+            creature_dict['damage_resistances'].add(DamageType(resistance))
+
+        vulnerabilities = creature_dict['damage_vulnerabilities']
+        creature_dict['damage_vulnerabilities'] = set()
+        for vulnerability in vulnerabilities:
+            creature_dict['damage_vulnerabilities'].add(DamageType(vulnerability))
+
+        conditions = creature_dict['condition_immunities']
+        creature_dict['condition_immunities'] = set()
+        for condition in conditions:
+            creature_dict['condition_immunities'].add(Condition(condition))
+
         for index, ability in enumerate(creature_dict['abilities']):
             creature_dict['abilities'][index] = AbilityDescription(name=ability['name'],
                                                                    description=ability['description'])
@@ -177,6 +200,12 @@ class MonsterStatblock(CreatureStatblock):
         creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
                                           for score in self.ability_scores]
         creature_dict['saving_throws'] = [save.value for save in self.saving_throws]
+        creature_dict['condition_immunities'] = [condition.value for condition in self.condition_immunities]
+        creature_dict['skills'] = [skill.value for skill in self.skills]
+        creature_dict['expertise'] = [skill.value for skill in self.expertise]
+        creature_dict['damage_immunities'] = [damage.value for damage in self.damage_immunities]
+        creature_dict['damage_resistances'] = [damage.value for damage in self.damage_resistances]
+        creature_dict['damage_vulnerabilities'] = [damage.value for damage in self.damage_vulnerabilities]
         creature_dict['abilities'] = [asdict(abil)
                                      for abil in self.abilities]
         creature_dict['actions'] = [c.to_dict() for c in self.actions]
