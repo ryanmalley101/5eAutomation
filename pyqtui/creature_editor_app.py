@@ -98,6 +98,42 @@ class MonsterEditorForm(QDialog, Ui_Form):
             self.damage_combobox.addItem(damage.value)
         return True
 
+    def setup_lineedit_signals(self):
+        def name_edit_changed():
+            self.creature_block.name = self.name_edit.text()
+
+        def type_edit_changed():
+            self.creature_block.type = self.type_edit.text()
+
+        def tag_edit_changed():
+            self.creature_block.tag = self.tag_edit.text()
+
+        def alignment_edit_changed():
+            self.creature_block.alignment = self.alignment_edit.text()
+
+        def score_edit_changed(score, modifier_label, abilityscore: AbilityScore):
+            if score.isdigit():
+                score = int(score)
+                self.creature_block.ability_scores[abilityscore] = score
+                update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
+            else:
+                raise TypeError("Tried to update a score modifier with a non integer value")
+
+        def hit_points_edit_changed():
+
+
+        self.name_edit.editingFinished.connect(name_edit_changed)
+        self.type_edit.editingFinished.connect(type_edit_changed)
+        self.tag_edit.editingFinished.connect(tag_edit_changed)
+        self.alignment_edit.editingFinished.connect(alignment_edit_changed)
+        self.str_edit.editingFinished.connect(lambda: score_edit_changed(self.str_edit.text(), self.str_mod_label, AbilityScore.STRENGTH))
+        self.dex_edit.editingFinished.connect(lambda: score_edit_changed(self.dex_edit.text(), self.dex_mod_label, AbilityScore.DEXTERITY))
+        self.con_edit.editingFinished.connect(lambda: score_edit_changed(self.con_edit.text(), self.con_mod_label, AbilityScore.CONSTITUTION))
+        self.int_edit.editingFinished.connect(lambda: score_edit_changed(self.int_edit.text(), self.int_mod_label, AbilityScore.INTELLIGENCE))
+        self.wis_edit.editingFinished.connect(lambda: score_edit_changed(self.wis_edit.text(), self.wis_mod_label, AbilityScore.WISDOM))
+        self.cha_edit.editingFinished.connect(lambda: score_edit_changed(self.cha_edit.text(), self.cha_mod_label, AbilityScore.CHARISMA))
+        self.hit_points_edit.editingFinished.connect(hit_points_edit_changed)
+
     def setup_checkbox_signals(self):
         def toggle_container_visibility(checkbox, container):
             checkbox_checked = checkbox.isChecked()
@@ -164,12 +200,6 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.update_damage()
 
     def setup_label_signals(self):
-        self.str_edit.editingFinished.connect(lambda: update_modifier(self.str_edit.text(), self.str_mod_label))
-        self.dex_edit.editingFinished.connect(lambda: update_modifier(self.dex_edit.text(), self.dex_mod_label))
-        self.con_edit.editingFinished.connect(lambda: update_modifier(self.con_edit.text(), self.con_mod_label))
-        self.int_edit.editingFinished.connect(lambda: update_modifier(self.int_edit.text(), self.int_mod_label))
-        self.wis_edit.editingFinished.connect(lambda: update_modifier(self.wis_edit.text(), self.wis_mod_label))
-        self.cha_edit.editingFinished.connect(lambda: update_modifier(self.cha_edit.text(), self.cha_mod_label))
         self.size_combobox.currentIndexChanged.connect(lambda text: update_hitdice(Size(text), self.hit_die_calculation_label))
         self.challenge_rating_combobox.currentIndexChanged.connect(lambda text: update_prof_bonus(text, self.proficiency_bonus_calculation_label))
 
@@ -261,17 +291,17 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.senses_edit.setText(self.creature_block.senses)
         self.speeds_edit.setText(self.creature_block.speed)
         self.str_edit.setText(str(self.creature_block.ability_scores[AbilityScore.STRENGTH]))
-        update_modifier(self.str_edit.text(), self.str_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.STRENGTH], self.str_mod_label)
         self.dex_edit.setText(str(self.creature_block.ability_scores[AbilityScore.DEXTERITY]))
-        update_modifier(self.dex_edit.text(), self.dex_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.DEXTERITY], self.dex_mod_label)
         self.con_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
-        update_modifier(self.con_edit.text(), self.con_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.CONSTITUTION], self.con_mod_label)
         self.int_edit.setText(str(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE]))
-        update_modifier(self.int_edit.text(), self.int_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE], self.int_mod_label)
         self.wis_edit.setText(str(self.creature_block.ability_scores[AbilityScore.WISDOM]))
-        update_modifier(self.wis_edit.text(), self.wis_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.WISDOM], self.wis_mod_label)
         self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CHARISMA]))
-        update_modifier(self.cha_edit.text(), self.cha_mod_label)
+        update_modifier_label(self.creature_block.ability_scores[AbilityScore.CHARISMA], self.cha_mod_label)
         self.update_saves()
         self.update_skills()
         self.update_conditions()
@@ -283,6 +313,12 @@ class MonsterEditorForm(QDialog, Ui_Form):
         self.update_legendary_actions()
         self.mythic_description_edit.setText(self.creature_block.mythicdescription)
         self.update_mythic_actions()
+
+
+def update_modifier_label(score, label):
+    mod = score_to_mod(score)
+    modstr = f'+{mod}' if mod >= 0 else f'{mod}'
+    label.setText(modstr)
 
 
 def set_combo_box_selected_item(combo_box, item):
@@ -297,15 +333,6 @@ def set_combo_box_selected_item(combo_box, item):
     print(combo_box.currentText())
 
 
-def update_modifier(score, modifier_label):
-    if score.isdigit():
-        mod = score_to_mod(int(score))
-        modstr = f'+{mod}' if mod >= 0 else f'{mod}'
-        modifier_label.setText(modstr)
-    else:
-        raise TypeError("Tried to update a score modifier with a non integer value")
-
-
 def update_hitdice(size, modifier_label):
     if isinstance(size, Size):
         modifier_label.setText(str(f"d{Size.hitdice(size)}"))
@@ -316,14 +343,17 @@ def update_hitdice(size, modifier_label):
 def update_prof_bonus(cr, modifier_label):
     modifier_label.setText(f'+{proficiency_bonus(cr)}')
 
+
 def insert_ability(layout, ability):
     new_ability = AbilityButton(ability)
     layout.addWidget(new_ability)
+
 
 def insert_attack(layout, attack, creature):
     new_attack = AttackButton(attack, creature)
     print(new_attack.text())
     layout.addWidget(new_attack)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
