@@ -6,16 +6,13 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScore, Size, SKILL_LIST, CONDITION_LIST, DAMAGE_LIST, proficiency_bonus, score_to_mod, BaseAttack
+from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack
 
 from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem
 )
 
 from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
-
-from PyQt6.QtGui import QStandardItemModel, QStandardItem
-
 from PyQt6 import QtCore
 
 from creature_editor_ui import Ui_Form
@@ -88,12 +85,12 @@ class MonsterEditorForm(QDialog, Ui_Form):
             self.challenge_rating_combobox.addItem(str(cr))
         for save in creature_datastructs.AbilityScore:
             self.saving_throws_combobox.addItem(save.value)
-        for skill in SKILL_LIST:
-            self.skills_combobox.addItem(skill)
-        for condition in CONDITION_LIST:
-            self.conditions_combobox.addItem(condition)
-        for damage in DAMAGE_LIST:
-            self.damage_combobox.addItem(damage)
+        for skill in Skill:
+            self.skills_combobox.addItem(skill.value)
+        for condition in Condition:
+            self.conditions_combobox.addItem(condition.value)
+        for damage in DamageType:
+            self.damage_combobox.addItem(damage.value)
         return True
 
     def setup_checkbox_signals(self):
@@ -150,8 +147,8 @@ class MonsterEditorForm(QDialog, Ui_Form):
                 self.skills_listwidget.addItem(skill)
 
         def initconditions():
-            for condition in self.creature_block.conditionimmunities.keys():
-                self.condition_listwidget.addItem(condition)
+            for condition in self.creature_block.conditionimmunities:
+                self.condition_listwidget.addItem(condition.value)
 
         def initdamage():
             def insert_damage_row(damagetype, modifier):
