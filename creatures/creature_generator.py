@@ -1,9 +1,6 @@
 # This is a sample Python script.
 
 from creatures.creature_datastructs import *
-import math
-import re
-from patterns import DICESTRINGPATTERN
 from srd.srd_datastructs import *
 from creatures.creature_datastructs import DamageModifiers
 
@@ -34,17 +31,17 @@ def print_skill_choices(creature=None):
 
 def print_damage_types(creature=None):
     if creature is None:
-        for i, x in enumerate(DAMAGE_LIST):
+        for i, x in enumerate(list(DamageType)):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
-        for i, x in enumerate(DAMAGE_LIST):
+        for i, x in enumerate(list(DamageType)):
             isprof = ""
-            if creature.damageimmunities[x]:
+            if x in creature.damageimmunities:
                 isprof = "i"
-            elif creature.damagevulnerabilities[x]:
+            elif x in creature.damagevulnerabilities:
                 isprof = "v"
-            elif creature.damageresistances[x]:
+            elif x in creature.damageresistances:
                 isprof = "r"
             print(f"| {str(i)} - {x} {isprof}|")
         print('| (e)xit |')
@@ -52,12 +49,12 @@ def print_damage_types(creature=None):
 
 def print_condition_immunities(creature=None):
     if creature is None:
-        for i, x in enumerate(CONDITION_LIST):
+        for i, x in enumerate(list(Condition)):
             print('| ' + str(i) + ' - ' + x + ' |')
         print('| (e)xit |')
     else:
-        for i, x in enumerate(CONDITION_LIST):
-            isprof = "*" if creature.conditionimmunities[x] else ""
+        for i, x in enumerate(list(Condition)):
+            isprof = "*" if x in creature.conditionimmunities else ""
             print(f"| {str(i)} - {x}{isprof}|")
         print('| (e)xit |')
 
@@ -168,24 +165,30 @@ def toggle_skill(creature, skill):
 
 def toggle_damage(creature, damage, damagemodifier=None):
     if damagemodifier == DamageModifiers.IMMUNITY:
-        creature.damageimmunities[damage] = \
-            not creature.damageimmunities[damage]
+        if damage in creature.damageimmunities:
+            creature.damageimmunities.remove(damage)
+        else:
+            creature.damageimmunities.add(damage)
     elif damagemodifier == DamageModifiers.VULNERABILITY:
-        creature.damagevulnerabilities[damage] = \
-            not creature.damagevulnerabilities[damage]
+        if damage in creature.damagevulnerabilities:
+            creature.damagevulnerabilities.remove(damage)
+        else:
+            creature.damagevulnerabilities.add(damage)
     elif damagemodifier == DamageModifiers.RESISTANCE:
-        creature.damageresistances[damage] = \
-            not creature.damageresistances[damage]
+        if damage in creature.damageresistances:
+            creature.damageresistances.remove(damage)
+        else:
+            creature.damageresistances.add(damage)
     else:
         print(f"Damage Modifier does not match {DamageModifiers.IMMUNITY}, "
               f"{DamageModifiers.VULNERABILITY}, or {DamageModifiers.RESISTANCE}")
 
 
 def toggle_condition(creature, condition):
-    # if creature.conditionimmunities[condition]:
-        # creature.conditionimmunities
-    # creature.conditionimmunities[condition] = \
-    #     not creature.conditionimmunities[condition]
+    if condition in creature.conditionimmunities:
+        creature.conditionimmunities.remove(condition)
+    else:
+        creature.conditionimmunities.add(condition)
 
 
 def skill_prof_wizard(creature, initialize=True):
@@ -226,9 +229,9 @@ def damage_type_wizard(creature, mode=None, initialize=True):
     damageprompt = 'WIZARD'
     if initialize:
         for damage in DamageType:
-            creature.damageresistances[damage] = False
-            creature.damageimmunities[damage] = False
-            creature.damagevulnerabilities[damage] = False
+            creature.damageresistances = {}
+            creature.damageimmunities = {}
+            creature.damagevulnerabilities[damage] = {}
 
     while damageprompt != '' and damageprompt != 'exit':
         print(f"Enter the digit corresponding to the damage {mode} you would "
@@ -252,7 +255,7 @@ def damage_type_wizard(creature, mode=None, initialize=True):
             break
         else:
             print(f'Invalid input. Expected integer '
-                  f'between 0 and {len(Damagetype)}')
+                  f'between 0 and {len(DamageType)}')
     return creature
 
 
@@ -277,18 +280,18 @@ def condition_immunity_wizard(creature, initialize=True):
         if condition_prompt.isdigit():
             condition_prompt = int(condition_prompt)
             if 0 <= condition_prompt < len(Condition):
-                toggle_condition(creature, CONDITION_LIST[condition_prompt])
+                toggle_condition(creature, Condition(list(Condition)[condition_prompt]))
             else:
                 print(
                     f'Invalid index. Expected integer '
-                    f'between 0 and {len(CONDITION_LIST)}')
+                    f'between 0 and {len(Condition)}')
         elif condition_prompt == "" or condition_prompt == "e" \
                 or condition_prompt == "exit":
             break
         else:
             print(
                 f'Invalid input. Expected integer '
-                f'between 0 and {len(CONDITION_LIST)}')
+                f'between 0 and {len(Condition)}')
     return creature
 
 
@@ -444,12 +447,12 @@ def get_damage_dice():
             damage_prompt = input("\n")
             if damage_prompt.isdigit():
                 damage_prompt = int(damage_prompt)
-                if 0 <= damage_prompt < len(DAMAGE_LIST):
-                    damagepair['damagetype'] = DAMAGE_LIST[damage_prompt]
+                if 0 <= damage_prompt < len(DamageType):
+                    damagepair['damagetype'] = DamageType(list(DamageType)[damage_prompt])
                     damagedice.append(damagepair)
             else:
                 print(f'Invalid index. Expected integer between 0 and '
-                      f'{len(DAMAGE_LIST)}')
+                      f'{len(DamageType)}')
         elif damage_prompt != 'e' or damage_prompt != 'exit':
             break
         else:
@@ -774,10 +777,10 @@ def generate_test_creature():
         speed='30 ft.',
         saving_throws={AbilityScore.STRENGTH, AbilityScore.CONSTITUTION, AbilityScore.WISDOM},
         skills={"Perception": True, "Stealth": True},
-        damageimmunities={"fire": True, "cold": True},
-        damageresistances={"psychic": True, "lightning": True},
-        damagevulnerabilities={"radiant": True, "necrotic": True},
-        conditionimmunities={"bleed": True, "stunned": True},
+        damageimmunities={DamageType.FIRE, DamageType.FORCE},
+        damageresistances={DamageType.COLD, DamageType.ACID},
+        damagevulnerabilities={DamageType.RADIANT, DamageType.NECROTIC},
+        conditionimmunities={Condition.CHARMED, Condition.FRIGHTENED},
         senses="darkvision 30 ft.",
         languages="Common, Draconic",
         challengerating=15,
