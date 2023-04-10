@@ -9,7 +9,7 @@ from creatures import creature_datastructs
 from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
 
 from PyQt6.QtWidgets import (
-    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QSpinBox
+    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QSpinBox, QFileDialog
 )
 
 from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
@@ -20,7 +20,9 @@ from creatures.creature_generator import generate_test_creature
 
 from ability_dialogue_app import AbilityDialog
 from attack_dialogue_app import AttackDialog
-from gmbinder_convert_ui import GMBinderConversion
+from gmbinder_convert_window import GMBinderConvertWindow
+
+import json
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
@@ -205,6 +207,8 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.add_legendary_action_button.pressed.connect(self.add_legendary_action_dialog)
         self.add_mythic_action_button.pressed.connect(self.add_mythic_action_dialog)
         self.gmbinder_convert_button.pressed.connect(self.display_gmbinder_string)
+        self.save_monster_button.pressed.connect(self.save_monster_to_json)
+        self.load_monster_button.pressed.connect(self.load_monster_from_json)
 
     def add_save_proficiency(self):
         selected_save = AbilityScore(self.saving_throws_combobox.currentText())
@@ -411,8 +415,33 @@ class MonsterEditorForm(QWidget, Ui_Form):
         return
 
     def display_gmbinder_string(self, gmbinder_string:str = ''):
-        dialog = GMBinderConversion(gmbinder_string, parent=self)
-        dialog.exec()
+        print(gmbinder_string)
+        dialog = GMBinderConvertWindow(gmbinder_string, parent=self)
+        dialog.show()
+
+
+    def save_monster_to_json(self):
+        # Open file dialog and get file name
+        file_name, _ = QFileDialog.getSaveFileName(None, "Save File", "", "JSON Files (*.json)")
+
+        if file_name:
+            # Convert creature data to JSON
+            creature_json = self.creature_block.to_json()
+
+            # Write JSON to file
+            with open(file_name, "w") as f:
+                f.write(creature_json)
+
+    def load_monster_from_json(self):
+        file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*)")
+
+        if file_name:
+            print(file_name)
+            with open(file_name, 'r') as json_file:
+                monster = creature_datastructs.MonsterStatblock()
+                monster.load_json(json.loads(json_file.read()))
+                self.creature_block = monster
+                self.update_creature_data()
 
     def setup_combobox_signals(self):
         def size_combobox_changed():

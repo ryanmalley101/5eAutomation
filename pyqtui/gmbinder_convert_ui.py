@@ -9,13 +9,13 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_GMBinderConversion(object):
-    def setupUi(self, GMBinderConversion):
-        GMBinderConversion.setObjectName("GMBinderConversion")
-        GMBinderConversion.resize(400, 300)
-        self.gridLayout_2 = QtWidgets.QGridLayout(GMBinderConversion)
+class Ui_GMBinderBrowser(object):
+    def setupUi(self, GMBinderBrowser):
+        GMBinderBrowser.setObjectName("GMBinderBrowser")
+        GMBinderBrowser.resize(400, 300)
+        self.gridLayout_2 = QtWidgets.QGridLayout(GMBinderBrowser)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.groupBox = QtWidgets.QGroupBox(parent=GMBinderConversion)
+        self.groupBox = QtWidgets.QGroupBox(parent=GMBinderBrowser)
         self.groupBox.setTitle("")
         self.groupBox.setObjectName("groupBox")
         self.gridLayout = QtWidgets.QGridLayout(self.groupBox)
@@ -26,19 +26,19 @@ class Ui_GMBinderConversion(object):
         self.gridLayout.addWidget(self.gmbinder_string_textbrowser, 0, 0, 1, 1)
         self.gridLayout_2.addWidget(self.groupBox, 0, 0, 1, 1)
 
-        self.retranslateUi(GMBinderConversion)
-        QtCore.QMetaObject.connectSlotsByName(GMBinderConversion)
+        self.retranslateUi(GMBinderBrowser)
+        QtCore.QMetaObject.connectSlotsByName(GMBinderBrowser)
 
-    def retranslateUi(self, GMBinderConversion):
+    def retranslateUi(self, GMBinderBrowser):
         _translate = QtCore.QCoreApplication.translate
-        GMBinderConversion.setWindowTitle(_translate("GMBinderConversion", "Form"))
+        GMBinderBrowser.setWindowTitle(_translate("GMBinderBrowser", "Dialog"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    GMBinderConversion = QtWidgets.QWidget()
-    ui = Ui_GMBinderConversion()
-    ui.setupUi(GMBinderConversion)
-    GMBinderConversion.show()
+    GMBinderBrowser = QtWidgets.QDialog()
+    ui = Ui_GMBinderBrowser()
+    ui.setupUi(GMBinderBrowser)
+    GMBinderBrowser.show()
     sys.exit(app.exec())
