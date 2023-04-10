@@ -149,7 +149,7 @@ class CreatureStatblock:
 
     def passive_perception(self):
         if Skill.PERCEPTION in self.skills:
-            return 10 + self.skill_bonus('Perception')
+            return 10 + self.skill_bonus(Skill.PERCEPTION)
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScore.WISDOM])
 

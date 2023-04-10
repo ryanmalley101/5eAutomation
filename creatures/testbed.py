@@ -16,4 +16,5 @@ if __name__ == '__main__':
 
     assert (generated_monster.__dict__.items() ^ post_json_monster.__dict__.items()) == set()
     generated_monster.save_json()
-    # print(convert_monster(generated_monster))
+
+    print(convert_monster(generated_monster))

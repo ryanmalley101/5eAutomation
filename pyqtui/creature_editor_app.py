@@ -21,6 +21,7 @@ from creatures.creature_generator import generate_test_creature
 from ability_dialogue_app import AbilityDialog
 from attack_dialogue_app import AttackDialog
 from gmbinder_convert_window import GMBinderConvertWindow
+from creatures.creature_gmbinder_convert import convert_monster
 
 import json
 
@@ -414,10 +415,12 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.update_mythic_actions()
         return
 
-    def display_gmbinder_string(self, gmbinder_string:str = ''):
+
+    def display_gmbinder_string(self):
+        gmbinder_string = convert_monster(self.creature_block)
         print(gmbinder_string)
         dialog = GMBinderConvertWindow(gmbinder_string, parent=self)
-        dialog.show()
+        dialog.exec()
 
 
     def save_monster_to_json(self):

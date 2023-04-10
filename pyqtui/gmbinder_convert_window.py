@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QDialog, QFormLayout, QLineEdit, QComboBox, QDialogB
 from pyqtui.gmbinder_convert_ui import Ui_GMBinderBrowser
 from srd.srd_datastructs import AbilityDescription
 
-class GMBinderConvertWindow(QWidget, Ui_GMBinderBrowser):
+class GMBinderConvertWindow(QDialog, Ui_GMBinderBrowser):
     def __init__(self, gmbinder_string:str, parent=None):
         super().__init__(parent)
         self.setupUi(self)

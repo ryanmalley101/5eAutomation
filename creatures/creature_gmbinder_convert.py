@@ -1,4 +1,4 @@
-from creature_datastructs import *
+from creatures.creature_datastructs import *
 from srd.srd_datastructs import Size, AbilityScore, Skill, Condition, DamageType, BaseAttack, MeleeWeaponAttack
 
 
@@ -36,7 +36,7 @@ def print_monster_actions(monster):
                 monster.ability_scores[action.attack_mod])
             action_string = ""
             if isinstance(action, MeleeWeaponAttack):
-                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +{monster.get_attack_bonus(action)}" \
+                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +{action.get_attack_bonus(monster.proficiency_bonus(), score_to_mod(monster.ability_scores[action.attack_mod]))}" \
                                  f" to hit, reach {action.reach} ft., {action.targets}. Hit: "
 
                 # The dice counter variable keeps track of the number of damage dice
