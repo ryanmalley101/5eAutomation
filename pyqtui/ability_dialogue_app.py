@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QDialog
-from pyqtui.ability_dialogue_ui import Ui_AbilityDialogueUi
+from pyqtui.designer_ui.ability_dialogue_ui import Ui_AbilityDialogueUi
 from srd.srd_datastructs import AbilityDescription
 
 

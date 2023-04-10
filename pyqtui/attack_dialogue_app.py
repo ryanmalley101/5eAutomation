@@ -1,5 +1,5 @@
 from pathlib import Path
-from attack_dialogue_ui import Ui_AttackDialogue
+from pyqtui.designer_ui.attack_dialogue_ui import Ui_AttackDialogue
 from srd.srd_datastructs import BaseAttack, MeleeWeaponAttack, MeleeSpellAttack, RangedWeaponAttack, \
     RangedSpellAttack, AbilityScore, DamageType
 from PyQt6.QtWidgets import QApplication, QDialog, QComboBox, QTableWidgetItem, QWidget

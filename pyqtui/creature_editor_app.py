@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem, QWidget, QSpinBox, QFileDialog
 )
 from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
-from creature_editor_ui import Ui_Form
+from pyqtui.designer_ui.creature_editor_ui import Ui_Form
 from ability_dialogue_app import AbilityDialog
 from attack_dialogue_app import AttackDialog
 from gmbinder_convert_window import GMBinderConvertWindow

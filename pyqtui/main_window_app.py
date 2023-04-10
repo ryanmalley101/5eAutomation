@@ -1,6 +1,5 @@
-from creatures.creature_datastructs import MonsterStatblock
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
-from main_window_ui import Ui_MainWindow
+from pyqtui.designer_ui.main_window_ui import Ui_MainWindow
 from creature_editor_app import MonsterEditorForm
 from creatures.creature_generator import generate_test_creature
 

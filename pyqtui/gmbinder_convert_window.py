@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QDialog
-from pyqtui.gmbinder_convert_ui import Ui_GMBinderBrowser
+from pyqtui.designer_ui.gmbinder_convert_ui import Ui_GMBinderBrowser
 
 
 class GMBinderConvertWindow(QDialog, Ui_GMBinderBrowser):
