@@ -1,7 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass, field, asdict
 import json
-from srd.srd_datastructs import AbilityDescription
+from srd.srd_datastructs import AbilityDescription, CreatureStatblock, proficiency_bonus
 
 
 class ClassNames(Enum):
@@ -59,3 +59,34 @@ class Background:
 
     def to_json(self):
         return json.dumps(asdict(self))
+
+
+@dataclass
+class PlayerCharacterStatblock(CreatureStatblock):
+    class_levels: dict = field(default_factory=dict)
+
+    def to_json(self):
+        creature_dict = asdict(self)
+        creature_dict['size'] = self.size.value
+        creature_dict['alignment'] = self.alignment
+        creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
+                                           for score in self.ability_scores]
+        creature_dict['abilities'] = [asdict(abil)
+                                      for abil in self.abilities]
+        creature_dict['actions'] = [c.to_dict() for c in self.actions]
+        creature_dict['bonusactions'] = [asdict(ba)
+                                         for ba in self.bonusactions]
+        creature_dict['reactions'] = [asdict(react)
+                                      for react in self.reactions]
+        return json.dumps(creature_dict)
+
+    def character_level(self):
+        return sum(self.class_levels.values())
+
+    def proficiency_bonus(self):
+        return proficiency_bonus(self.character_level())
+
+    @classmethod
+    def load_json(cls, creature_json):
+        creature_dict = CreatureStatblock.convert_json_dict(creature_json)
+        return cls(**creature_dict)

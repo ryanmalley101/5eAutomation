@@ -1,5 +1,5 @@
 from creatures.creature_datastructs import *
-from srd.srd_datastructs import AbilityScore, BaseAttack, MeleeWeaponAttack
+from srd.srd_datastructs import AbilityScore, BaseAttack, MeleeWeaponAttack, CreatureStatblock
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):

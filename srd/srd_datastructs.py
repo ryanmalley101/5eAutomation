@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 import math
 from dataclasses import asdict, dataclass, field
@@ -393,3 +394,179 @@ class DamageModifier(Enum):
     VULNERABILITY = "VULNERABILITY"
     IMMUNITY = "IMMUNITY"
     RESISTANCE = "RESISTANCE"
+
+
+@dataclass
+class CreatureStatblock:
+    name: str = "PLACEHOLDER"
+    size: Size = Size.MEDIUM
+    type: str = "NOTYPE"
+    tag: str = ""
+    alignment: str = 'unaligned'
+    acdesc: str = ""
+    acbonus: int = 10
+    ability_scores: dict = field(default_factory=dict)
+    hitdice: int = 1
+    hitpoints: int = 0
+    speed: str = '30 ft.'
+    saving_throws: set = field(default_factory=set)
+    skills: set = field(default_factory=set)
+    expertise: set = field(default_factory=set)
+    damage_immunities: set = field(default_factory=set)
+    damage_resistances: set = field(default_factory=set)
+    damage_vulnerabilities: set = field(default_factory=set)
+    condition_immunities: set = field(default_factory=set)
+    senses: str = ""
+    languages: str = ""
+    abilities: list = field(default_factory=list)
+    actions: list = field(default_factory=list)
+    bonusactions: list = field(default_factory=list)
+    reactions: list = field(default_factory=list)
+
+    def to_dict(self):
+        creature_dict = asdict(self)
+        creature_dict['size'] = self.size.value
+        creature_dict['alignment'] = self.alignment
+        creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]} for score in self.ability_scores]
+        creature_dict['abilities'] = [asdict(abil) for abil in self.abilities]
+        creature_dict['actions'] = [c.to_dict() for c in self.actions]
+        creature_dict['bonusactions'] = [asdict(ba) for ba in self.bonusactions]
+        creature_dict['reactions'] = [asdict(react) for react in self.reactions]
+        return creature_dict
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def convert_json_dict(cls, creature_dict):
+        creature_dict = json.loads(creature_dict)
+        creature_dict['size'] = Size(creature_dict['size'])
+        creature_dict['acbonus'] = int(creature_dict['acbonus'])
+        ability_scores = creature_dict['ability_scores']
+        creature_dict['ability_scores'] = {}
+        for index, score in enumerate(ability_scores):
+            for key in score:
+                creature_dict['ability_scores'][AbilityScore(key)] = score[key]
+        creature_dict['hitpoints'] = int(creature_dict['hitpoints'])
+
+        saves = creature_dict['saving_throws']
+        creature_dict['saving_throws'] = set()
+        for save in saves:
+            creature_dict['saving_throws'].add(AbilityScore(save))
+
+        skills = creature_dict['skills']
+        creature_dict['skills'] = set()
+        for skill in skills:
+            creature_dict['skills'].add(Skill(skill))
+
+        expertise = creature_dict['expertise']
+        creature_dict['expertise'] = set()
+        for skill in expertise:
+            creature_dict['expertise'].add(Skill(skill))
+
+        immunities = creature_dict['damage_immunities']
+        creature_dict['damage_immunities'] = set()
+        for immunity in immunities:
+            creature_dict['damage_immunities'].add(DamageType(immunity))
+
+        resistances = creature_dict['damage_resistances']
+        creature_dict['damage_resistances'] = set()
+        for resistance in resistances:
+            creature_dict['damage_resistances'].add(DamageType(resistance))
+
+        vulnerabilities = creature_dict['damage_vulnerabilities']
+        creature_dict['damage_vulnerabilities'] = set()
+        for vulnerability in vulnerabilities:
+            creature_dict['damage_vulnerabilities'].add(DamageType(vulnerability))
+
+        conditions = creature_dict['condition_immunities']
+        creature_dict['condition_immunities'] = set()
+        for condition in conditions:
+            creature_dict['condition_immunities'].add(Condition(condition))
+
+        for index, ability in enumerate(creature_dict['abilities']):
+            creature_dict['abilities'][index] = AbilityDescription(name=ability['name'],
+                                                                   description=ability['description'])
+        for index, action in enumerate(creature_dict['actions']):
+            if 'attack_mod' in action:
+                creature_dict['actions'][index] = BaseAttack.convert_json_attack(action)
+            else:
+                creature_dict['actions'][index] = AbilityDescription(name=action['name'],
+                                                                     description=action['description'])
+
+        for index, bonus_action in enumerate(creature_dict['bonusactions']):
+            creature_dict['bonusactions'][index] = AbilityDescription(name=bonus_action['name'],
+                                                                      description=bonus_action['description'])
+
+        for index, reaction in enumerate(creature_dict['reactions']):
+            creature_dict['reactions'][index] = AbilityDescription(name=reaction['name'],
+                                                                   description=reaction['description'])
+
+        return creature_dict
+
+    @classmethod
+    def load_json(cls, creature_json):
+        return cls(**cls.convert_json_dict(creature_json))
+
+    def save_json_to_file(self, filename='', timestamp=False):
+        if timestamp or filename == '':
+            filename = filename+time.strftime("%Y%m%d-%H%M%S")
+        with open(filename + '.json', "w") as creature_json:
+            creature_json.write(self.to_json())
+
+    @classmethod
+    def load_json_from_file(cls, filename=None):
+        if filename:
+            with open(filename, "r") as creature_json:
+                return cls.load_json(creature_json.read())
+
+    def get_total_ac(self):
+        return 10 + score_to_mod(self.ability_scores[AbilityScore.DEXTERITY]) + self.acbonus
+
+    def initialize_ability_scores(self):
+        self.ability_scores[AbilityScore.STRENGTH] = 10
+        self.ability_scores[AbilityScore.DEXTERITY] = 10
+        self.ability_scores[AbilityScore.CONSTITUTION] = 10
+        self.ability_scores[AbilityScore.INTELLIGENCE] = 10
+        self.ability_scores[AbilityScore.WISDOM] = 10
+        self.ability_scores[AbilityScore.CHARISMA] = 10
+
+    def proficiency_bonus(self):
+        return 0
+
+    def save_bonus(self, save):
+        return self.proficiency_bonus() + score_to_mod(self.ability_scores[save])
+
+    def skill_bonus(self, skill):
+        return self.proficiency_bonus() + score_to_mod(
+            self.ability_scores[SKILL_TO_ABILITY[skill]])
+
+    def passive_perception(self):
+        if Skill.PERCEPTION in self.skills:
+            return 10 + self.skill_bonus(Skill.PERCEPTION)
+        else:
+            return 10 + score_to_mod(self.ability_scores[AbilityScore.WISDOM])
+
+    def add_damage_modifier(self, damage: DamageType, modifier: DamageModifier):
+        if modifier is DamageModifier.IMMUNITY:
+            self.damage_vulnerabilities.discard(damage)
+            self.damage_resistances.discard(damage)
+            self.damage_immunities.add(damage)
+        elif modifier is DamageModifier.VULNERABILITY:
+            self.damage_immunities.discard(damage)
+            self.damage_resistances.discard(damage)
+            self.damage_vulnerabilities.add(damage)
+        elif modifier is DamageModifier.RESISTANCE:
+            self.damage_immunities.discard(damage)
+            self.damage_vulnerabilities.discard(damage)
+            self.damage_resistances.add(damage)
+        else:
+            raise ValueError("Tried to add an unaccounted for DamageModifier")
+
+    def add_skill_proficiency(self, skill: Skill):
+        self.expertise.discard(skill)
+        self.skills.add(skill)
+
+    def add_skill_expertise(self, skill: Skill):
+        self.skills.discard(skill)
+        self.expertise.add(skill)

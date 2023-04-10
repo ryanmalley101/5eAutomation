@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QLabel, QPushButton
-from srd.srd_datastructs import AbilityDescription, BaseAttack
-from creatures.creature_datastructs import CreatureStatblock
+from srd.srd_datastructs import AbilityDescription, BaseAttack, CreatureStatblock
 from PyQt6.QtCore import Qt
 
 
