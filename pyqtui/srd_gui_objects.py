@@ -21,4 +21,3 @@ class AttackButton(QPushButton):
         label = QLabel(attack.rich_text(creature), self).setTextFormat(Qt.TextFormat.RichText)
         self.setFlat(True)
         self.setObjectName(attack.name)
-

@@ -1,9 +1,10 @@
-from PyQt6.QtWidgets import QDialog, QFormLayout, QLineEdit, QComboBox, QDialogButtonBox
+from PyQt6.QtWidgets import QDialog
 from pyqtui.ability_dialogue_ui import Ui_AbilityDialogueUi
 from srd.srd_datastructs import AbilityDescription
 
+
 class AbilityDialog(QDialog, Ui_AbilityDialogueUi):
-    def __init__(self, ability:AbilityDescription, parent=None):
+    def __init__(self, ability: AbilityDescription, parent=None):
         super().__init__(parent)
         self.setupUi(self)
 
@@ -22,7 +23,7 @@ class AbilityDialog(QDialog, Ui_AbilityDialogueUi):
         self.ability_name_edit.setText(ability.name)
         self.ability_description_edit.setPlainText(ability.description)
 
-         # set the focus to the name edit widget
+        # set the focus to the name edit widget
         self.ability_name_edit.setFocus()
 
     def on_delete_button_clicked(self):
@@ -36,4 +37,3 @@ class AbilityDialog(QDialog, Ui_AbilityDialogueUi):
         self.ability = AbilityDescription(name=self.ability_name_edit.text(),
                                           description=self.ability_description_edit.toPlainText())
         self.accept()
-

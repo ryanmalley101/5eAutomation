@@ -2,7 +2,6 @@
 
 from creatures.creature_datastructs import *
 from srd.srd_datastructs import *
-from creatures.creature_datastructs import DamageModifier
 
 
 def generate_test_creature():
@@ -25,7 +24,7 @@ def generate_test_creature():
         hitpoints=100,
         speed='30 ft.',
         saving_throws={AbilityScore.STRENGTH, AbilityScore.CONSTITUTION, AbilityScore.WISDOM},
-        skills= {Skill.PERCEPTION, Skill.STEALTH},
+        skills={Skill.PERCEPTION, Skill.STEALTH},
         expertise={Skill.ATHLETICS, Skill.PERFORMANCE},
         damage_immunities={DamageType.FIRE, DamageType.FORCE},
         damage_resistances={DamageType.COLD, DamageType.ACID},

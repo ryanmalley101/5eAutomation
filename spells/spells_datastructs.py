@@ -1,8 +1,8 @@
-import dataclasses
 from enum import Enum
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 import json
 import time
+
 
 class SpellSchools(Enum):
     ABJURATION = "abjuration"
@@ -35,7 +35,8 @@ class SpellDescription:
         print(spell_dict)
         return json.dumps(spell_dict)
 
-    def load_json(self, spell_json):
+    @staticmethod
+    def load_json(spell_json):
         spell = SpellDescription(name=spell_json['name'],
                                  level=int(spell_json['level']),
                                  school=SpellSchools(spell_json['school']),
@@ -44,8 +45,7 @@ class SpellDescription:
                                  components=spell_json['components'],
                                  duration=spell_json['duration'],
                                  description=spell_json['description'],
-                                 higher_levels_description=
-                                 spell_json['higher_levels_description'])
+                                 higher_levels_description=spell_json['higher_levels_description'])
         return spell
 
     def save_json(self):

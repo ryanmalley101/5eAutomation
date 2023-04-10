@@ -1,8 +1,7 @@
 from enum import Enum
 from dataclasses import dataclass, field, asdict
 import json
-import time
-from srd.srd_datastructs import AbilityScore, AbilityDescription
+from srd.srd_datastructs import AbilityDescription
 
 
 class ClassNames(Enum):
@@ -30,6 +29,7 @@ class Race:
 
     def to_json(self):
         return json.dumps(asdict(self))
+
 
 @dataclass
 class Subclass:
@@ -59,4 +59,3 @@ class Background:
 
     def to_json(self):
         return json.dumps(asdict(self))
-
