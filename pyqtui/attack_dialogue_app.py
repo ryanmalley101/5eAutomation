@@ -13,7 +13,6 @@ from PyQt6.QtWidgets import (
     QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QMainWindow
 )
 from srd.srd_generator import generate_test_melee_attack
-import os
 
 
 class AttackDialog(QDialog, Ui_AttackDialogue):
@@ -24,6 +23,8 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
             self.attack = MeleeWeaponAttack()
         else:
             self.attack = attack
+
+        self.delete_attack = False
 
         # connect button signals to slots
         self.delete_attack_pushbutton.clicked.connect(self.on_delete_button_clicked)
@@ -172,6 +173,9 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
         self.attack_modifier_combobox.currentIndexChanged.connect(attack_mod_changed)
         self.attack_type_combobox.currentIndexChanged.connect(attack_type_changed)
         self.attack_description_edit.textChanged.connect(attack_description_changed)
+        self.apply_attack_pushbutton.pressed.connect(self.on_apply_button_clicked)
+        self.delete_attack_pushbutton.pressed.connect(self.on_delete_button_clicked)
+        self.cancel_attack_pushbutton.pressed.connect(self.reject)
 
     def damage_dice_changed(self):
         self.attack.damage_dice = self.get_damage_dice()
@@ -184,13 +188,14 @@ class AttackDialog(QDialog, Ui_AttackDialogue):
                 dice_list.append({"dicestring": self.damage_tablewidget.item(row, 0).text(), "damagetype":DamageType(self.damage_tablewidget.cellWidget(row, 1).currentText())})
         return dice_list
 
-
     def on_delete_button_clicked(self):
         self.delete_attack = True
         self.accept()
 
     def on_apply_button_clicked(self):
         self.accept()
+
+
 
 
 def set_combo_box_selected_item(combo_box, item):
@@ -207,6 +212,8 @@ def set_combo_box_selected_item(combo_box, item):
         print(f"Changing combo box index {item}")
         combo_box.setCurrentIndex(index)
         print(combo_box.currentText())
+
+
 
 
 if __name__ == '__main__':

@@ -6,10 +6,10 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier
+from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
 
 from PyQt6.QtWidgets import (
-    QApplication, QDialog, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QMainWindow
+    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QSpinBox
 )
 
 from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
@@ -19,6 +19,7 @@ from creature_editor_ui import Ui_Form
 from creatures.creature_generator import generate_test_creature
 
 from ability_dialogue_app import AbilityDialog
+from attack_dialogue_app import AttackDialog
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
@@ -33,6 +34,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.set_stylesheet()
         self.update_creature_data()
         self.setup_checkbox_signals()
+        self.setup_spinbox_signals()
         self.setup_combobox_signals()
         self.setup_pushbutton_signals()
         if self.creature_block.bonusactions: self.bonus_actions_enabled_checkbox.setChecked(True)
@@ -57,7 +59,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.topframe.setStyleSheet('#topframe{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollArea.setStyleSheet('#scrollArea{background-image: url(images:papyrusbackground.jpg)}')
         self.scrollAreaWidgetContents.setStyleSheet('#scrollAreaWidgetContents{background-image: url(images:papyrusbackground.jpg)}')
-        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton, QCheckBox, QTextEdit)):
+        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton, QCheckBox, QTextEdit, QComboBox)):
             if isinstance(widget, QLabel):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}')
                 widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
@@ -71,6 +73,8 @@ class MonsterEditorForm(QWidget, Ui_Form):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
             elif isinstance(widget, QCheckBox):
                 widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
+            elif isinstance(widget, QSpinBox):
+                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
         self.abilities_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
         self.actions_list_groupbox.setStyleSheet(f'#{self.actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
         self.bonus_actions_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
@@ -105,18 +109,20 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.type_edit.editingFinished.connect(self.type_edit_changed)
         self.tag_edit.editingFinished.connect(self.tag_edit_changed)
         self.alignment_edit.editingFinished.connect(self.alignment_edit_changed)
-        self.str_edit.editingFinished.connect(lambda: self.score_edit_changed(self.str_edit.text(), self.str_mod_label, AbilityScore.STRENGTH))
-        self.dex_edit.editingFinished.connect(lambda: self.score_edit_changed(self.dex_edit.text(), self.dex_mod_label, AbilityScore.DEXTERITY))
-        self.con_edit.editingFinished.connect(lambda: self.score_edit_changed(self.con_edit.text(), self.con_mod_label, AbilityScore.CONSTITUTION))
-        self.int_edit.editingFinished.connect(lambda: self.score_edit_changed(self.int_edit.text(), self.int_mod_label, AbilityScore.INTELLIGENCE))
-        self.wis_edit.editingFinished.connect(lambda: self.score_edit_changed(self.wis_edit.text(), self.wis_mod_label, AbilityScore.WISDOM))
-        self.cha_edit.editingFinished.connect(lambda: self.score_edit_changed(self.cha_edit.text(), self.cha_mod_label, AbilityScore.CHARISMA))
-        self.hit_points_edit.editingFinished.connect(self.hit_points_edit_changed)
-        self.max_hit_dice_edit.editingFinished.connect(self.hit_dice_edit_changed)
-        self.ac_bonus_edit.editingFinished.connect(self.ac_bonus_edit_changed)
         self.armor_type_edit.editingFinished.connect(self.armor_type_edit_changed)
         self.senses_edit.editingFinished.connect(self.senses_edit_changed)
         self.speeds_edit.editingFinished.connect(self.speed_edit_changed)
+
+    def setup_spinbox_signals(self):
+        self.str_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.str_score_spinbox.value(), self.str_mod_label, AbilityScore.STRENGTH))
+        self.dex_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.dex_score_spinbox.value(), self.dex_mod_label, AbilityScore.DEXTERITY))
+        self.con_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.con_score_spinbox.value(), self.con_mod_label, AbilityScore.CONSTITUTION))
+        self.int_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.int_score_spinbox.value(), self.int_mod_label, AbilityScore.INTELLIGENCE))
+        self.wis_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.wis_score_spinbox.value(), self.wis_mod_label, AbilityScore.WISDOM))
+        self.cha_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.cha_score_spinbox.value(), self.cha_mod_label, AbilityScore.CHARISMA))
+        self.hit_points_spinbox.valueChanged.connect(self.hit_points_edit_changed)
+        self.max_hit_dice_spinbox.valueChanged.connect(self.hit_dice_edit_changed)
+        self.ac_bonus_spinbox.valueChanged.connect(self.ac_bonus_edit_changed)
 
     def name_edit_changed(self):
         self.creature_block.name = self.name_edit.text()
@@ -131,31 +137,28 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.creature_block.alignment = self.alignment_edit.text()
 
     def score_edit_changed(self, score, modifier_label, abilityscore: AbilityScore):
-        if score.isdigit():
-            score = int(score)
-            self.creature_block.ability_scores[abilityscore] = score
-            update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
-        else:
-            raise TypeError("Tried to update a score modifier with a non integer value")
+        score = score
+        self.creature_block.ability_scores[abilityscore] = score
+        update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
 
     def hit_points_edit_changed(self):
-        hit_dice_calc, hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=int(self.hit_points_edit.text), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=self.max_hit_dice_spinbox.value(), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
         self.creature_block.hitpoints = hit_points_calc
-        self.creature_block.hitdice = hit_dice_calc
+        self.creature_block.hitdice = self.max_hit_dice_spinbox.value()
         self.update_creature_data()
 
     def hit_dice_edit_changed(self):
-        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=int(self.max_hit_dice_edit.text()), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=self.max_hit_dice_spinbox.value(), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
         self.creature_block.hitpoints = hit_points_calc
-        self.creature_block.hitdice = int(self.max_hit_dice_edit.text())
+        self.creature_block.hitdice = self.max_hit_dice_spinbox.value()
         self.update_creature_data()
 
     def ac_bonus_edit_changed(self):
-        self.creature_block.acbonus = int(self.ac_bonus_edit.text())
+        self.creature_block.acbonus = self.ac_bonus_spinbox.value()
         self.update_creature_data()
 
     def armor_type_edit_changed(self):
-        self.creature_block.acdesc = self.ac_bonus_edit.text()
+        self.creature_block.acdesc = self.armor_type_edit.text()
         self.update_creature_data()
 
     def senses_edit_changed(self):
@@ -194,6 +197,8 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.damage_immune_button.pressed.connect(self.add_damage_immunity)
         self.damage_resistant_button.pressed.connect(self.add_damage_resistance)
         self.add_ability_button.pressed.connect(self.add_ability_dialog)
+        self.add_ability_action_button.pressed.connect(self.add_ability_action_dialog)
+        self.add_attack_action_button.pressed.connect(self.add_attack_action_dialog)
         self.add_reaction_button.pressed.connect(self.add_reaction_dialog)
         self.add_bonus_action_button.pressed.connect(self.add_bonus_action_dialog)
         self.add_legendary_action_button.pressed.connect(self.add_legendary_action_dialog)
@@ -260,6 +265,52 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.update_abilities()
         return
 
+    def add_ability_action_dialog(self, ability_target:AbilityDescription=None):
+        print(QApplication.instance())
+        if ability_target is None:
+            ability_target = AbilityDescription()
+        dialog = AbilityDialog(ability_target, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.ability.name} {dialog.ability.description}")
+            if dialog.delete_ability:
+                for ability in self.creature_block.actions:
+                    if dialog.ability.name == ability.name:
+                        self.creature_block.actions.remove(ability)
+            else:
+                for ability in self.creature_block.actions:
+                    if dialog.ability.name == ability.name:
+                        self.creature_block.actions.remove(ability)
+
+                print(f"{dialog.ability.name} {dialog.ability.description}")
+                self.creature_block.actions.append(dialog.ability)
+        else:
+            print("Not accepted")
+        self.update_actions()
+        return
+
+    def add_attack_action_dialog(self, attack_target: BaseAttack = None):
+        print(QApplication.instance())
+        if attack_target is None:
+            attack_target = MeleeWeaponAttack()
+        dialog = AttackDialog(attack_target, parent=self)
+        print("Dialog Created")
+        if dialog.exec():
+            print(f"{dialog.attack.name}")
+            if dialog.delete_attack:
+                for attack in self.creature_block.actions:
+                    if dialog.attack.name == attack.name:
+                        self.creature_block.actions.remove(attack)
+            else:
+                for attack in self.creature_block.actions:
+                    if dialog.attack.name == attack.name:
+                        self.creature_block.actions.remove(attack)
+
+                self.creature_block.actions.append(dialog.attack)
+        else:
+            print("Not accepted")
+        self.update_actions()
+        return
 
     def add_reaction_dialog(self, reaction:AbilityDescription=None):
         print(QApplication.instance())
@@ -414,6 +465,8 @@ class MonsterEditorForm(QWidget, Ui_Form):
             insert_ability(self.abilities_list_layout, ability)
 
     def update_actions(self):
+        for i in reversed(range(self.actions_list_layout.count())):
+            self.actions_list_layout.itemAt(i).widget().deleteLater()
         for action in self.creature_block.actions:
             if isinstance(action, AbilityDescription):
                 print("Adding ability action")
@@ -426,25 +479,25 @@ class MonsterEditorForm(QWidget, Ui_Form):
 
     def update_reactions(self):
         for i in reversed(range(self.reactions_list_layout.count())):
-            self.abilities_list_layout.itemAt(i).widget().deleteLater()
+            self.reactions_list_layout.itemAt(i).widget().deleteLater()
         for reaction in self.creature_block.reactions:
             insert_ability(self.reactions_list_layout, reaction)
 
     def update_bonus_actions(self):
         for i in reversed(range(self.bonus_actions_list_layout.count())):
-            self.abilities_list_layout.itemAt(i).widget().deleteLater()
+            self.bonus_actions_list_layout.itemAt(i).widget().deleteLater()
         for bonusactions in self.creature_block.bonusactions:
             insert_ability(self.bonus_actions_list_layout, bonusactions)
 
     def update_legendary_actions(self):
         for i in reversed(range(self.legendary_actions_list_layout.count())):
-            self.abilities_list_layout.itemAt(i).widget().deleteLater()
+            self.legendary_actions_list_layout.itemAt(i).widget().deleteLater()
         for legendaryactions in self.creature_block.legendaryactions:
             insert_ability(self.legendary_actions_list_layout, legendaryactions)
 
     def update_mythic_actions(self):
         for i in reversed(range(self.mythic_actions_list_layout.count())):
-            self.abilities_list_layout.itemAt(i).widget().deleteLater()
+            self.mythic_actions_list_layout.itemAt(i).widget().deleteLater()
         for mythicactions in self.creature_block.mythicactions:
             insert_ability(self.mythic_actions_list_layout, mythicactions)
 
@@ -455,30 +508,29 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.type_edit.setText(self.creature_block.type)
         self.tag_edit.setText(self.creature_block.tag)
         self.alignment_edit.setText(self.creature_block.alignment)
-        self.proficiency_bonus_calculation_label.setText(str(proficiency_bonus(self.creature_block.challengerating)))
         set_combo_box_selected_item(self.challenge_rating_combobox, str(self.creature_block.challengerating))
         self.xp_calculation_label.setText(str(
             creature_datastructs.CR_TO_XP_TABLE[self.creature_block.challengerating]))
-        self.proficiency_bonus_calculation_label.setText(str(
+        self.proficiency_bonus_calculation_label.setText('+' + str(
             creature_datastructs.proficiency_bonus(self.creature_block.challengerating)))
-        self.hit_points_edit.setText(str(self.creature_block.hitpoints))
-        self.max_hit_dice_edit.setText(str(self.creature_block.hitdice))
+        self.hit_points_spinbox.setValue(self.creature_block.hitpoints)
+        self.max_hit_dice_spinbox.setValue(self.creature_block.hitdice)
         self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(self.creature_block.size)}")
-        self.ac_bonus_edit.setText(str(self.creature_block.acbonus))
+        self.ac_bonus_spinbox.setValue(self.creature_block.acbonus)
         self.armor_type_edit.setText(self.creature_block.acdesc)
         self.senses_edit.setText(self.creature_block.senses)
         self.speeds_edit.setText(self.creature_block.speed)
-        self.str_edit.setText(str(self.creature_block.ability_scores[AbilityScore.STRENGTH]))
+        self.str_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.STRENGTH])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.STRENGTH], self.str_mod_label)
-        self.dex_edit.setText(str(self.creature_block.ability_scores[AbilityScore.DEXTERITY]))
+        self.dex_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.DEXTERITY])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.DEXTERITY], self.dex_mod_label)
-        self.con_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        self.con_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.CONSTITUTION])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.CONSTITUTION], self.con_mod_label)
-        self.int_edit.setText(str(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE]))
+        self.int_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.INTELLIGENCE], self.int_mod_label)
-        self.wis_edit.setText(str(self.creature_block.ability_scores[AbilityScore.WISDOM]))
+        self.wis_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.WISDOM])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.WISDOM], self.wis_mod_label)
-        self.cha_edit.setText(str(self.creature_block.ability_scores[AbilityScore.CHARISMA]))
+        self.cha_score_spinbox.setValue(self.creature_block.ability_scores[AbilityScore.CHARISMA])
         update_modifier_label(self.creature_block.ability_scores[AbilityScore.CHARISMA], self.cha_mod_label)
         self.update_saves()
         self.update_skills()

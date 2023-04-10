@@ -68,9 +68,9 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-322</y>
+           <y>0</y>
            <width>931</width>
-           <height>1066</height>
+           <height>1101</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -293,7 +293,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_3">
                          <item>
-                          <widget class="QLineEdit" name="str_edit"/>
+                          <widget class="QSpinBox" name="str_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="str_mod_label">
@@ -337,7 +337,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_4">
                          <item>
-                          <widget class="QLineEdit" name="dex_edit"/>
+                          <widget class="QSpinBox" name="dex_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="dex_mod_label">
@@ -381,7 +381,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_5">
                          <item>
-                          <widget class="QLineEdit" name="con_edit"/>
+                          <widget class="QSpinBox" name="con_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="con_mod_label">
@@ -425,7 +425,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_6">
                          <item>
-                          <widget class="QLineEdit" name="int_edit"/>
+                          <widget class="QSpinBox" name="int_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="int_mod_label">
@@ -469,7 +469,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_7">
                          <item>
-                          <widget class="QLineEdit" name="wis_edit"/>
+                          <widget class="QSpinBox" name="wis_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="wis_mod_label">
@@ -513,7 +513,7 @@
                        <item>
                         <layout class="QHBoxLayout" name="horizontalLayout_8">
                          <item>
-                          <widget class="QLineEdit" name="cha_edit"/>
+                          <widget class="QSpinBox" name="cha_score_spinbox"/>
                          </item>
                          <item>
                           <widget class="QLabel" name="cha_mod_label">
@@ -639,7 +639,11 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="hit_points_edit"/>
+                        <widget class="QSpinBox" name="hit_points_spinbox">
+                         <property name="maximum">
+                          <number>100000</number>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
@@ -653,7 +657,11 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="max_hit_dice_edit"/>
+                        <widget class="QSpinBox" name="max_hit_dice_spinbox">
+                         <property name="maximum">
+                          <number>1000</number>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </item>
@@ -701,7 +709,7 @@
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="ac_bonus_edit"/>
+                        <widget class="QSpinBox" name="ac_bonus_spinbox"/>
                        </item>
                       </layout>
                      </item>
@@ -1298,9 +1306,16 @@
                        <item>
                         <layout class="QVBoxLayout" name="verticalLayout_27">
                          <item>
-                          <widget class="QPushButton" name="add_action_button">
+                          <widget class="QPushButton" name="add_ability_action_button">
                            <property name="text">
-                            <string>+</string>
+                            <string>+ Ability</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="add_attack_action_button">
+                           <property name="text">
+                            <string>+ Attack</string>
                            </property>
                           </widget>
                          </item>
