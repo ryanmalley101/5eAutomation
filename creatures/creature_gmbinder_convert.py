@@ -1,5 +1,5 @@
 from creatures.creature_datastructs import *
-from srd.srd_datastructs import Size, AbilityScore, Skill, Condition, DamageType, BaseAttack, MeleeWeaponAttack
+from srd.srd_datastructs import AbilityScore, BaseAttack, MeleeWeaponAttack
 
 
 def print_monster_ability_scores(monster: CreatureStatblock):
@@ -36,14 +36,20 @@ def print_monster_actions(monster):
                 monster.ability_scores[action.attack_mod])
             action_string = ""
             if isinstance(action, MeleeWeaponAttack):
-                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +{action.get_attack_bonus(monster.proficiency_bonus(), score_to_mod(monster.ability_scores[action.attack_mod]))}" \
-                                 f" to hit, reach {action.reach} ft., {action.targets}. Hit: "
+                attack_bonus = action.get_attack_bonus(monster.proficiency_bonus(),
+                                                       score_to_mod(monster.ability_scores[action.attack_mod]))
+                action_string += f"> ***{action.name}*** *Melee Weapon Attack* +" \
+                                 f"{attack_bonus} to hit, reach {action.reach} ft., {action.targets}. Hit: "
 
                 # The dice counter variable keeps track of the number of damage dice
                 # We need this to add a 'plus' at the end of the intermediate damage
                 dicecounter = len(action.damage_dice) - 1
                 for damagepair in action.damage_dice:
-                    action_string += f"{BaseAttack.calculate_dicestring_damage(damagepair['dicestring'], attack_ability_mod)} ({damagepair['dicestring'].replace('M', str(attack_ability_mod))}) {damagepair['damagetype']} damage"
+                    dicestring_damage = BaseAttack.calculate_dicestring_damage(damagepair['dicestring'],
+                                                                               attack_ability_mod)
+                    dicestring_modifier_attached = damagepair['dicestring'].replace('M', str(attack_ability_mod))
+                    action_string += f"{dicestring_damage} ({dicestring_modifier_attached}) " \
+                                     f"{damagepair['damagetype']} damage"
                     if dicecounter > 0:
                         dicecounter -= 1
                         action_string += ' plus '
@@ -148,6 +154,7 @@ def print_monster_immunities(monster: MonsterStatblock):
 
     return immunity_string
 
+
 def print_monster_condition_immunities(monster: MonsterStatblock):
     condition_string = ""
     if monster.condition_immunities:
@@ -175,7 +182,7 @@ def print_monster_senses(monster):
 
 
 def convert_monster(monster: MonsterStatblock):
-    monster_markup  =  "# ___\n"
+    monster_markup  = f"# ___\n"
     monster_markup += f"# > ## {monster.name}\n"
     monster_markup += f"# >* {monster.size.value}, {monster.alignment}\n"
     monster_markup += f"> ___\n"
@@ -196,7 +203,8 @@ def convert_monster(monster: MonsterStatblock):
     monster_markup += print_monster_condition_immunities(monster)
     monster_markup += print_monster_senses(monster)
     monster_markup += f"> - **Languages** {monster.languages}\n"
-    monster_markup += f"> - **Challenge Rating** {monster.challengerating} ({CR_TO_XP_TABLE[monster.challengerating]})\n"
+    monster_markup += f"> - **Challenge Rating** {monster.challengerating} " \
+                      f"({CR_TO_XP_TABLE[monster.challengerating]})\n"
     for ability in monster.abilities:
         monster_markup += print_monster_ability(ability)
     monster_markup += f"> ### Actions\n"
@@ -212,7 +220,7 @@ def convert_monster(monster: MonsterStatblock):
             monster_markup += print_monster_ability(reaction)
     if len(monster.legendaryactions) > 0:
         monster_markup += f"> ### Legendary Actions\n"
-        monster_markup += f"> {monster.name} can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature’s turn. {monster.name} regains spent legendary actions at the start of its turn."
+        monster_markup += legendary_action_description(monster.name)
         for legendaryaction in monster.legendaryactions:
             monster_markup += print_monster_ability(legendaryaction)
     if len(monster.mythicactions) > 0:
@@ -223,3 +231,8 @@ def convert_monster(monster: MonsterStatblock):
 
     return monster_markup
 
+
+def legendary_action_description(monster_name):
+    return f"> {monster_name} can take 3 legendary actions, choosing from the options below. Only one legendary " \
+           f"action option can be used at a time and only at the end of another creature’s turn. {monster_name} " \
+           f"regains spent legendary actions at the start of its turn."

@@ -1,7 +1,7 @@
-import creature_datastructs
 from creature_gmbinder_convert import *
 from creature_generator import generate_test_creature
 import unittest
+
 
 class TestCreature(unittest.TestCase):
     def test_json_convert(self):

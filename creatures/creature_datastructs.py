@@ -1,11 +1,9 @@
-from enum import Enum
 from dataclasses import dataclass, field, asdict
 import time
 import json
-import math
-from patterns import DICESTRINGPATTERN
-import re
-from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, DamageType, Condition, SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack, DamageModifier
+from srd.srd_datastructs import Size, AbilityScore, AbilityDescription, Skill, DamageType, Condition, \
+    SKILL_TO_ABILITY, score_to_mod, proficiency_bonus, BaseAttack, DamageModifier
+
 
 @dataclass
 class CreatureStatblock:
@@ -49,7 +47,7 @@ class CreatureStatblock:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def convert_json_dict(self, creature_dict):
+    def convert_json_dict(cls, creature_dict):
         creature_dict = json.loads(creature_dict)
         creature_dict['size'] = Size(creature_dict['size'])
         creature_dict['acbonus'] = int(creature_dict['acbonus'])
@@ -103,15 +101,15 @@ class CreatureStatblock:
                 creature_dict['actions'][index] = BaseAttack.convert_json_attack(action)
             else:
                 creature_dict['actions'][index] = AbilityDescription(name=action['name'],
-                                                                    description=action['description'])
+                                                                     description=action['description'])
 
         for index, bonus_action in enumerate(creature_dict['bonusactions']):
             creature_dict['bonusactions'][index] = AbilityDescription(name=bonus_action['name'],
-                                                                  description=bonus_action['description'])
+                                                                      description=bonus_action['description'])
 
         for index, reaction in enumerate(creature_dict['reactions']):
             creature_dict['reactions'][index] = AbilityDescription(name=reaction['name'],
-                                                                  description=reaction['description'])
+                                                                   description=reaction['description'])
 
         return creature_dict
 
@@ -120,7 +118,7 @@ class CreatureStatblock:
         return cls(**cls.convert_json_dict(creature_json))
 
     def save_json_to_file(self, filename='', timestamp=False):
-        if timestamp or filename == '' :
+        if timestamp or filename == '':
             filename = filename+time.strftime("%Y%m%d-%H%M%S")
         with open(filename + '.json', "w") as creature_json:
             creature_json.write(self.to_json())
@@ -158,7 +156,7 @@ class CreatureStatblock:
         else:
             return 10 + score_to_mod(self.ability_scores[AbilityScore.WISDOM])
 
-    def add_damage_modifier(self, damage:DamageType, modifier:DamageModifier):
+    def add_damage_modifier(self, damage: DamageType, modifier: DamageModifier):
         if modifier is DamageModifier.IMMUNITY:
             self.damage_vulnerabilities.discard(damage)
             self.damage_resistances.discard(damage)
@@ -174,14 +172,13 @@ class CreatureStatblock:
         else:
             raise ValueError("Tried to add an unaccounted for DamageModifier")
 
-    def add_skill_proficiency(self, skill:Skill):
+    def add_skill_proficiency(self, skill: Skill):
         self.expertise.discard(skill)
         self.skills.add(skill)
 
-    def add_skill_expertise(self, skill:Skill):
+    def add_skill_expertise(self, skill: Skill):
         self.skills.discard(skill)
         self.expertise.add(skill)
-
 
 
 @dataclass
@@ -227,7 +224,7 @@ class MonsterStatblock(CreatureStatblock):
         creature_dict['size'] = self.size.value
         creature_dict['alignment'] = self.alignment
         creature_dict['ability_scores'] = [{score.value: self.ability_scores[score]}
-                                          for score in self.ability_scores]
+                                           for score in self.ability_scores]
         creature_dict['saving_throws'] = [save.value for save in self.saving_throws]
         creature_dict['condition_immunities'] = [condition.value for condition in self.condition_immunities]
         creature_dict['skills'] = [skill.value for skill in self.skills]
@@ -235,13 +232,10 @@ class MonsterStatblock(CreatureStatblock):
         creature_dict['damage_immunities'] = [damage.value for damage in self.damage_immunities]
         creature_dict['damage_resistances'] = [damage.value for damage in self.damage_resistances]
         creature_dict['damage_vulnerabilities'] = [damage.value for damage in self.damage_vulnerabilities]
-        creature_dict['abilities'] = [asdict(abil)
-                                     for abil in self.abilities]
+        creature_dict['abilities'] = [asdict(abil) for abil in self.abilities]
         creature_dict['actions'] = [c.to_dict() for c in self.actions]
-        creature_dict['bonusactions'] = [asdict(ba)
-                                        for ba in self.bonusactions]
-        creature_dict['reactions'] = [asdict(react)
-                                    for react in self.reactions]
+        creature_dict['bonusactions'] = [asdict(ba) for ba in self.bonusactions]
+        creature_dict['reactions'] = [asdict(react) for react in self.reactions]
         creature_dict['legendaryactions'] = [asdict(la) for la in self.legendaryactions]
         creature_dict['mythicactions'] = [asdict(myth) for myth in self.mythicactions]
         return json.dumps(creature_dict)
@@ -254,11 +248,11 @@ class MonsterStatblock(CreatureStatblock):
         creature_dict = CreatureStatblock.convert_json_dict(creature_json)
         for index, legendaryaction in enumerate(creature_dict['legendaryactions']):
             creature_dict['legendaryactions'][index] = AbilityDescription(name=legendaryaction['name'],
-                                                                  description=legendaryaction['description'])
+                                                                          description=legendaryaction['description'])
 
         for index, mythicaction in enumerate(creature_dict['mythicactions']):
             creature_dict['mythicactions'][index] = AbilityDescription(name=mythicaction['name'],
-                                                                     description=mythicaction['description'])
+                                                                       description=mythicaction['description'])
 
         return cls(**creature_dict)
 
@@ -273,13 +267,13 @@ class MonsterStatblock(CreatureStatblock):
             max_hit_points += average_hit_die
         return max_hit_dice, round(max_hit_points)
 
-
     @staticmethod
     def calc_monster_hit_points(hit_dice: int, size: Size, con: int):
         hit_die = Size.hitdice(size)
         average_hit_die = (hit_die / 2) + con
         max_hit_points = round(average_hit_die*hit_dice)
         return max_hit_points
+
 
 CR_TO_XP_TABLE = {
     0: 0,

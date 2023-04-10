@@ -75,8 +75,10 @@ class Skill(Enum):
     STEALTH = "Stealth"
     SURVIVAL = "Survival"
 
+
 PROFICIENT = "Proficient"
 EXPERT = "Expertise"
+
 
 class DamageType(Enum):
     ACID = "acid"
@@ -92,7 +94,6 @@ class DamageType(Enum):
     RADIANT = "radiant"
     SLASHING = "slashing"
     THUNDER = "thunder"
-
 
 
 class Condition(Enum):
@@ -136,11 +137,13 @@ SKILL_TO_ABILITY = {
     Skill.PERSUASION: AbilityScore.CHARISMA
 }
 
+
 def score_to_mod(score):
     if score < 0:
         raise Exception("Ability Score is less than 0")
 
     return int((score-10)/2)
+
 
 def proficiency_bonus(cr):
     return max(math.floor((cr - 1) / 4), 0) + 2
@@ -256,13 +259,18 @@ class BaseAttack:
             raise ValueError('Invalid attack type')
 
     def rich_text(self, creature):
-        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{creature.ability_scores[self.attack_mod].name + creature.proficiency_bonus() + self.attack_bonus} to hit, {self.targets}. <i>Hit:  </i>'
+        to_hit = creature.ability_scores[self.attack_mod].name + creature.proficiency_bonus() + self.attack_bonus
+        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{to_hit} to hit, {self.targets}. <i>Hit:  </i>'
         for index, damage in enumerate(self.damage_dice):
-            text += f'{self.calculate_dicestring_damage(damage.dicestring, creature.ability_scores[self.attack_mod].value)} ({damage.dicestring}) {damage.type} damage'
+            dicestring_damage = self.calculate_dicestring_damage(damage.dicestring,
+                                                                 creature.ability_scores[self.attack_mod].value)
+            text += f'{dicestring_damage} ({damage.dicestring}) {damage.type} damage'
             if index < len(self.damage_dice)-1:
                 text += ' plus '
         text += f'. {self.description}'
         return text
+
+
 @dataclass
 class MeleeWeaponAttack(BaseAttack):
     type = BaseAttack.AttackType.MELEEWEAPON
@@ -279,13 +287,18 @@ class MeleeWeaponAttack(BaseAttack):
         return attackdict
 
     def rich_text(self, creature):
-        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus} to hit, reach {self.reach} ft., {self.targets}. <i>Hit:  </i>'
+        to_hit = creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus
+        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{to_hit} to hit, ' \
+               f'reach {self.reach} ft., {self.targets}. <i>Hit:  </i>'
         for index, damage in enumerate(self.damage_dice):
-            text += f'{self.calculate_dicestring_damage(damage["dicestring"], creature.ability_scores[self.attack_mod])} ({damage["dicestring"]}) {damage["damagetype"]} damage'
+            dicestring_damage = self.calculate_dicestring_damage(damage["dicestring"],
+                                                                 creature.ability_scores[self.attack_mod])
+            text += f'{dicestring_damage} ({damage["dicestring"]}) {damage["damagetype"]} damage'
             if index < len(self.damage_dice)-1:
                 text += ' plus '
         text += f'. {self.description}'
         return text
+
 
 @dataclass
 class RangedWeaponAttack(BaseAttack):
@@ -305,13 +318,18 @@ class RangedWeaponAttack(BaseAttack):
         return attackdict
 
     def rich_text(self, creature):
-        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus} to hit, ranged {self.short_range}/{self.long_range} ft., {self.targets}. <i>Hit:  </i>'
+        to_hit = creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus
+        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{to_hit} to hit, ' \
+               f'ranged {self.short_range}/{self.long_range} ft., {self.targets}. <i>Hit:  </i>'
         for index, damage in enumerate(self.damage_dice):
-            text += f'{self.calculate_dicestring_damage(damage.dicestring, creature.ability_scores[self.attack_mod])} ({damage.dicestring}) {damage.type} damage'
+            dicestring_damage = self.calculate_dicestring_damage(damage.dicestring,
+                                                                 creature.ability_scores[self.attack_mod])
+            text += f'{dicestring_damage} ({damage.dicestring}) {damage.type} damage'
             if index < len(self.damage_dice)-1:
                 text += ' plus '
         text += f'. {self.description}'
         return text
+
 
 @dataclass
 class MeleeSpellAttack(BaseAttack):
@@ -329,13 +347,18 @@ class MeleeSpellAttack(BaseAttack):
         return attackdict
 
     def rich_text(self, creature):
-        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus} to hit, reach {self.reach} ft., {self.targets}. <i>Hit:  </i>'
+        to_hit = creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus
+        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{to_hit} to hit, ' \
+               f'reach {self.reach} ft., {self.targets}. <i>Hit:  </i>'
         for index, damage in enumerate(self.damage_dice):
-            text += f'{self.calculate_dicestring_damage(damage.dicestring, creature.ability_scores[self.attack_mod])} ({damage.dicestring}) {damage.type} damage'
+            dicestring_damage = self.calculate_dicestring_damage(damage.dicestring,
+                                                                 creature.ability_scores[self.attack_mod])
+            text += f'{dicestring_damage} ({damage.dicestring}) {damage.type} damage'
             if index < len(self.damage_dice)-1:
                 text += ' plus '
         text += f'. {self.description}'
         return text
+
 
 @dataclass
 class RangedSpellAttack(BaseAttack):
@@ -353,14 +376,17 @@ class RangedSpellAttack(BaseAttack):
         return attackdict
 
     def rich_text(self, creature):
-        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus} to hit, range {self.range} ft., {self.targets}. <i>Hit:  </i>'
+        to_hit = creature.ability_scores[self.attack_mod] + creature.proficiency_bonus() + self.attack_bonus
+        text = f'<b>{self.name}.</b> <i>{self.type.value} Attack:</i> +{to_hit} to hit, ' \
+               f'range {self.range} ft., {self.targets}. <i>Hit:  </i>'
         for index, damage in enumerate(self.damage_dice):
-            text += f'{self.calculate_dicestring_damage(damage.dicestring, creature.ability_scores[self.attack_mod])} ({damage.dicestring}) {damage.type} damage'
+            dicestring_damage = self.calculate_dicestring_damage(damage.dicestring,
+                                                                 creature.ability_scores[self.attack_mod])
+            text += f'{dicestring_damage} ({damage.dicestring}) {damage.type} damage'
             if index < len(self.damage_dice)-1:
                 text += ' plus '
         text += f'. {self.description}'
         return text
-
 
 
 class DamageModifier(Enum):
