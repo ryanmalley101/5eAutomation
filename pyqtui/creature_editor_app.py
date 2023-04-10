@@ -1,30 +1,28 @@
-import os
-import sys
 from pathlib import Path
-import inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-from creatures import creature_datastructs
-from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
-
-from PyQt6.QtWidgets import (
-    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit, QTableWidgetItem, QWidget, QSpinBox, QFileDialog
-)
-
-from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
 from PyQt6 import QtCore
-
+from PyQt6.QtWidgets import (
+    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit,
+    QTableWidgetItem, QWidget, QSpinBox, QFileDialog
+)
+from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
 from creature_editor_ui import Ui_Form
-from creatures.creature_generator import generate_test_creature
-
 from ability_dialogue_app import AbilityDialog
 from attack_dialogue_app import AttackDialog
 from gmbinder_convert_window import GMBinderConvertWindow
+
+from creatures import creature_datastructs
+from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, \
+    BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
+from creatures.creature_generator import generate_test_creature
 from creatures.creature_gmbinder_convert import convert_monster
 
-import json
+import os
+import sys
+import inspect
 
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
 
@@ -41,10 +39,14 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.setup_spinbox_signals()
         self.setup_combobox_signals()
         self.setup_pushbutton_signals()
-        if self.creature_block.bonusactions: self.bonus_actions_enabled_checkbox.setChecked(True)
-        if self.creature_block.reactions: self.reactions_enable_checkbox.setChecked(True)
-        if self.creature_block.legendaryactions: self.legendary_actions_enabled_checkbox.setChecked(True)
-        if self.creature_block.mythicactions: self.mythic_actions_enabled_checkbox.setChecked(True)
+        if self.creature_block.bonusactions:
+            self.bonus_actions_enabled_checkbox.setChecked(True)
+        if self.creature_block.reactions:
+            self.reactions_enable_checkbox.setChecked(True)
+        if self.creature_block.legendaryactions:
+            self.legendary_actions_enabled_checkbox.setChecked(True)
+        if self.creature_block.mythicactions:
+            self.mythic_actions_enabled_checkbox.setChecked(True)
 
     def set_stylesheet(self):
         # Sets the stylesheet for derived elements like hit die size and prof bonus
@@ -59,34 +61,49 @@ class MonsterEditorForm(QWidget, Ui_Form):
             self.wis_mod_label.setStyleSheet(derived_stylesheet)
             self.cha_mod_label.setStyleSheet(derived_stylesheet)
 
+        papyrus_background_stylesheet = '{background-image: url(images:papyrusbackground.jpg)}'
+        plain_text_stylesheet = f'{{background-image: none; background-color: white; ' \
+                                f'color: black; font: 12pt "Cambria";}}'
+        modal_stylesheet = '{{background-image: none; background-color: rgb(111, 115, 47); ' \
+                           'color: white; font: 12pt "Cambria";}}'
+        label_stylesheet = '{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}'
+
         self.setStyleSheet('QWidget{font: 12pt "Cambria"}')
-        self.topframe.setStyleSheet('#topframe{background-image: url(images:papyrusbackground.jpg)}')
-        self.scrollArea.setStyleSheet('#scrollArea{background-image: url(images:papyrusbackground.jpg)}')
-        self.scrollAreaWidgetContents.setStyleSheet('#scrollAreaWidgetContents{background-image: url(images:papyrusbackground.jpg)}')
-        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox, QPushButton, QCheckBox, QTextEdit, QComboBox)):
+        self.topframe.setStyleSheet(f'#topframe{papyrus_background_stylesheet}')
+        self.scrollArea.setStyleSheet(f'#scrollArea{papyrus_background_stylesheet}')
+        self.scrollAreaWidgetContents.setStyleSheet(f'#scrollAreaWidgetContents{papyrus_background_stylesheet}')
+        for widget in self.topframe.findChildren((QLabel, QListView, QLineEdit, QComboBox,
+                                                  QPushButton, QCheckBox, QTextEdit, QComboBox)):
             if isinstance(widget, QLabel):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{label_stylesheet}')
                 widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
             elif isinstance(widget, QListView) or isinstance(widget, QTextEdit):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
             elif isinstance(widget, QLineEdit):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
             elif isinstance(widget, QComboBox):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-            elif isinstance(widget, QPushButton):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
-            elif isinstance(widget, QCheckBox):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
             elif isinstance(widget, QSpinBox):
-                widget.setStyleSheet(f'#{widget.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.abilities_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.actions_list_groupbox.setStyleSheet(f'#{self.actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.bonus_actions_list_groupbox.setStyleSheet(f'#{self.abilities_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.reactions_list_groupbox.setStyleSheet(f'#{self.reactions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.bonus_actions_list_groupbox.setStyleSheet(f'#{self.bonus_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.legendary_actions_list_groupbox.setStyleSheet(f'#{self.legendary_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
-        self.mythic_actions_list_groupbox.setStyleSheet(f'#{self.mythic_actions_list_groupbox.objectName()}{{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}}')
+                widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
+            elif isinstance(widget, QPushButton):
+                widget.setStyleSheet(f'#{widget.objectName()}{modal_stylesheet}')
+            elif isinstance(widget, QCheckBox):
+                widget.setStyleSheet(f'#{widget.objectName()}{modal_stylesheet}')
 
+        self.abilities_list_groupbox.setStyleSheet(
+            f'#{self.abilities_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.actions_list_groupbox.setStyleSheet(
+            f'#{self.actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.bonus_actions_list_groupbox.setStyleSheet(
+            f'#{self.abilities_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.reactions_list_groupbox.setStyleSheet(
+            f'#{self.reactions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.bonus_actions_list_groupbox.setStyleSheet(
+            f'#{self.bonus_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.legendary_actions_list_groupbox.setStyleSheet(
+            f'#{self.legendary_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+        self.mythic_actions_list_groupbox.setStyleSheet(
+            f'#{self.mythic_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
 
         set_derived_styles()
         return None
@@ -118,12 +135,18 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.speeds_edit.editingFinished.connect(self.speed_edit_changed)
 
     def setup_spinbox_signals(self):
-        self.str_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.str_score_spinbox.value(), self.str_mod_label, AbilityScore.STRENGTH))
-        self.dex_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.dex_score_spinbox.value(), self.dex_mod_label, AbilityScore.DEXTERITY))
-        self.con_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.con_score_spinbox.value(), self.con_mod_label, AbilityScore.CONSTITUTION))
-        self.int_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.int_score_spinbox.value(), self.int_mod_label, AbilityScore.INTELLIGENCE))
-        self.wis_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.wis_score_spinbox.value(), self.wis_mod_label, AbilityScore.WISDOM))
-        self.cha_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(self.cha_score_spinbox.value(), self.cha_mod_label, AbilityScore.CHARISMA))
+        self.str_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.str_score_spinbox.value(), self.str_mod_label, AbilityScore.STRENGTH))
+        self.dex_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.dex_score_spinbox.value(), self.dex_mod_label, AbilityScore.DEXTERITY))
+        self.con_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.con_score_spinbox.value(), self.con_mod_label, AbilityScore.CONSTITUTION))
+        self.int_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.int_score_spinbox.value(), self.int_mod_label, AbilityScore.INTELLIGENCE))
+        self.wis_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.wis_score_spinbox.value(), self.wis_mod_label, AbilityScore.WISDOM))
+        self.cha_score_spinbox.valueChanged.connect(lambda: self.score_edit_changed(
+            self.cha_score_spinbox.value(), self.cha_mod_label, AbilityScore.CHARISMA))
         self.hit_points_spinbox.valueChanged.connect(self.hit_points_edit_changed)
         self.max_hit_dice_spinbox.valueChanged.connect(self.hit_dice_edit_changed)
         self.ac_bonus_spinbox.valueChanged.connect(self.ac_bonus_edit_changed)
@@ -146,13 +169,21 @@ class MonsterEditorForm(QWidget, Ui_Form):
         update_modifier_label(self.creature_block.ability_scores[abilityscore], modifier_label)
 
     def hit_points_edit_changed(self):
-        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=self.max_hit_dice_spinbox.value(), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        con_mod = score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION])
+        hit_dice = self.max_hit_dice_spinbox.value()
+
+        hit_points_calc = creature_datastructs.MonsterStatblock.\
+            calc_monster_hit_points(hit_dice=hit_dice, size=self.creature_block.size, con=con_mod)
         self.creature_block.hitpoints = hit_points_calc
         self.creature_block.hitdice = self.max_hit_dice_spinbox.value()
         self.update_creature_data()
 
     def hit_dice_edit_changed(self):
-        hit_points_calc = creature_datastructs.MonsterStatblock.calc_monster_hit_points(hit_dice=self.max_hit_dice_spinbox.value(), size=self.creature_block.size, con=score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION]))
+        con_mod = score_to_mod(self.creature_block.ability_scores[AbilityScore.CONSTITUTION])
+        hit_dice = self.max_hit_dice_spinbox.value()
+
+        hit_points_calc = creature_datastructs.MonsterStatblock.\
+            calc_monster_hit_points(hit_dice=hit_dice, size=self.creature_block.size, con=con_mod)
         self.creature_block.hitpoints = hit_points_calc
         self.creature_block.hitdice = self.max_hit_dice_spinbox.value()
         self.update_creature_data()
@@ -180,16 +211,20 @@ class MonsterEditorForm(QWidget, Ui_Form):
             container.setVisible(True if checkbox_checked else False)
             checkbox.setText("Enabled" if checkbox_checked else "Disabled")
 
-        self.reactions_enable_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.reactions_enable_checkbox, self.reactions_container))
+        self.reactions_enable_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(
+            self.reactions_enable_checkbox, self.reactions_container))
         self.reactions_container.setVisible(False)
 
-        self.bonus_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.bonus_actions_enabled_checkbox, self.bonus_actions_container))
+        self.bonus_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(
+            self.bonus_actions_enabled_checkbox, self.bonus_actions_container))
         self.bonus_actions_container.setVisible(False)
 
-        self.legendary_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.legendary_actions_enabled_checkbox, self.legendary_actions_container))
+        self.legendary_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(
+            self.legendary_actions_enabled_checkbox, self.legendary_actions_container))
         self.legendary_actions_container.setVisible(False)
 
-        self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
+        self.mythic_actions_enabled_checkbox.stateChanged.connect(lambda state: toggle_container_visibility(
+            self.mythic_actions_enabled_checkbox, self.mythic_actions_container))
         self.mythic_actions_container.setVisible(False)
 
     def setup_pushbutton_signals(self):
@@ -248,7 +283,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.creature_block.add_damage_modifier(selected_damage, DamageModifier.VULNERABILITY)
         self.update_damage()
 
-    def add_ability_dialog(self, ability_target:AbilityDescription=None):
+    def add_ability_dialog(self, ability_target: AbilityDescription = None):
         print(QApplication.instance())
         if ability_target is None:
             ability_target = AbilityDescription()
@@ -272,7 +307,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.update_abilities()
         return
 
-    def add_ability_action_dialog(self, ability_target:AbilityDescription=None):
+    def add_ability_action_dialog(self, ability_target: AbilityDescription = None):
         print(QApplication.instance())
         if ability_target is None:
             ability_target = AbilityDescription()
@@ -319,7 +354,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.update_actions()
         return
 
-    def add_reaction_dialog(self, reaction:AbilityDescription=None):
+    def add_reaction_dialog(self, reaction: AbilityDescription = None):
         print(QApplication.instance())
         if reaction is None:
             reaction = AbilityDescription()
@@ -415,13 +450,11 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.update_mythic_actions()
         return
 
-
     def display_gmbinder_string(self):
         gmbinder_string = convert_monster(self.creature_block)
         print(gmbinder_string)
         dialog = GMBinderConvertWindow(gmbinder_string, parent=self)
         dialog.exec()
-
 
     def save_monster_to_json(self):
         # Open file dialog and get file name
@@ -476,8 +509,10 @@ class MonsterEditorForm(QWidget, Ui_Form):
     def update_damage(self):
         def insert_damage_row(damagetype, modifier):
             self.damage_tablewidget.insertRow(self.damage_tablewidget.rowCount())
-            self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype.value))
-            self.damage_tablewidget.setItem(self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
+            self.damage_tablewidget.setItem(
+                self.damage_tablewidget.rowCount() - 1, 0, QTableWidgetItem(damagetype.value))
+            self.damage_tablewidget.setItem(
+                self.damage_tablewidget.rowCount() - 1, 1, QTableWidgetItem(modifier))
 
         self.damage_tablewidget.setRowCount(0)
         for damage in self.creature_block.damage_vulnerabilities:
@@ -583,7 +618,7 @@ def update_modifier_label(score, label):
 def set_combo_box_selected_item(combo_box, item):
     index = -1
     for i in range(combo_box.count()):
-        print(f"{combo_box.itemText(i)} {item}" )
+        print(f"{combo_box.itemText(i)} {item}")
         if combo_box.itemText(i) == item:
             index = i
             break
