@@ -4,17 +4,17 @@ from PyQt6.QtWidgets import (
     QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit,
     QTableWidgetItem, QWidget, QSpinBox, QFileDialog
 )
-from srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
+from pyqtui.srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
 from pyqtui.designer_ui.creature_editor_ui import Ui_Form
-from ability_dialogue_app import AbilityDialog
-from attack_dialogue_app import AttackDialog
-from gmbinder_convert_window import GMBinderConvertWindow
+from pyqtui.ability_dialogue_app import AbilityDialog
+from pyqtui.attack_dialogue_app import AttackDialog
+from pyqtui.gmbinder_convert_window import GMBinderConvertWindow
 
 from creatures import creature_datastructs
 from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType, proficiency_bonus, score_to_mod, \
     BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
-from creatures.creature_generator import generate_test_creature
-from creatures.creature_gmbinder_convert import convert_monster
+from creatures.creature_generator import generate_test_monster
+from gmbinderconvert.convert_creature import convert_monster
 
 import os
 import sys
@@ -651,6 +651,6 @@ def insert_attack(layout, attack, creature):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    myWindow = MonsterEditorForm(creature_block=generate_test_creature())
+    myWindow = MonsterEditorForm(creature_block=generate_test_monster())
     myWindow.show()
     app.exec()

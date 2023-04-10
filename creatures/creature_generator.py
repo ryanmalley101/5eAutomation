@@ -4,7 +4,7 @@ from creatures.creature_datastructs import *
 from srd.srd_datastructs import *
 
 
-def generate_test_creature():
+def generate_test_monster():
     return MonsterStatblock(
         name="TEST CREATURE",
         size=Size.MEDIUM,

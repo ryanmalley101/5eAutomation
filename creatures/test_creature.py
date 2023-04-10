@@ -1,11 +1,11 @@
-from creature_gmbinder_convert import *
-from creature_generator import generate_test_creature
+from gmbinderconvert.convert_creature import *
+from creature_generator import generate_test_monster
 import unittest
 
 
 class TestCreature(unittest.TestCase):
     def test_json_convert(self):
-        generated_monster = generate_test_creature()
+        generated_monster = generate_test_monster()
         filename = 'testmonster'
         generated_monster.save_json_to_file(filename='testmonster')
 

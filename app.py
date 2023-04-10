@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog
 from pyqtui.designer_ui.main_window_ui import Ui_MainWindow
-from creature_editor_app import MonsterEditorForm
-from creatures.creature_generator import generate_test_creature
+from pyqtui.creature_editor_app import MonsterEditorForm
+from creatures.creature_generator import generate_test_monster
 
 import os
 import sys
@@ -23,7 +23,7 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
         if file_name:
             self.load_monster_button.setText(file_name)
             print(file_name)
-            monster_form = MonsterEditorForm(creature_block=generate_test_creature(), parent=self)
+            monster_form = MonsterEditorForm(creature_block=generate_test_monster(), parent=self)
             monster_form.show()
 
 
