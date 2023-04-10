@@ -1,10 +1,12 @@
 from dataclasses import dataclass, field, asdict
 import json
-from srd.srd_datastructs import Size, AbilityDescription, proficiency_bonus, CreatureStatblock
+from srd import srd_datastructs
+
+# import Size, AbilityDescription, proficiency_bonus, CreatureStatblock
 
 
 @dataclass
-class MonsterStatblock(CreatureStatblock):
+class MonsterStatblock(srd_datastructs.CreatureStatblock):
     challengerating: int = 0
     legendaryactions: list = field(default_factory=list)
     mythicdescription: str = None
@@ -32,24 +34,24 @@ class MonsterStatblock(CreatureStatblock):
         return json.dumps(creature_dict)
 
     def proficiency_bonus(self):
-        return proficiency_bonus(self.challengerating)
+        return srd_datastructs.proficiency_bonus(self.challengerating)
 
     @classmethod
     def load_json(cls, creature_json):
-        creature_dict = CreatureStatblock.convert_json_dict(creature_json)
+        creature_dict = srd_datastructs.CreatureStatblock.convert_json_dict(creature_json)
         for index, legendaryaction in enumerate(creature_dict['legendaryactions']):
-            creature_dict['legendaryactions'][index] = AbilityDescription(name=legendaryaction['name'],
+            creature_dict['legendaryactions'][index] = srd_datastructs.AbilityDescription(name=legendaryaction['name'],
                                                                           description=legendaryaction['description'])
 
         for index, mythicaction in enumerate(creature_dict['mythicactions']):
-            creature_dict['mythicactions'][index] = AbilityDescription(name=mythicaction['name'],
+            creature_dict['mythicactions'][index] = srd_datastructs.AbilityDescription(name=mythicaction['name'],
                                                                        description=mythicaction['description'])
 
         return cls(**creature_dict)
 
     @staticmethod
-    def calc_monster_hit_dice(target_hit_points: int, size: Size, con: int):
-        hit_die = Size.hitdice(size)
+    def calc_monster_hit_dice(target_hit_points: int, size: srd_datastructs.Size, con: int):
+        hit_die = srd_datastructs.Size.hitdice(size)
         max_hit_dice = 0
         max_hit_points = 0
         average_hit_die = (hit_die / 2) + con
@@ -59,8 +61,8 @@ class MonsterStatblock(CreatureStatblock):
         return max_hit_dice, round(max_hit_points)
 
     @staticmethod
-    def calc_monster_hit_points(hit_dice: int, size: Size, con: int):
-        hit_die = Size.hitdice(size)
+    def calc_monster_hit_points(hit_dice: int, size: srd_datastructs.Size, con: int):
+        hit_die = srd_datastructs.Size.hitdice(size)
         average_hit_die = (hit_die / 2) + con
         max_hit_points = round(average_hit_die*hit_dice)
         return max_hit_points

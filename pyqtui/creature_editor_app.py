@@ -111,11 +111,11 @@ class MonsterEditorForm(QWidget, Ui_Form):
     def setup_comboboxes(self):
         # Size combobox
         self.size_combobox.clear()
-        for size in creature_datastructs.Size:
+        for size in Size:
             self.size_combobox.addItem(size.value)
         for cr in creature_datastructs.CR_TO_XP_TABLE:
             self.challenge_rating_combobox.addItem(str(cr))
-        for save in creature_datastructs.AbilityScore:
+        for save in AbilityScore:
             self.saving_throws_combobox.addItem(save.value)
         for skill in Skill:
             self.skills_combobox.addItem(skill.value)
@@ -576,10 +576,10 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.xp_calculation_label.setText(str(
             creature_datastructs.CR_TO_XP_TABLE[self.creature_block.challengerating]))
         self.proficiency_bonus_calculation_label.setText('+' + str(
-            creature_datastructs.proficiency_bonus(self.creature_block.challengerating)))
+            proficiency_bonus(self.creature_block.challengerating)))
         self.hit_points_spinbox.setValue(self.creature_block.hitpoints)
         self.max_hit_dice_spinbox.setValue(self.creature_block.hitdice)
-        self.hit_die_calculation_label.setText(f"d{creature_datastructs.Size.hitdice(self.creature_block.size)}")
+        self.hit_die_calculation_label.setText(f"d{Size.hitdice(self.creature_block.size)}")
         self.ac_bonus_spinbox.setValue(self.creature_block.acbonus)
         self.armor_type_edit.setText(self.creature_block.acdesc)
         self.senses_edit.setText(self.creature_block.senses)
