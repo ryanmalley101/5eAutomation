@@ -1,7 +1,8 @@
 from pathlib import Path
+
 from PyQt6 import QtCore
 from PyQt6.QtWidgets import (
-    QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit,
+    QApplication, QLabel, QLineEdit, QListView, QComboBox, QPushButton, QCheckBox, QTextEdit,
     QTableWidgetItem, QWidget, QSpinBox, QFileDialog, QListWidget
 )
 from pyqtui.srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
@@ -15,6 +16,7 @@ from srd.srd_datastructs import AbilityScore, Size, Skill, Condition, DamageType
     BaseAttack, PROFICIENT, EXPERT, DamageModifier, MeleeWeaponAttack
 from creatures.creature_generator import generate_test_monster
 from gmbinderconvert.convert_creature import convert_monster
+from pyqtui.style.stylesheets import *
 
 import os
 import sys
@@ -61,10 +63,6 @@ class MonsterEditorForm(QWidget, Ui_Form):
             self.wis_mod_label.setStyleSheet(derived_stylesheet)
             self.cha_mod_label.setStyleSheet(derived_stylesheet)
 
-        papyrus_background_stylesheet = '{background-image: url(images:papyrusbackground.jpg)}'
-        plain_text_stylesheet = '{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}'
-        modal_stylesheet = '{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}'
-        label_stylesheet = '{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}'
         self.setStyleSheet('QWidget{font: 12pt "Cambria"}')
         self.topframe.setStyleSheet(f'#topframe{papyrus_background_stylesheet}')
         self.scrollArea.setStyleSheet(f'#scrollArea{papyrus_background_stylesheet}')
