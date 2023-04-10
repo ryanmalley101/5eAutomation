@@ -428,23 +428,14 @@ class MonsterEditorForm(QWidget, Ui_Form):
         file_name, _ = QFileDialog.getSaveFileName(None, "Save File", "", "JSON Files (*.json)")
 
         if file_name:
-            # Convert creature data to JSON
-            creature_json = self.creature_block.to_json()
-
-            # Write JSON to file
-            with open(file_name, "w") as f:
-                f.write(creature_json)
+            self.creature_block.save_json_to_file(filename=file_name)
 
     def load_monster_from_json(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*)")
 
         if file_name:
-            print(file_name)
-            with open(file_name, 'r') as json_file:
-                monster = creature_datastructs.MonsterStatblock()
-                monster.load_json(json.loads(json_file.read()))
-                self.creature_block = monster
-                self.update_creature_data()
+            self.creature_block = creature_datastructs.MonsterStatblock.load_json_from_file(file_name)
+            self.update_creature_data()
 
     def setup_combobox_signals(self):
         def size_combobox_changed():

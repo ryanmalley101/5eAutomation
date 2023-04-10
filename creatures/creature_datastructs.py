@@ -119,12 +119,17 @@ class CreatureStatblock:
     def load_json(cls, creature_json):
         return cls(**cls.convert_json_dict(creature_json))
 
-    def save_json(self):
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        creature_json = open(timestr + '.json', "w")
-        n = creature_json.write(self.to_json())
-        print(n)
-        creature_json.close()
+    def save_json_to_file(self, filename='', timestamp=False):
+        if timestamp or filename == '' :
+            filename = filename+time.strftime("%Y%m%d-%H%M%S")
+        with open(filename + '.json', "w") as creature_json:
+            creature_json.write(self.to_json())
+
+    @classmethod
+    def load_json_from_file(cls, filename=None):
+        if filename:
+            with open(filename, "r") as creature_json:
+                return MonsterStatblock.load_json(creature_json.read())
 
     def get_total_ac(self):
         return 10 + score_to_mod(self.ability_scores[AbilityScore.DEXTERITY]) + self.acbonus
@@ -196,7 +201,6 @@ class PlayerCharacterStatblock(CreatureStatblock):
                                          for ba in self.bonusactions]
         creature_dict['reactions'] = [asdict(react)
                                       for react in self.reactions]
-        print(creature_dict)
         return json.dumps(creature_dict)
 
     def character_level(self):
@@ -240,7 +244,6 @@ class MonsterStatblock(CreatureStatblock):
                                     for react in self.reactions]
         creature_dict['legendaryactions'] = [asdict(la) for la in self.legendaryactions]
         creature_dict['mythicactions'] = [asdict(myth) for myth in self.mythicactions]
-        print(creature_dict)
         return json.dumps(creature_dict)
 
     def proficiency_bonus(self):
