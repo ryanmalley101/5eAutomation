@@ -18,13 +18,8 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
     def file_dialog_clicked(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "All Files (*)")
-
-        if file_name:
-            self.load_monster_button.setText(file_name)
-            print(file_name)
-            monster_form = MonsterEditorForm(creature_block=generate_test_monster(), parent=self)
-            monster_form.show()
+        monster_form = MonsterEditorForm(creature_block=generate_test_monster(), parent=self)
+        monster_form.show()
 
 
 app = QApplication(sys.argv)

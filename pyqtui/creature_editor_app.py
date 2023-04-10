@@ -2,7 +2,7 @@ from pathlib import Path
 from PyQt6 import QtCore
 from PyQt6.QtWidgets import (
     QApplication, QLabel, QLineEdit, QListView, QSizePolicy, QComboBox, QPushButton, QCheckBox, QTextEdit,
-    QTableWidgetItem, QWidget, QSpinBox, QFileDialog
+    QTableWidgetItem, QWidget, QSpinBox, QFileDialog, QListWidget
 )
 from pyqtui.srd_gui_objects import AbilityButton, AbilityDescription, AttackButton
 from pyqtui.designer_ui.creature_editor_ui import Ui_Form
@@ -62,12 +62,9 @@ class MonsterEditorForm(QWidget, Ui_Form):
             self.cha_mod_label.setStyleSheet(derived_stylesheet)
 
         papyrus_background_stylesheet = '{background-image: url(images:papyrusbackground.jpg)}'
-        plain_text_stylesheet = f'{{background-image: none; background-color: white; ' \
-                                f'color: black; font: 12pt "Cambria";}}'
-        modal_stylesheet = '{{background-image: none; background-color: rgb(111, 115, 47); ' \
-                           'color: white; font: 12pt "Cambria";}}'
-        label_stylesheet = '{{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}}'
-
+        plain_text_stylesheet = '{background-image: none; background-color: white; color: black; font: 12pt "Cambria";}'
+        modal_stylesheet = '{background-image: none; background-color: rgb(111, 115, 47); color: white; font: 12pt "Cambria";}'
+        label_stylesheet = '{background-image: none; color: rgb(166, 60, 6); font: 16pt "Cambria";}'
         self.setStyleSheet('QWidget{font: 12pt "Cambria"}')
         self.topframe.setStyleSheet(f'#topframe{papyrus_background_stylesheet}')
         self.scrollArea.setStyleSheet(f'#scrollArea{papyrus_background_stylesheet}')
@@ -76,8 +73,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
                                                   QPushButton, QCheckBox, QTextEdit, QComboBox)):
             if isinstance(widget, QLabel):
                 widget.setStyleSheet(f'#{widget.objectName()}{label_stylesheet}')
-                widget.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Preferred)
-            elif isinstance(widget, QListView) or isinstance(widget, QTextEdit):
+            elif isinstance(widget, QListWidget) or isinstance(widget, QTextEdit):
                 widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
             elif isinstance(widget, QLineEdit):
                 widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
@@ -89,21 +85,25 @@ class MonsterEditorForm(QWidget, Ui_Form):
                 widget.setStyleSheet(f'#{widget.objectName()}{modal_stylesheet}')
             elif isinstance(widget, QCheckBox):
                 widget.setStyleSheet(f'#{widget.objectName()}{modal_stylesheet}')
+            # elif isinstance(widget, QListWi):
+            #     widget.setStyleSheet(f'#{widget.objectName()}{plain_text_stylesheet}')
 
         self.abilities_list_groupbox.setStyleSheet(
-            f'#{self.abilities_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.abilities_list_groupbox.objectName()}{plain_text_stylesheet}')
         self.actions_list_groupbox.setStyleSheet(
-            f'#{self.actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.actions_list_groupbox.objectName()}{plain_text_stylesheet}')
         self.bonus_actions_list_groupbox.setStyleSheet(
-            f'#{self.abilities_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.abilities_list_groupbox.objectName()}{plain_text_stylesheet}')
         self.reactions_list_groupbox.setStyleSheet(
-            f'#{self.reactions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.reactions_list_groupbox.objectName()}{plain_text_stylesheet}')
         self.bonus_actions_list_groupbox.setStyleSheet(
-            f'#{self.bonus_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.bonus_actions_list_groupbox.objectName()}{plain_text_stylesheet}')
         self.legendary_actions_list_groupbox.setStyleSheet(
-            f'#{self.legendary_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.legendary_actions_list_groupbox.objectName()}{plain_text_stylesheet}')
+        self.mythic_description_edit.setStyleSheet(
+            f'#{self.mythic_description_edit.objectName()}{plain_text_stylesheet}')
         self.mythic_actions_list_groupbox.setStyleSheet(
-            f'#{self.mythic_actions_list_groupbox.objectName()}{papyrus_background_stylesheet}')
+            f'#{self.mythic_actions_list_groupbox.objectName()}{plain_text_stylesheet}')
 
         set_derived_styles()
         return None
