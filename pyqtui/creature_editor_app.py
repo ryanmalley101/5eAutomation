@@ -20,6 +20,7 @@ from creatures.creature_generator import generate_test_creature
 
 from ability_dialogue_app import AbilityDialog
 from attack_dialogue_app import AttackDialog
+from gmbinder_convert_ui import GMBinderConversion
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
 
@@ -203,6 +204,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.add_bonus_action_button.pressed.connect(self.add_bonus_action_dialog)
         self.add_legendary_action_button.pressed.connect(self.add_legendary_action_dialog)
         self.add_mythic_action_button.pressed.connect(self.add_mythic_action_dialog)
+        self.gmbinder_convert_button.pressed.connect(self.display_gmbinder_string)
 
     def add_save_proficiency(self):
         selected_save = AbilityScore(self.saving_throws_combobox.currentText())
@@ -407,6 +409,10 @@ class MonsterEditorForm(QWidget, Ui_Form):
             print("Not accepted")
         self.update_mythic_actions()
         return
+
+    def display_gmbinder_string(self, gmbinder_string:str = ''):
+        dialog = GMBinderConversion(gmbinder_string, parent=self)
+        dialog.exec()
 
     def setup_combobox_signals(self):
         def size_combobox_changed():
