@@ -41,6 +41,8 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.setup_spinbox_signals()
         self.setup_combobox_signals()
         self.setup_pushbutton_signals()
+        self.setup_listwidget_signals()
+        self.setup_tablewidget_signals()
         if self.creature_block.bonusactions:
             self.bonus_actions_enabled_checkbox.setChecked(True)
         if self.creature_block.reactions:
@@ -148,6 +150,37 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.hit_points_spinbox.valueChanged.connect(self.hit_points_edit_changed)
         self.max_hit_dice_spinbox.valueChanged.connect(self.hit_dice_edit_changed)
         self.ac_bonus_spinbox.valueChanged.connect(self.ac_bonus_edit_changed)
+
+    def setup_listwidget_signals(self):
+        self.save_listwidget.itemClicked.connect(self.save_item_clicked)
+        self.condition_listwidget.itemClicked.connect(self.condition_item_clicked)
+
+    def setup_tablewidget_signals(self):
+        self.damage_tablewidget.cellClicked.connect(self.damage_item_clicked)
+        self.skills_tablewidget.cellClicked.connect(self.skill_item_clicked)
+
+    def save_item_clicked(self, item):
+        self.creature_block.saving_throws.discard(AbilityScore(item.text()))
+        self.update_saves()
+
+    def condition_item_clicked(self, item):
+        self.creature_block.condition_immunities.discard(Condition(item.text()))
+        self.update_conditions()
+
+    def damage_item_clicked(self, row, col):
+        damage_type = DamageType(self.damage_tablewidget.item(row, 0).text())
+        self.creature_block.damage_vulnerabilities.discard(damage_type)
+        self.creature_block.damage_resistances.discard(damage_type)
+        self.creature_block.damage_immunities.discard(damage_type)
+        self.update_damage()
+
+    def skill_item_clicked(self, row, col):
+        skill = Skill(self.skills_tablewidget.item(row, 0).text())
+        self.creature_block.skills.discard(skill)
+        self.creature_block.expertise.discard(skill)
+        self.update_skills()
+
+
 
     def name_edit_changed(self):
         self.creature_block.name = self.name_edit.text()
@@ -524,7 +557,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
         for i in reversed(range(self.abilities_list_layout.count())):
             self.abilities_list_layout.itemAt(i).widget().deleteLater()
         for ability in self.creature_block.abilities:
-            insert_ability(self.abilities_list_layout, ability)
+            self.insert_ability(self.abilities_list_layout, ability)
 
     def update_actions(self):
         for i in reversed(range(self.actions_list_layout.count())):
@@ -532,10 +565,10 @@ class MonsterEditorForm(QWidget, Ui_Form):
         for action in self.creature_block.actions:
             if isinstance(action, AbilityDescription):
                 print("Adding ability action")
-                insert_ability(self.actions_list_layout, action)
+                self.insert_ability(self.actions_list_layout, action)
             elif isinstance(action, BaseAttack):
                 print("Adding attack action")
-                insert_attack(self.actions_list_layout, action, self.creature_block)
+                self.insert_attack(self.actions_list_layout, action, self.creature_block)
             else:
                 print("Invalid action")
 
@@ -543,25 +576,25 @@ class MonsterEditorForm(QWidget, Ui_Form):
         for i in reversed(range(self.reactions_list_layout.count())):
             self.reactions_list_layout.itemAt(i).widget().deleteLater()
         for reaction in self.creature_block.reactions:
-            insert_ability(self.reactions_list_layout, reaction)
+            self.insert_ability(self.reactions_list_layout, reaction)
 
     def update_bonus_actions(self):
         for i in reversed(range(self.bonus_actions_list_layout.count())):
             self.bonus_actions_list_layout.itemAt(i).widget().deleteLater()
         for bonusactions in self.creature_block.bonusactions:
-            insert_ability(self.bonus_actions_list_layout, bonusactions)
+            self.insert_ability(self.bonus_actions_list_layout, bonusactions)
 
     def update_legendary_actions(self):
         for i in reversed(range(self.legendary_actions_list_layout.count())):
             self.legendary_actions_list_layout.itemAt(i).widget().deleteLater()
         for legendaryactions in self.creature_block.legendaryactions:
-            insert_ability(self.legendary_actions_list_layout, legendaryactions)
+            self.insert_ability(self.legendary_actions_list_layout, legendaryactions)
 
     def update_mythic_actions(self):
         for i in reversed(range(self.mythic_actions_list_layout.count())):
             self.mythic_actions_list_layout.itemAt(i).widget().deleteLater()
         for mythicactions in self.creature_block.mythicactions:
-            insert_ability(self.mythic_actions_list_layout, mythicactions)
+            self.insert_ability(self.mythic_actions_list_layout, mythicactions)
 
     def update_creature_data(self):
         print(self.creature_block.name)
@@ -606,6 +639,41 @@ class MonsterEditorForm(QWidget, Ui_Form):
         self.mythic_description_edit.setText(self.creature_block.mythicdescription)
         self.update_mythic_actions()
 
+    def insert_ability(self, layout, ability):
+        new_ability = AbilityButton(ability)
+        new_ability.clicked.connect(lambda: self.remove_ability(ability, layout))
+        layout.addWidget(new_ability)
+
+    def remove_ability(self, ability, layout):
+        if ability in self.creature_block.abilities:
+            self.creature_block.abilities.remove(ability)
+            self.update_abilities()
+        if ability in self.creature_block.actions:
+            self.creature_block.actions.remove(ability)
+            self.update_actions()
+        if ability in self.creature_block.reactions:
+            self.creature_block.reactions.remove(ability)
+            self.update_reactions()
+        if ability in self.creature_block.bonusactions:
+            self.creature_block.bonusactions.remove(ability)
+            self.update_bonus_actions()
+        if ability in self.creature_block.legendaryactions:
+            self.creature_block.legendaryactions.remove(ability)
+            self.update_legendary_actions()
+        if ability in self.creature_block.mythicactions:
+            self.creature_block.mythicactions.remove(ability)
+            self.update_mythic_actions()
+
+    def insert_attack(self, layout, attack, creature):
+        new_attack = AttackButton(attack, creature)
+        new_attack.clicked.connect(lambda: self.remove_attack(attack))
+        print(new_attack.text())
+        layout.addWidget(new_attack)
+
+    def remove_attack(self, attack):
+        self.creature_block.actions.remove(attack)
+        self.update_actions()
+
 
 def update_modifier_label(score, label):
     mod = score_to_mod(score)
@@ -635,16 +703,6 @@ def update_hitdice(size, modifier_label):
 def update_prof_bonus(cr, modifier_label):
     modifier_label.setText(f'+{proficiency_bonus(cr)}')
 
-
-def insert_ability(layout, ability):
-    new_ability = AbilityButton(ability)
-    layout.addWidget(new_ability)
-
-
-def insert_attack(layout, attack, creature):
-    new_attack = AttackButton(attack, creature)
-    print(new_attack.text())
-    layout.addWidget(new_attack)
 
 
 if __name__ == '__main__':

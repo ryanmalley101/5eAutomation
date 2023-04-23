@@ -23,6 +23,7 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "pyqtui/images"))
         self.setupUi(self)
+        self.load_monster_button.clicked.connect(self.monster_editor_button_clicked)
         self.apply_stylesheet()
 
     def apply_stylesheet(self):
