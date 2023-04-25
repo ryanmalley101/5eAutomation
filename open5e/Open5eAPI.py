@@ -26,22 +26,39 @@ def fetch_srd_monster(monster_name):
     api_url = f'https://api.open5e.com/monsters/{monster_name}/'
     response = requests.get(api_url)
     if response.status_code == 200:
-        return response.json()
+        return convert_api_monster(response.json())
     else:
         return None
 
+def fetch_srd_monster_names():
+    # Set the API endpoint
+    url = "https://api.open5e.com/monsters/?format=json&limit=9999&document__slug=wotc-srd"
 
-def convertAPIMonster(monster_dict):
-    convertedMonster = MonsterStatblock()
+    # Set the query parameters to filter by document slug
+    params = {
+        "document-slug": "wotc-srd"
+    }
+
+    # Send a GET request to the API with the specified parameters
+    response = requests.get(url, params=params)
+
+    # Parse the response JSON and extract the monster names
+    monsters = [monster["name"] for monster in response.json()["results"]]
+
+    return monsters
+
+
+def convert_api_monster(monster_dict):
+    converted_monster = MonsterStatblock()
     # Get basic information
-    convertedMonster.name = monster_dict['name']
-    convertedMonster.size = Size[monster_dict['size'].upper()]
-    convertedMonster.type = monster_dict['type']
-    convertedMonster.alignment = monster_dict['alignment']
+    converted_monster.name = monster_dict['name']
+    converted_monster.size = Size[monster_dict['size'].upper()]
+    converted_monster.type = monster_dict['type']
+    converted_monster.alignment = monster_dict['alignment']
 
     # Get armor class information
-    convertedMonster.acdesc = monster_dict['armor_desc']
-    convertedMonster.acbonus = int(monster_dict['armor_class'])
+    converted_monster.acdesc = monster_dict['armor_desc']
+    converted_monster.acbonus = int(monster_dict['armor_class'])
 
     # Get ability scores
     ability_scores = {AbilityScore.STRENGTH: int(monster_dict['strength']),
@@ -50,11 +67,11 @@ def convertAPIMonster(monster_dict):
                       AbilityScore.INTELLIGENCE: int(monster_dict['intelligence']),
                       AbilityScore.WISDOM: int(monster_dict['wisdom']),
                       AbilityScore.CHARISMA: int(monster_dict['charisma'])}
-    convertedMonster.ability_scores = ability_scores
+    converted_monster.ability_scores = ability_scores
 
     # Get hit points and hit dice
-    convertedMonster.hitdice = int(monster_dict['hit_dice'].split('d')[0])
-    convertedMonster.hitpoints = int(monster_dict['hit_points'])
+    converted_monster.hitdice = int(monster_dict['hit_dice'].split('d')[0])
+    converted_monster.hitpoints = int(monster_dict['hit_points'])
 
     # Get speed information
     speed_string = ""
@@ -63,7 +80,7 @@ def convertAPIMonster(monster_dict):
             speed_string += f"{value} ft."
         else:
             speed_string += f", {speed} {value} ft."
-    convertedMonster.speed = speed_string
+    converted_monster.speed = speed_string
 
     # Get saving throws
     saving_throws = set()
@@ -79,7 +96,7 @@ def convertAPIMonster(monster_dict):
         saving_throws.add(AbilityScore.WISDOM)
     if monster_dict['charisma_save'] is not None:
         saving_throws.add(AbilityScore.CHARISMA)
-    convertedMonster.saving_throws = saving_throws
+    converted_monster.saving_throws = saving_throws
 
     # Get skills and expertise
     skills = set()
@@ -92,8 +109,8 @@ def convertAPIMonster(monster_dict):
             # if monster_dict.get('expertise') and skill_string.strip().lower() in monster_dict['expertise'].split(
             #         ','):
             #     expertise.add(skill)
-    convertedMonster.skills = skills
-    convertedMonster.expertise = expertise
+    converted_monster.skills = skills
+    converted_monster.expertise = expertise
 
     # Get damage immunities, resistances, and vulnerabilities
     damage_immunities = set(map(DamageType.__getitem__, monster_dict.get("damage_immunities", [])))
@@ -101,15 +118,15 @@ def convertAPIMonster(monster_dict):
     damage_vulnerabilities = set(map(DamageType.__getitem__, monster_dict.get("damage_vulnerabilities", [])))
     condition_immunities = set(map(Condition.__getitem__, monster_dict.get("condition_immunities", [])))
 
-    convertedMonster.damage_immunities = damage_immunities
-    convertedMonster.damage_resistances = damage_resistances
-    convertedMonster.damage_vulnerabilities = damage_vulnerabilities
-    convertedMonster.condition_immunities = condition_immunities
+    converted_monster.damage_immunities = damage_immunities
+    converted_monster.damage_resistances = damage_resistances
+    converted_monster.damage_vulnerabilities = damage_vulnerabilities
+    converted_monster.condition_immunities = condition_immunities
 
-    convertedMonster.senses = monster_dict.get("senses", "").split("passive")[0].rstrip(', ')
-    convertedMonster.languages = monster_dict.get("languages", "")
+    converted_monster.senses = monster_dict.get("senses", "").split("passive")[0].rstrip(', ')
+    converted_monster.languages = monster_dict.get("languages", "")
 
-    convertedMonster.challengerating = int(monster_dict["cr"])
+    converted_monster.challengerating = int(monster_dict["cr"])
 
     # Get abilities
     abilities_list = []
@@ -117,7 +134,7 @@ def convertAPIMonster(monster_dict):
         for ability in monster_dict["special_abilities"]:
             abilities_list.append(AbilityDescription(name=ability["name"],
                                                      description=ability["desc"]))
-    convertedMonster.abilities = abilities_list
+    converted_monster.abilities = abilities_list
 
     actions_list = []
     if monster_dict.get("actions"):
@@ -132,7 +149,7 @@ def convertAPIMonster(monster_dict):
                 damage_bonus = action["damage_bonus"]
                 attack_mod = 0
                 for score, value in ability_scores.items():
-                    if value + convertedMonster.proficiency_bonus() == attack_bonus:
+                    if value + converted_monster.proficiency_bonus() == attack_bonus:
                         attack_mod = score
 
                 dice = []
@@ -203,7 +220,7 @@ def convertAPIMonster(monster_dict):
                                                                damage_dice=dice,
                                                                range=spell_range))
 
-    convertedMonster.actions = actions_list
+    converted_monster.actions = actions_list
 
     # Get reactions
     reactions_list = []
@@ -211,7 +228,7 @@ def convertAPIMonster(monster_dict):
         for reaction in monster_dict["reactions"]:
             reactions_list.append(AbilityDescription(name=reaction["name"],
                                                      description=reaction["desc"]))
-    convertedMonster.abilities = reactions_list
+    converted_monster.abilities = reactions_list
 
     # Get bonus actions
     bonusactions_list = []
@@ -219,7 +236,7 @@ def convertAPIMonster(monster_dict):
         for bonusaction in monster_dict["bonusactions"]:
             bonusactions_list.append(AbilityDescription(name=bonusaction["name"],
                                                         description=bonusaction["desc"]))
-    convertedMonster.bonusactions = bonusactions_list
+    converted_monster.bonusactions = bonusactions_list
 
     # Get legendary actions
     legendaryaction_list = []
@@ -227,7 +244,7 @@ def convertAPIMonster(monster_dict):
         for legendary_action in monster_dict["legendary_actions"]:
             legendaryaction_list.append(AbilityDescription(name=legendary_action["name"],
                                                            description=legendary_action["desc"]))
-    convertedMonster.legendaryactions = legendaryaction_list
+    converted_monster.legendaryactions = legendaryaction_list
 
     # Get mythic actions
     mythic_description = ""
@@ -238,10 +255,10 @@ def convertAPIMonster(monster_dict):
         for mythic_action in monster_dict["mythic_actions"]:
             mythicaction_list.append(AbilityDescription(name=mythic_action["name"],
                                                         description=mythic_action["desc"]))
-    convertedMonster.mythicdescription = mythic_description
-    convertedMonster.mythicactions = mythicaction_list
+    converted_monster.mythicdescription = mythic_description
+    converted_monster.mythicactions = mythicaction_list
 
-    return convertedMonster
+    return converted_monster
 
 if __name__ == '__main__':
-    print(convert_monster((convertAPIMonster(fetch_srd_monster("aboleth")))))
+    print(convert_monster((convert_api_monster(fetch_srd_monster("aboleth")))))

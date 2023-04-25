@@ -7,6 +7,7 @@ from pyqtui.creature_editor_app import MonsterEditorForm
 from pyqtui.style.stylesheets import *
 from creatures.creature_generator import generate_test_monster
 from PyQt6 import QtCore
+from open5e.Open5eAPI import fetch_srd_monster_names, fetch_srd_monster
 
 import os
 import sys
@@ -23,6 +24,11 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         QtCore.QDir.addSearchPath('images', os.fspath(CURRENT_DIRECTORY / "pyqtui/images"))
         self.setupUi(self)
+        self.creature_names = []
+        for name in fetch_srd_monster_names():
+            self.creature_names.append(name)
+            self.creature_combobox.addItem(name)
+        self.creature_filter_lineedit.textChanged.connect(self.filter_monsters)
         self.load_monster_button.clicked.connect(self.monster_editor_button_clicked)
         self.apply_stylesheet()
 
@@ -47,9 +53,21 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
                 widget.setStyleSheet(f'#{widget.objectName()}{modal_stylesheet}')
 
     def monster_editor_button_clicked(self):
-        monster_form = MonsterEditorForm(creature_block=generate_test_monster(), parent=self)
-        monster_form.show()
+        if self.creature_combobox.currentText() != "":
+            monster_form = MonsterEditorForm(creature_block=fetch_srd_monster(self.creature_combobox.currentText().lower()), parent=self)
+            monster_form.show()
+        else:
+            monster_form = MonsterEditorForm(creature_block=generate_test_monster(), parent=self)
+            monster_form.show()
 
+
+    def filter_monsters(self, search_term):
+        # Filter the monster names based on the search term
+        filtered_monsters = [monster for monster in self.creature_names if search_term.lower() in monster]
+
+        # Update the list view with the filtered monster names
+        self.creature_combobox.clear()
+        self.creature_combobox.addItems(filtered_monsters)
 
 app = QApplication(sys.argv)
 myWindow = MainWindowApp(None)
