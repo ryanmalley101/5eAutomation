@@ -11,7 +11,7 @@ def print_monster_ability_scores(monster: CreatureStatblock):
     wisscore = monster.ability_scores[AbilityScore.WISDOM]
     chascore = monster.ability_scores[AbilityScore.CHARISMA]
 
-    abilitystring = f"|{strscore} ({score_to_mod(strscore)})"
+    abilitystring = f"> |{strscore} ({score_to_mod(strscore)})"
     abilitystring += f"|{dexscore} ({score_to_mod(dexscore)})"
     abilitystring += f"|{conscore} ({score_to_mod(conscore)})"
     abilitystring += f"|{intscore} ({score_to_mod(intscore)})"
@@ -93,7 +93,7 @@ def print_monster_skills(monster: MonsterStatblock):
         # intermediate values
         counter = len(monster.skills) - 1
         for skill in monster.skills:
-            skill_string += f'{skill} +{monster.skill_bonus(skill)}'
+            skill_string += f'{skill.value} +{monster.skill_bonus(skill)}'
             if counter > 0:
                 counter -= 1
                 skill_string += ', '
@@ -183,9 +183,9 @@ def print_monster_senses(monster):
 
 
 def convert_monster(monster: MonsterStatblock):
-    monster_markup  = f"# ___\n"
-    monster_markup += f"# > ## {monster.name}\n"
-    monster_markup += f"# >* {monster.size.value}, {monster.alignment}\n"
+    monster_markup  = f"___\n"
+    monster_markup += f"> ## {monster.name}\n"
+    monster_markup += f"> *{monster.size.value}, {monster.alignment}*\n"
     monster_markup += f"> ___\n"
     monster_markup += f"> - **Armor Class** {monster.get_total_ac()} ({monster.acdesc})\n"
     monster_markup += f"> - **Hit Points** {monster.hitpoints} ({monster.hitdice})\n"
