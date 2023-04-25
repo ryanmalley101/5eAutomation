@@ -143,7 +143,7 @@ def score_to_mod(score):
     if score < 0:
         raise Exception("Ability Score is less than 0")
 
-    return int((score-10)/2)
+    return int((score-10)//2)
 
 
 def proficiency_bonus(cr):

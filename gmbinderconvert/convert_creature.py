@@ -11,12 +11,19 @@ def print_monster_ability_scores(monster: CreatureStatblock):
     wisscore = monster.ability_scores[AbilityScore.WISDOM]
     chascore = monster.ability_scores[AbilityScore.CHARISMA]
 
-    abilitystring = f"> |{strscore} ({score_to_mod(strscore)})"
-    abilitystring += f"|{dexscore} ({score_to_mod(dexscore)})"
-    abilitystring += f"|{conscore} ({score_to_mod(conscore)})"
-    abilitystring += f"|{intscore} ({score_to_mod(intscore)})"
-    abilitystring += f"|{wisscore} ({score_to_mod(wisscore)})"
-    abilitystring += f"|{chascore} ({score_to_mod(chascore)})|\n"
+    str_plus = "+" if score_to_mod(strscore) >= 0 else ""
+    dex_plus = "+" if score_to_mod(dexscore) >= 0 else ""
+    con_plus = "+" if score_to_mod(conscore) >= 0 else ""
+    int_plus = "+" if score_to_mod(intscore) >= 0 else ""
+    wis_plus = "+" if score_to_mod(wisscore) >= 0 else ""
+    cha_plus = "+" if score_to_mod(chascore) >= 0 else ""
+
+    abilitystring = f"> |{strscore} ({str_plus}{score_to_mod(strscore)})"
+    abilitystring += f"|{dexscore} ({dex_plus}{score_to_mod(dexscore)})"
+    abilitystring += f"|{conscore} ({con_plus}{score_to_mod(conscore)})"
+    abilitystring += f"|{intscore} ({int_plus}{score_to_mod(intscore)})"
+    abilitystring += f"|{wisscore} ({wis_plus}{score_to_mod(wisscore)})"
+    abilitystring += f"|{chascore} ({cha_plus}{score_to_mod(chascore)})|\n"
     return abilitystring
 
 
@@ -80,6 +87,7 @@ def print_monster_saves(monster):
             save_string += f"WIS +{monster.save_bonus(AbilityScore.WISDOM)}, "
         if AbilityScore.CHARISMA in monster.saving_throws:
             save_string += f"CHA +{monster.save_bonus(AbilityScore.CHARISMA)} "
+        save_string = save_string[:-1]
         save_string += '\n'
     return save_string
 
@@ -205,7 +213,7 @@ def convert_monster(monster: MonsterStatblock):
     monster_markup += print_monster_senses(monster)
     monster_markup += f"> - **Languages** {monster.languages}\n"
     monster_markup += f"> - **Challenge Rating** {monster.challengerating} " \
-                      f"({CR_TO_XP_TABLE[monster.challengerating]})\n"
+                      f"({CR_TO_XP_TABLE[monster.challengerating]} XP)\n"
     for ability in monster.abilities:
         monster_markup += print_monster_ability(ability)
     monster_markup += f"> ### Actions\n"

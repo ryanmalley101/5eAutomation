@@ -57,7 +57,13 @@ def convertAPIMonster(monster_dict):
     convertedMonster.hitpoints = int(monster_dict['hit_points'])
 
     # Get speed information
-    convertedMonster.speed = monster_dict['speed']
+    speed_string = ""
+    for speed, value in monster_dict['speed'].items():
+        if speed == 'walk':
+            speed_string += f"{value} ft."
+        else:
+            speed_string += f", {speed} {value} ft."
+    convertedMonster.speed = speed_string
 
     # Get saving throws
     saving_throws = set()
@@ -100,7 +106,7 @@ def convertAPIMonster(monster_dict):
     convertedMonster.damage_vulnerabilities = damage_vulnerabilities
     convertedMonster.condition_immunities = condition_immunities
 
-    convertedMonster.senses = monster_dict.get("senses", "")
+    convertedMonster.senses = monster_dict.get("senses", "").split("passive")[0].rstrip(', ')
     convertedMonster.languages = monster_dict.get("languages", "")
 
     convertedMonster.challengerating = int(monster_dict["cr"])
