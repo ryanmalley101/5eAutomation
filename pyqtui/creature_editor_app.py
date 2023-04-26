@@ -489,7 +489,7 @@ class MonsterEditorForm(QWidget, Ui_Form):
 
     def save_monster_to_json(self):
         # Open file dialog and get file name
-        file_name, _ = QFileDialog.getSaveFileName(None, "Save File", "", "JSON Files (*.json)")
+        file_name, _ = QFileDialog.getSaveFileName(None, "Save File", f"{self.creature_block.name}.json", "JSON Files (*.json)")
 
         if file_name:
             self.creature_block.save_json_to_file(filename=file_name)

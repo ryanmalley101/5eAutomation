@@ -23,7 +23,8 @@ def fetch_all_srd_monsters():
 
 
 def fetch_srd_monster(monster_name):
-    api_url = f'https://api.open5e.com/monsters/{monster_name}/'
+    url_name = monster_name.lower().replace(' ', '-')
+    api_url = f'https://api.open5e.com/monsters/{url_name}/'
     response = requests.get(api_url)
     if response.status_code == 200:
         return convert_api_monster(response.json())
@@ -48,7 +49,7 @@ def fetch_srd_monster_names():
     return monsters
 
 
-def convert_api_monster(monster_dict):
+def convert_api_monster(monster_dict: dict):
     converted_monster = MonsterStatblock()
     # Get basic information
     converted_monster.name = monster_dict['name']
@@ -261,4 +262,4 @@ def convert_api_monster(monster_dict):
     return converted_monster
 
 if __name__ == '__main__':
-    print(convert_monster((convert_api_monster(fetch_srd_monster("aboleth")))))
+    print(convert_monster(fetch_srd_monster("Riding Horse")))

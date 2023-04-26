@@ -54,6 +54,7 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
 
     def monster_editor_button_clicked(self):
         if self.creature_combobox.currentText() != "":
+            print(fetch_srd_monster(self.creature_combobox.currentText().lower()))
             monster_form = MonsterEditorForm(creature_block=fetch_srd_monster(self.creature_combobox.currentText().lower()), parent=self)
             monster_form.show()
         else:
@@ -63,7 +64,7 @@ class MainWindowApp(QMainWindow, Ui_MainWindow):
 
     def filter_monsters(self, search_term):
         # Filter the monster names based on the search term
-        filtered_monsters = [monster for monster in self.creature_names if search_term.lower() in monster]
+        filtered_monsters = [name for name in self.creature_names if search_term.lower() in name.lower()]
 
         # Update the list view with the filtered monster names
         self.creature_combobox.clear()
